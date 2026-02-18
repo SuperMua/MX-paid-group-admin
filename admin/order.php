@@ -99,19 +99,27 @@ require_once 'login_check.php';
     </div>
 
     <script>
+            let isActionProcessing = false;
+
             // 显示确认弹窗
             function showConfirmModal(actionType, orderId, orderNumber) {
+                if (isActionProcessing) {
+                    return;
+                }
+
                 document.getElementById("confirmModal").style.display = "flex";
                 document.getElementById("confirmModal").style.justifyContent = "center";
                 document.getElementById("confirmModal").style.alignItems = "center";
             
                 const confirmMessage = document.getElementById("confirmMessage");
+                const confirmButton = document.querySelector("#confirmModal .confirm");
                 if (actionType === 'delete_single') {
-                    // 使用 innerHTML 支持 HTML 标签
-                    confirmMessage.innerHTML = `是否删除<br>订单: ${orderNumber}`;
+                    confirmMessage.textContent = `是否删除订单：${orderNumber}`;
                 } else if (actionType === 'delete_all') {
-                    confirmMessage.innerText = "是否删除全部记录？";
+                    confirmMessage.textContent = "是否删除全部订单记录？";
                 }
+                confirmButton.disabled = false;
+                confirmButton.textContent = "确认";
             
                 // 存储操作类型、订单ID和订单编号
                 document.getElementById("confirmModal").setAttribute("data-action", actionType);
@@ -126,19 +134,28 @@ require_once 'login_check.php';
     
             // 执行确认操作
             function confirmAction() {
+                if (isActionProcessing) {
+                    return;
+                }
+
                 const actionType = document.getElementById("confirmModal").getAttribute("data-action");
                 const orderId = document.getElementById("confirmModal").getAttribute("data-order-id");
+                const confirmButton = document.querySelector("#confirmModal .confirm");
                 closeConfirmModal();
     
                 let requestBody;
                 if (actionType === 'delete_single') {
-                    requestBody = `action=delete_single&order_id=${orderId}`;
+                    requestBody = `action=delete_single&order_id=${encodeURIComponent(orderId)}`;
                 } else if (actionType === 'delete_all') {
                     requestBody = "action=delete_all";
                 } else {
                     alert("未知操作类型，请刷新后重试");
                     return;
                 }
+
+                isActionProcessing = true;
+                confirmButton.disabled = true;
+                confirmButton.textContent = "处理中...";
     
                 fetch("order-backend.php", {
                     method: "POST",
@@ -164,6 +181,11 @@ require_once 'login_check.php';
                 .catch(error => {
                     console.error("Error:", error);
                     alert("网络异常，请稍后重试");
+                })
+                .finally(() => {
+                    isActionProcessing = false;
+                    confirmButton.disabled = false;
+                    confirmButton.textContent = "确认";
                 });
             }
         </script>

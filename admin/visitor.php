@@ -78,11 +78,19 @@ require_once 'login_check.php';
 	    </div>
 </body>
 <script>
+        let isClearProcessing = false;
+
         // 显示确认弹窗
         function showConfirmModal() {
+            if (isClearProcessing) {
+                return;
+            }
             document.getElementById("confirmModal").style.display = "flex";
             document.getElementById("confirmModal").style.justifyContent = "center";
             document.getElementById("confirmModal").style.alignItems = "center";
+            const confirmButton = document.querySelector("#confirmModal .confirm");
+            confirmButton.disabled = false;
+            confirmButton.textContent = "确认";
         }
 
         // 关闭确认弹窗
@@ -92,6 +100,14 @@ require_once 'login_check.php';
 
         // 执行清空操作
         function clearAllRecords() {
+            if (isClearProcessing) {
+                return;
+            }
+
+            const confirmButton = document.querySelector("#confirmModal .confirm");
+            isClearProcessing = true;
+            confirmButton.disabled = true;
+            confirmButton.textContent = "处理中...";
             closeConfirmModal(); // 关闭确认弹窗
             fetch("query-visitors.php", {
                 method: "POST",
@@ -117,6 +133,11 @@ require_once 'login_check.php';
             .catch(error => {
                 console.error("Error:", error);
                 alert("网络异常，请稍后重试");
+            })
+            .finally(() => {
+                isClearProcessing = false;
+                confirmButton.disabled = false;
+                confirmButton.textContent = "确认";
             });
         }
 
