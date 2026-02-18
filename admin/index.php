@@ -43,7 +43,7 @@ require_once 'query-visitors.php'; //加载数据
 
 	   @media (min-width: 992px) {
 		   .body-ui {
-			   background: linear-gradient(135deg, #1677ff 0%, #66a8ff 28%, #eef2f7 28%);
+			   background: linear-gradient(134.38deg, #f539f8 0%, #c342f9 43.55%, #5356fb 104.51%);
 		   }
 
 		   .header {
@@ -56,10 +56,10 @@ require_once 'query-visitors.php'; //加载数据
 			   align-items: center;
 			   padding: 6px 12px;
 			   border-radius: 999px;
-			   background: rgba(255, 255, 255, 0.2);
+			   background: rgba(255, 255, 255, 0.18);
 			   color: #fff;
 			   font-size: 13px;
-			   border: 1px solid rgba(255, 255, 255, 0.25);
+			   border: 1px solid rgba(255, 255, 255, 0.35);
 			   backdrop-filter: blur(4px);
 		   }
 

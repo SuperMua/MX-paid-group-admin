@@ -20,13 +20,14 @@ if (!empty($error)) {
     <title>登录</title>
     <style>
         :root {
-            --login-primary: #1677ff;
-            --login-primary-hover: #0f63d4;
+            --login-primary: #5356fb;
+            --login-primary-hover: #4144df;
+            --login-secondary: #f539f8;
             --login-card-radius: 16px;
-            --login-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+            --login-shadow: 0 20px 44px rgba(83, 86, 251, 0.24);
             --login-border: rgba(255, 255, 255, 0.22);
-            --login-text: #1f2937;
-            --login-sub: #6b7280;
+            --login-text: #273142;
+            --login-sub: #7278a1;
         }
 
         * {
@@ -41,9 +42,9 @@ if (!empty($error)) {
             place-items: center;
             color: var(--login-text);
             background:
-                radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.26) 0, rgba(255, 255, 255, 0) 42%),
-                radial-gradient(circle at 80% 14%, rgba(187, 247, 255, 0.32) 0, rgba(187, 247, 255, 0) 40%),
-                linear-gradient(135deg, #0d47a1 0%, #1565c0 34%, #1d4ed8 62%, #60a5fa 100%);
+                radial-gradient(circle at 18% 22%, rgba(245, 57, 248, 0.3) 0, rgba(245, 57, 248, 0) 42%),
+                radial-gradient(circle at 80% 14%, rgba(83, 86, 251, 0.35) 0, rgba(83, 86, 251, 0) 40%),
+                linear-gradient(135deg, #2f1a66 0%, #4346c8 34%, #5356fb 62%, #8b6fff 100%);
             padding: 24px;
         }
 
@@ -60,7 +61,7 @@ if (!empty($error)) {
         .login-container h2 {
             margin: 0 0 8px;
             text-align: center;
-            color: #0f172a;
+            color: #2d2f66;
             font-size: 28px;
             letter-spacing: 1px;
         }
@@ -99,7 +100,7 @@ if (!empty($error)) {
         .login-container input[type="text"]:focus,
         .login-container input[type="password"]:focus {
             border-color: var(--login-primary);
-            box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.16);
         }
 
         .login-container button {
@@ -111,13 +112,13 @@ if (!empty($error)) {
             font-size: 15px;
             font-weight: bold;
             color: #fff;
-            background: linear-gradient(135deg, #1677ff 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
             cursor: pointer;
             transition: transform 0.15s ease, background-color 0.2s ease;
         }
 
         .login-container button:hover {
-            background: linear-gradient(135deg, var(--login-primary-hover) 0%, #2563eb 100%);
+            background: linear-gradient(135deg, var(--login-primary-hover) 0%, #d442f1 100%);
             transform: translateY(-1px);
         }
 
