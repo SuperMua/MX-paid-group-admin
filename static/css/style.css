@@ -1,0 +1,961 @@
+ body {
+ 	font-family: Arial, sans-serif;
+ 	margin: 0;
+ 	padding: 0;
+ 	background-color: #fff;
+ }
+
+ .container {
+ 	padding: 10px;
+
+ }
+a {
+ 	text-decoration: none;
+ 	/* 去除下划线 */
+ 	color: inherit;
+ 	/* 继承父元素的颜色 */
+ 	-webkit-tap-highlight-color: transparent;
+ 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+ }
+ .content-a {
+ 	width: 100%;
+ 	height: 180px;
+ 	background: linear-gradient(to bottom, #3de7f9, #f6f9fc);
+ 	box-shadow: 0 0 20px #b3baf2;
+ 	border-radius: 8px;
+ 	text-align: center;
+ }
+
+ .pjds-5 {
+ 	margin-top: 40px;
+ 	line-height: 25px;
+ }
+
+ .pjds {
+ 	color: #403f3f;
+ 	font-size: 20px;
+ }
+
+ .pjdp {
+ 	color: #ff2d2d;
+ 	font-size: 14px;
+
+ }
+
+ .content-b {
+ 	width: 100%;
+ 	height: 80px;
+ 	background: #fcfae9;
+ 	box-shadow: 0 0 20px #c4c5e0;
+ 	border-radius: 8px;
+ 	margin-top: 10px;
+ }
+
+ .fookj {
+ 	width: 80px;
+ 	height: 80px;
+ 	margin: auto;
+ }
+
+ .fookj img {
+ 	width: 85px;
+ 	height: 85px;
+ 	margin: auto;
+ 	margin-top: 30px;
+ 	border-radius: 8px;
+ 	border: 3px solid #fff; /* 添加边框 */
+    box-sizing: border-box;
+ }
+
+ .content-c {
+ 	width: 100%;
+ 	height: 100px;
+ 	background: #eff4f8;
+ 	box-shadow: 0 0 20px #c4c5e0;
+ 	border-radius: 8px;
+ 	margin-top: 10px;
+ }
+
+ .columns-container {
+ 	display: flex;
+ 	/* 使用 Flexbox 布局 */
+ 	justify-content: space-between;
+ 	/* 列之间的间隔均匀分布 */
+ }
+
+ .column {
+ 	flex: 1;
+ 	/* 每列占据相同的空间 */
+ 	margin: 0 1px;
+ 	/* 列之间的外边距 */
+ 	/* padding: 10px; */
+ 	/* 列内边距 */
+ 	padding: 10px 0px 0px 5px;
+ 	display: flex;
+ 	/* 启用 Flexbox 布局 */
+ 	align-items: center;
+ 	/* 垂直居中 */
+ 	justify-content: flex-start;
+ 	/* 水平起始对齐 */
+ }
+
+ .column-content {
+ 	display: flex;
+ 	/* 启用 Flexbox 布局 */
+ 	align-items: center;
+ 	/* 垂直居中 */
+ }
+
+ .avatar1 {
+ 	width: 50px;
+ 	/* 头像宽度 */
+ 	height: 50px;
+ 	/* 头像高度 */
+ 	margin-right: 3px;
+ 	/* 头像与昵称之间的间距*/
+ 	border-radius: 8px;
+ }
+
+ .nickname {
+ 	font-size: 12px;
+ 	/* 字体大小 */
+ 	color: #515151;
+ 	/* 字体颜色 */
+ 	margin-left: 1px;
+ 	line-height: 20px;
+ }
+
+ .jshdj {
+ 	color: #fa3131;
+ }
+
+ .content-d {
+ 	width: 100%;
+ 	height: 100px;
+ 	background: #eff4f8;
+ 	box-shadow: 0 0 20px #c4c5e0;
+ 	border-radius: 8px;
+ 	margin-top: 10px;
+ }
+
+ .avatars-container {
+ 	display: flex;
+ 	/* 使用 Flexbox 布局 */
+ 	/* justify-content: space-between; */
+ 	/* 头像之间的间隔均匀分布 */
+ 	/* align-items: center; */
+ 	/* 垂直居中 */
+ 	width: 100%;
+ 	/* 容器宽度为100% */
+ 	margin: 0 auto;
+ 	/* 容器居中 */
+ 	margin-top: 15px;
+ }
+
+ /* 单个头像 */
+ .avatar {
+ 	width: 40px;
+ 	/* 头像宽度 */
+ 	height: 40px;
+ 	/* 头像高度 */
+ 	border-radius: 40px;
+ 	/* 圆形 */
+ 	margin: 0px 0px 0px 5px;
+ 	/* 头像之间的外边距 */
+ }
+
+ .fnlkld {
+ 	text-align: center;
+ 	padding: 10px 0 0 0;
+ 	font-size: 14px;
+ }
+
+ .fnlkld-1 {
+ 	margin: 0px 20px 0px 20px;
+ 	font-size: 12px;
+ 	color: #515151;
+ }
+
+ .content-e {
+ 	width: 100%;
+ 	height: auto;
+ 	background: #eff4f8;
+ 	box-shadow: 0 0 20px #c4c5e0;
+ 	border-radius: 8px;
+ 	margin-top: 10px;
+ }
+
+ .price {
+ 	background-color: #007bff;
+ 	color: white;
+ 	padding: 14px;
+ 	border-radius: 20px;
+ 	margin-top: 20px;
+ 	text-align: center;
+ 	position: fixed;
+ 	/* 固定定位 */
+ 	bottom: 20px;
+ 	/* 距离底部10px */
+ 	width: 280px;
+ 	/* 设置宽度为200px */
+ 	left: 50%;
+ 	/* 从窗口左侧开始，距离50% */
+ 	transform: translateX(-50%);
+ 	/* 向左移动自身宽度的50%，实现水平居中 */
+ 	z-index: 99;
+ 	/* 确保在最上层，注意这里应为 z-index */
+ }
+
+/* 投诉 */
+ .task-issues {
+ 	position: fixed;
+ 	/* 固定定位，使元素固定在视口中 */
+ 	top: 8%;
+ 	/* 距离屏幕底部向上60px */
+ 	right: 0px;
+ 	/* 靠左，挨着屏幕 */
+ 	width: 50px;
+ 	/* 宽30px */
+ 	height: 30px;
+ 	/* 高120px */
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	/* 半透明背景色 */
+ 	border-radius: 15px 0px 0px 15px;
+ 	/* 右边上下的圆弧半径为10px */
+ 	display: flex;
+ 	flex-direction: column;
+ 	justify-content: center;
+ 	align-items: center;
+ 	z-index: 999;
+ 	color: #ededed;
+ 	font-size: 12px;
+ 	font-weight: bold;
+ 	text-align: center;
+ }
+
+ /* 任务按钮位置 */
+ .task-button {
+ 	position: fixed;
+ 	/* 固定定位，使元素固定在视口中 */
+ 	bottom: 30%;
+ 	/* 距离屏幕底部向上60px */
+ 	right: 0px;
+ 	/* 靠左，挨着屏幕 */
+ 	width: 26px;
+ 	/* 宽30px */
+ 	height: 110px;
+ 	/* 高120px */
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	/* 半透明背景色 */
+ 	border-radius: 15px 0px 0px 15px;
+ 	/* 右边上下的圆弧半径为10px */
+ 	display: flex;
+ 	/* 使用flex布局 */
+ 	flex-direction: column;
+ 	/* 内容字体上下排列 */
+ 	justify-content: center;
+ 	/* 垂直居中 */
+ 	align-items: center;
+ 	/* 水平居中 */
+ 	z-index: 999;
+ 	/* 层级在最上 */
+ 	color: #ededed;
+ 	/* 字体颜色，可根据需要调整 */
+ 	font-size: 12px;
+ 	/* 字体大小，可根据需要调整 */
+ 	font-weight: bold;
+ 	/* 字体加粗，可根据需要调整 */
+ 	text-align: center;
+ 	/* 文字居中对齐 */
+ 	writing-mode: vertical-rl;
+ 	/* 文字竖排 */
+ 	transform: rotate(0deg);
+ 	/* 将文字旋转180度，使文字从上到下排列 */
+ }
+
+
+ /* 客服按钮位置 */
+ .circle-button {
+ 	width: 50px;
+ 	height: 50px;
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	border-radius: 8px;
+
+ 	position: fixed;
+ 	/* 固定定位 */
+ 	bottom: 20%;
+ 	/* 距离顶部30% */
+ 	right: 0px;
+ 	/* 距离右侧10px */
+ 	z-index: 99;
+ 	/* 确保在最上层 */
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: center;
+ 	cursor: pointer;
+ }
+
+ .circle-button img {
+ 	width: 50px;
+ 	height: 50px;
+ }
+
+ .avatar2 {
+ 	width: 100%;
+ }
+
+ .pjdsjd {
+ 	padding: 10px;
+ 	font-size: 15px;
+ 	/* 字体大小 */
+ 	color: #515151;
+ }
+
+
+ /* 视频 */
+ .containersy {
+ 	display: flex;
+ 	flex-wrap: wrap;
+ 	justify-content: center;
+ 	gap: 20px;
+ 	padding: 10px;
+ }
+
+ .video-item {
+ 	width: 45%;
+ 	position: relative;
+ 	overflow: hidden;
+ 	border-radius: 8px;
+ }
+
+ .video-item img {
+ 	width: 100%;
+ 	height: auto;
+ 	border-radius: 8px;
+ 	display: block;
+ 	/*box-shadow: 0 0 20px #c4c5e0;*/
+ }
+
+ .video-intro {
+ 	margin-top: 10px;
+ 	font-size: 14px;
+ 	color: #666;
+ 	margin-bottom: 5px;
+ }
+
+ .popupsp {
+ 	display: none;
+ 	position: fixed;
+ 	left: 50%;
+ 	top: 50%;
+ 	transform: translate(-50%, -50%);
+ 	width: 250px;
+ 	max-width: 600px;
+ 	background-color: #fff;
+ 	border-radius: 10px;
+ 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+ 	padding: 10px;
+ 	text-align: center;
+ 	z-index: 999;
+ }
+
+ .popupsp h3 {
+ 	margin: 0 0 20px;
+ 	color: #333;
+ }
+
+ .popupsp p {
+ 	margin: 0 0 30px;
+ 	font-size: 16px;
+ 	color: #666;
+ }
+
+ .popupsp button {
+ 	padding: 10px 30px;
+ 	color: #fff;
+ 	border: none;
+ 	border-radius: 5px;
+ 	cursor: pointer;
+ 	font-size: 15px;
+ 	margin: 0px 10px 10px 10px;
+ }
+
+ .button-qx {
+ 	background-color: #d7d7d7;
+ }
+
+ .button-qd {
+ 	background-color: #007bff;
+ }
+
+ .overlaysp {
+ 	display: none;
+ 	position: fixed;
+ 	top: 0;
+ 	left: 0;
+ 	width: 100%;
+ 	height: 100%;
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	z-index: 500;
+ }
+
+ .video-player {
+ 	display: none;
+ 	width: 100%;
+ 	height: auto;
+ 	border-radius: 8px;
+ }
+
+ .play-button {
+ 	position: absolute;
+ 	top: 50%;
+ 	left: 50%;
+ 	transform: translate(-50%, -80%);
+ 	/* width: 50px;
+      height: 50px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%; */
+ 	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
+ 	cursor: pointer;
+ 	z-index: 10;
+ }
+
+ .play-button img {
+ 	width: 40px;
+ 	height: 40px;
+ }
+
+ .playing .play-button {
+ 	display: none;
+ }
+
+ /* 部分内容图片 */
+ .vijds {
+ 	width: auto;
+ 	padding: 10px 10px 10px 10px;
+ }
+
+ .vijds img {
+ 	width: 100%;
+ 	border-radius: 5px;
+ }
+
+ /* 
+ 阅读 */
+ .yuedu-1 {
+ 	padding: 10px;
+ }
+
+ .yuedu {
+ 	font-size: 1rem;
+ 	color: #b1b1b1;
+ 	line-height: 4rem;
+ }
+
+ .qunicon {
+ 	display: flex;
+ 	align-items: center;
+ 	font-size: 0.8 rem;
+ 	color: #405683;
+ 	justify-content: space-between;
+ 	text-align: center;
+ }
+
+ .qunicon img {
+ 	width: 1.46rem;
+ 	height: 1.46rem;
+ 	margin-right: 5px;
+
+ }
+
+ .qunicon1 {
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: space-between;
+ 	width: 45%;
+ }
+
+ .icon1 {
+ 	display: flex;
+ 	align-items: center;
+ 	/* 垂直居中 */
+ 	margin-right: 5px;
+ 	/* 图标之间的间距 */
+ }
+
+ /* 评论区 */
+ .pinglun {
+ 	/* margin-top: 20px; */
+ }
+
+ .qunliuyan {
+ 	/* background-color: #edf0ef; */
+ 	/* border-radius: 8px; */
+ 	padding: 10px 10px 0px 10px;
+ 	/* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+ }
+
+ .liuyantit {
+ 	/* text-align: center; */
+ 	margin-bottom: 5px;
+ 	color: #5f5f5f;
+ }
+
+ .liuyantit .lyo {
+ 	font-size: 18px;
+ 	color: #8e8c8c;
+ 	font-weight: bold;
+ }
+
+ .liuyanz {
+ 	display: flex;
+ 	align-items: center;
+ 	margin-bottom: 20px;
+ 	/* padding-bottom: 20px; */
+ 	/* border-bottom: 1px solid #ddd; */
+ }
+
+ .liuyanz:last-child {
+ 	border-bottom: none;
+ }
+
+ .qleft {
+ 	width: 50px;
+ 	height: 50px;
+ 	margin-right: 15px;
+ 	border-radius: 5px;
+ }
+
+ .qcenter {
+ 	flex: 1;
+ }
+
+ .qcenter .nichen {
+ 	font-size: 14px;
+ 	color: #a7a7a7;
+ 	font-weight: bold;
+ 	line-height: 0px;
+ }
+
+ .qcenter .liuyan {
+ 	font-size: 14px;
+ 	color: #3c3c3c;
+ 	margin-top: 5px;
+ }
+
+ .qright {
+ 	display: flex;
+ 	align-items: center;
+ }
+
+ .qright img {
+ 	width: 20px;
+ 	height: 20px;
+ 	margin-right: 5px;
+ 	margin-top: 5px;
+ }
+
+ .qright p {
+ 	font-size: 14px;
+ 	color: #526593;
+ 	margin: 0;
+ }
+
+ /* 群介绍 */
+ .qunjieshao {
+ 	padding: 10px;
+ 	margin-top: 10px;
+ }
+
+ .qunstate .qs {
+ 	font-size: 1.1rem;
+ 	line-height: 1.8rem;
+ 	margin-top: 0.5rem;
+ }
+
+ .qunstate .qs a {
+ 	color: #aeaeae;
+ }
+
+ .qunstate .qs p {
+ 	width: 100%;
+ 	display: -webkit-box;
+ 	-webkit-line-clamp: 3;
+ 	-webkit-box-orient: vertical;
+ 	overflow: hidden;
+ 	font-size: 1.15rem;
+ 	color: #7e7e7e;
+
+ }
+
+ .qunstate .question .ad {
+ 	color: #425887;
+ 	margin-top: 1rem;
+ 	font-size: 1.15rem;
+ }
+
+ .qunstate .question .aw {
+ 	color: #7e7e7e;
+ 	margin-top: 0.57rem;
+ }
+
+ /* 打赏弹窗 */
+ .overlay {
+ 	display: none;
+ 	position: fixed;
+ 	top: 0;
+ 	left: 0;
+ 	width: 100%;
+ 	height: 100%;
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	z-index: 1000;
+ }
+
+ .popup {
+ 	display: none;
+ 	position: fixed;
+ 	top: 50%;
+ 	left: 50%;
+ 	text-align: center;
+ 	transform: translate(-50%, -50%);
+ 	background-color: #fff;
+ 	border-radius: 8px;
+ 	padding: 20px;
+ 	z-index: 1001;
+ 	width: 250px;
+ }
+
+ .dsyuan {
+ 	margin-top: 20px;
+ 	z-index: 15px;
+ 	font-size: 15px;
+ 	color: #666;
+ }
+
+ .close-btn {
+ 	position: absolute;
+ 	top: 10px;
+ 	right: 20px;
+ 	font-size: 20px;
+
+ }
+
+ .popup input {
+ 	width: 65px;
+ 	border: none;
+ 	text-align: center;
+ 	outline: none;
+ 	font-size: 40px;
+ 	color: #fb2020;
+
+ }
+
+ .popup-footer button {
+ 	margin-top: 20px;
+ 	background-color: #007bff;
+ 	width: 200px;
+ 	height: 45px;
+ 	color: #fff;
+ 	border: none;
+ 	border-radius: 5px;
+ 	cursor: pointer;
+ 	font-size: 15px;
+ 	/* margin: 0px 10px 20px 10px; */
+ 	margin-bottom: 15px
+ }
+
+ .zffss {
+ 	display: flex;
+ 	margin-left: 20px;
+ 	margin-top: 10px;
+ 	color: #666;
+ }
+
+ .radio-group {
+ 	display: flex;
+ 	align-items: center;
+ 	margin: 20px;
+ }
+
+ .radio-group label {
+ 	display: flex;
+ 	align-items: center;
+ 	margin-right: 20px;
+ 	cursor: pointer;
+ }
+
+ .radio-group input[type="radio"] {
+ 	display: none;
+ 	/* 隐藏原生单选框 */
+ }
+
+ .radio-group .radio-img {
+ 	position: relative;
+ 	width: 90px;
+ 	/* 图片宽度 */
+ 	height: 35px;
+ 	/* 图片高度 */
+ 	border: 2px solid transparent;
+ 	transition: border-color 0.3s;
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: center;
+ 	border-radius: 5px;
+ }
+
+ .radio-group .radio-img img {
+ 	max-width: 100%;
+ 	max-height: 100%;
+ }
+
+ .radio-group input[type="radio"]:checked+.radio-img {
+ 	border-color: #fe3333;
+ 	/* 选中时的边框颜色 */
+ 	box-shadow: 0 0 10px #f87a7a;
+ }
+
+
+ /* 客服弹窗 */
+ .modal-overlay {
+ 	display: none;
+ 	position: fixed;
+ 	top: 0;
+ 	left: 0;
+ 	width: 100%;
+ 	height: 100%;
+ 	background-color: rgba(0, 0, 0, 0.5);
+ 	z-index: 1000;
+ }
+
+ .modal {
+ 	display: none;
+ 	position: fixed;
+ 	top: 50%;
+ 	left: 50%;
+ 	transform: translate(-50%, -50%);
+ 	background-color: #fff;
+ 	border-radius: 8px;
+ 	padding: 10px;
+ 	z-index: 1001;
+ 	width: 250px;
+ }
+
+ .modal-header {
+ 	display: flex;
+ 	justify-content: space-between;
+ 	align-items: center;
+ 	margin-bottom: 20px;
+ }
+
+ .modal-header h3 {
+ 	margin: 0;
+ 	font-size: 16px;
+ 	color: #333;
+ }
+
+ .modal-header .close-btn {
+ 	cursor: pointer;
+ 	font-size: 24px;
+ 	color: #999;
+ }
+
+ .modal-content {
+ 	text-align: center;
+ }
+
+ .modal-content img {
+ 	max-width: 100%;
+ 	height: auto;
+ 	border-radius: 8px;
+ }
+
+ /* 倒计时 */
+ .countdown-container {
+ 	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
+ 	margin-bottom: 20px;
+ }
+
+ .countdown-item {
+ 	display: flex;
+ 	flex-direction: row;
+ 	align-items: center;
+ 	/* margin: 0 10px; */
+ }
+
+ .countdown-value {
+ 	font-size: 20px;
+ 	/* 倒计时数字字体大小 */
+ 	color: #ff5722;
+ 	margin-right: 5px;
+ }
+
+ .countdown-label {
+ 	font-size: 14px;
+ 	/* 时分秒字体大小 */
+ 	color: #666;
+ }
+
+ .order-btn {
+ 	display: inline-block;
+ 	padding: 10px 20px;
+ 	background-color: #ff5722;
+ 	color: #fff;
+ 	font-size: 18px;
+ 	border: none;
+ 	border-radius: 5px;
+ 	cursor: pointer;
+ 	text-decoration: none;
+ }
+
+ .order-btn:hover {
+ 	background-color: #e04e21;
+ }
+
+
+ /* 温馨提示按钮样式 */
+ /* 遮罩层样式 */
+ .masktx {
+     display: none;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0, 0, 0, 0.5);
+     z-index: 10000;
+ }
+ 
+ /* 弹窗样式 */
+ .popuptx {
+     display: none;
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     width: 70%;
+     background-color: #fff;
+     padding: 20px;
+     border-radius: 5px;
+     z-index: 1001;
+     text-align: center; /* 使内容居中显示 */
+ }
+ 
+ /* 关闭按钮样式 */
+ .close-btn {
+     position: absolute;
+     top: 10px;
+     right: 10px;
+     cursor: pointer;
+ 	font-size: 20px;
+ }
+ 
+ /* 按钮样式 */
+ .popup-btn {
+     display: inline-block;
+     margin: 10px; /* 添加外边距 */
+     padding: 10px 30px;
+     background-color: #4CAF50;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+ 	margin-top: 20px;
+ }
+ 
+ /* 去掉ul li的默认样式 */
+ ul {
+     list-style: none;
+     padding: 0;
+     margin: 0;
+ }
+ 
+ li {
+     margin: 5px 0; /* 添加上下外边距 */
+ 	font-size: 14px;
+ }
+ 
+ 
+ /* 信息容器样式 */
+ .info-container {
+     position: fixed;
+     top: 10px;
+     right: -100%; /* 初始位置在右侧外 */
+     width: 80%;
+     text-align: center;
+     font-size: 14px;
+     color: #fff;
+     background-color: rgba(0, 0, 0, 0.5);
+     border-radius: 15px;
+     padding: 5px;
+     display: none; /* 初始状态隐藏 */
+     opacity: 0; /* 初始透明度为0 */
+     transition: opacity 2s, right 0.4s; /* 透明度渐变3秒，位置渐变0.5秒 */
+     z-index: 10000;
+ }
+ 
+ /*任务进度弹窗*/
+ .modal-k {
+ 	display: none;
+ 	position: fixed;
+ 	z-index: 1;
+ 	left: 0;
+ 	top: 0;
+ 	width: 100%;
+ 	height: 100%;
+ 	overflow: auto;
+ 	background-color: rgba(0, 0, 0, 0.4);
+ 	justify-content: center;
+ 	align-items: center;
+ }
+
+ .modal-content-k {
+ 	background-color: #fefefe;
+ 	border: 1px solid #888;
+ 	width: 220px;
+ 	border-radius: 8px;
+ 	text-align: center;
+ 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+ 	position: relative;
+ 	padding: 20px;
+ }
+
+ .close {
+ 	position: absolute;
+ 	top: 0px;
+ 	right: 10px;
+ 	color: #aaa;
+ 	font-size: 28px;
+ 	cursor: pointer;
+ }
+
+ .close:hover,
+ .close:focus {
+ 	color: black;
+ 	text-decoration: none;
+ }
+
+ .buttonlk {
+ 	background-color: #4CAF50;
+ 	border: none;
+ 	color: white;
+ 	padding: 10px 32px;
+ 	text-align: center;
+ 	text-decoration: none;
+ 	display: inline-block;
+ 	font-size: 16px;
+ 	margin: 4px 2px;
+ 	cursor: pointer;
+ 	border-radius: 8px;
+ 	height: 40px;
+ 	margin-top: 20px;
+ }
+
+ .modal-message {
+ 	margin-bottom: 20px;
+ }
+ 
+ 
