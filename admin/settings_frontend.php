@@ -169,7 +169,7 @@ require_once 'login_check.php';
 
 <body>
     <div class="navbar">
-        <a class="back-button left-arrow" href="#" onclick="history.length>1 ? history.back() : location.href=document.referrer||'/';"></a>
+        <a class="back-button left-arrow" href="index.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
         <div class="title">任务设置</div>
     </div>
     <form class="task-settings-form" action="settings_backend.php" method="post" enctype="multipart/form-data">
