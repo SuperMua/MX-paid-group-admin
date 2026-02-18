@@ -80,9 +80,10 @@ a {
 }
 
 .info {
-  padding: 10px;
-  font-size: 14px;
-  border-bottom: 1px solid rgba(83, 86, 251, 0.13);
+ 	padding: 12px;
+ 	font-size: 14px;
+ 	border-bottom: 1px solid rgba(83, 86, 251, 0.13);
+	background: #fbfbff;
 }
 
 .info div {
@@ -237,13 +238,14 @@ a {
 }
 
 .task {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid rgba(83, 86, 251, 0.12);
-  font-size: 14px;
-  line-height: 22px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	border-bottom: 1px solid rgba(83, 86, 251, 0.12);
+	font-size: 14px;
+	line-height: 22px;
+	background: #fbfbff;
 }
 
 .task:last-child {
@@ -271,11 +273,12 @@ a {
 }
 
 .view-details {
-  color: #fff;
-  padding: 3px 10px;
-  background: linear-gradient(135deg, #5356fb, #6e73ff);
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(83, 86, 251, 0.24);
+ 	color: #fff;
+ 	padding: 6px 12px;
+ 	background: linear-gradient(135deg, #5356fb, #6e73ff);
+ 	border-radius: 10px;
+ 	box-shadow: 0 8px 16px rgba(83, 86, 251, 0.24);
+	font-weight: 600;
 }
 
 .view-details:hover {

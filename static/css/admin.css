@@ -544,6 +544,38 @@ select:focus {
   line-height: 1.65;
 }
 
+.settings-container .input-group,
+.form-section .form-item,
+.group-list-section .group-item,
+.task-settings-form .image-upload-container,
+.imageInfo .tpdx {
+  background: #fbfbff;
+  border: 1px solid rgba(83, 86, 251, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.edit-button,
+.confirm-btn,
+.submit,
+.button-qc,
+.view-details,
+.action-btn.approve {
+  background: linear-gradient(135deg, #5356fb 0%, #6f75ff 100%);
+  border: none;
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(83, 86, 251, 0.2);
+}
+
+.delete-button,
+.cancel-btn,
+.action-btn.reject {
+  background: linear-gradient(135deg, #f539f8 0%, #e34ce6 100%);
+  border: none;
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(245, 57, 248, 0.22);
+}
+
 .input-xt {
   color: #98a2b3;
   font-size: 13px;
