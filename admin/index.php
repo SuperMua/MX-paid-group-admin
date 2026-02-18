@@ -4,7 +4,7 @@ require_once 'users.php';   //加载数据
 require_once 'query-visitors.php'; //加载数据
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,13 +83,11 @@ require_once 'query-visitors.php'; //加载数据
 		    <img src="<?php echo htmlspecialchars($adminInfo['avatar']); ?>" alt="用户头像" class="user-avatar">
 		    <div class="user-details">
 			    <span>昵称：<?php echo htmlspecialchars($adminInfo['name']); ?></span><br>
-			    <span>
 				<div class="scroll-container">
 				    <div class="scroll-text" id="scrollText">
 				         <?php echo $greeting; ?>! <?php echo $warmWords; ?>
 				    </div>
 				</div>
-				</span>
 		        <!--<span>日期：<?php echo htmlspecialchars($adminInfo['date']); ?></span>-->
 		    </div>
 		</div>
@@ -134,40 +132,39 @@ require_once 'query-visitors.php'; //加载数据
 		    <div class="sidebar">
 		        <div class="menu-item">
 		            <a href="order.php">
-		                <span class="menu-item-icon icon_1"></span>查看订单</a>
-		                <span class="menu-arrow"></span>
-		            </a>
+		                <span class="menu-item-icon icon_1"></span>查看订单
+					</a>
+		            <span class="menu-arrow"></span>
 		        </div>
 				<div class="menu-item">
 				    <a href="review_list.php">
-				        <span class="menu-item-icon icon_2"></span>任务审核</a>
-				        <span class="menu-arrow"></span>
-				    </a>
+				        <span class="menu-item-icon icon_2"></span>任务审核
+					</a>
+				    <span class="menu-arrow"></span>
 				</div>
 				<div class="menu-item">
 				    <a href="visitor.php">
-				        <span class="menu-item-icon icon_3"></span>访客记录</a>
-				        <span class="menu-arrow"></span>
-				    </a>
+				        <span class="menu-item-icon icon_3"></span>访客记录
+					</a>
+				    <span class="menu-arrow"></span>
 				</div>
 				<div class="menu-item">
 				    <a href="settings.php">
-				        <span class="menu-item-icon icon_4"></span>系统设置</a>
-				        <span class="menu-arrow"></span>
-				    </a>
+				        <span class="menu-item-icon icon_4"></span>系统设置
+					</a>
+				    <span class="menu-arrow"></span>
 				</div>
 				<div class="menu-item">
 				    <a href="upload_cache.php">
-				        <span class="menu-item-icon icon_5"></span>其他</a>
-				        <span class="menu-arrow"></span>
-				    </a>
+				        <span class="menu-item-icon icon_5"></span>其他
+					</a>
+				    <span class="menu-arrow"></span>
 				</div>
 		    </div>
 			<form action="logout.php" method="post">
 			    <button class="logout-button">退出登录</button>
 			</form>
 	      </div>
-	</div>
 </body>
 <script>
     // 页面加载完成后延迟2秒开始滚动

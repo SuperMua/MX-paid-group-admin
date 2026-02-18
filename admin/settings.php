@@ -2,7 +2,7 @@
 require_once 'login_check.php';  //验证是否登陆
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,7 +73,7 @@ require_once 'login_check.php';  //验证是否登陆
 						<span class="menu-title">模版设置</span>
 						<span class="menu-desc">配置前台模板、预览链接与二维码素材</span>
 					</a>
-				    <span class="menu-arrow" icon_8></span>
+				    <span class="menu-arrow"></span>
 				</div>
 				<div class="menu-item">
 				    <a href="settings_frontend.php">
@@ -109,5 +109,6 @@ require_once 'login_check.php';  //验证是否登陆
 				</div>
 				
 		    </div>
+	</div>
 </body>
 </html>
