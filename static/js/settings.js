@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     loadSettings();
+    bindSettingsBlocks();
 
     bindImagePreview("group_avatar", "group_avatar_preview");
     bindImagePreview("customer_service_image", "customer_service_image_preview");
@@ -103,6 +104,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+function bindSettingsBlocks() {
+    var toggles = document.querySelectorAll("[data-toggle-block]");
+    if (!toggles.length) {
+        return;
+    }
+
+    toggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function () {
+            var block = this.closest("[data-block]");
+            if (!block) {
+                return;
+            }
+            var collapsed = block.classList.toggle("is-collapsed");
+            this.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        });
+    });
+}
 
 function bindImagePreview(inputId, previewId) {
     var input = document.getElementById(inputId);
