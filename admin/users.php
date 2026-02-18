@@ -35,7 +35,8 @@ if ($result) {
     // 返回待审核的不同IP地址的数量
     // echo $unreviewedCount;
 } else {
-    echo "查询失败: " . $conn->error;
+    $unreviewedCount = 0;
+    error_log('admin/users.php 查询待审核数量失败: ' . $conn->error);
 }
 
 // 关闭数据库连接
@@ -43,41 +44,77 @@ $conn->close();
 
 // 定义API接口地址
 $apiUrl = "https://api.ahfi.cn/api/getGreetingMessage?type=json";
-// 使用cURL发起请求
-function getGreetingMessage($url) {
-    $ch = curl_init(); // 初始化cURL
-    curl_setopt($ch, CURLOPT_URL, $url); // 设置请求的URL
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 将返回的数据作为字符串返回
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 设置超时时间
 
-    $response = curl_exec($ch); // 执行cURL请求
-    if (curl_errno($ch)) {
-        // 如果请求失败，返回错误信息
-        return array('error' => '请求失败：' . curl_error($ch));
+// 生成本地问候语，避免外部接口异常直接暴露到页面。
+function buildLocalGreetingMessage() {
+    date_default_timezone_set('Asia/Shanghai');
+    $hour = (int) date('H');
+    if ($hour >= 6 && $hour < 12) {
+        $greeting = '早上好';
+    } elseif ($hour >= 12 && $hour < 18) {
+        $greeting = '下午好';
+    } elseif ($hour >= 18 && $hour < 23) {
+        $greeting = '晚上好';
+    } else {
+        $greeting = '夜深了';
     }
-    curl_close($ch); // 关闭cURL
 
-    // 解析返回的JSON数据
-    return json_decode($response, true);
+    $tips = array(
+        '建议先处理待审核任务，再巡检支付与模板配置。',
+        '今日重点：关注新增访客与支付转化率变化。',
+        '保持配置与素材一致，可减少用户进群阻塞。',
+        '建议每晚备份一次数据库，确保运营数据安全。'
+    );
+
+    return array(
+        'greeting' => $greeting,
+        'tip' => $tips[array_rand($tips)],
+        'currentTime' => date('Y-m-d H:i:s')
+    );
 }
 
-// 调用函数获取问候语
-$result = getGreetingMessage($apiUrl);
+// 使用cURL发起请求并做容错，失败时回退本地问候语。
+function getGreetingMessage($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-// 检查返回结果
-if (isset($result['error'])) {
-    // 如果有错误，显示错误信息
-    echo "错误：" . $result['error'];
-} else {
-    // 提取问候语和提示信息
-    $greeting = $result['data']['greeting'];
-    $warmWords = $result['data']['tip'];
-    $currentTime = $result['data']['currentTime'];
+    $response = curl_exec($ch);
+    if ($response === false) {
+        error_log('admin/users.php 问候语接口请求失败: ' . curl_error($ch));
+        curl_close($ch);
+        return buildLocalGreetingMessage();
+    }
+    curl_close($ch);
 
-    // 显示问候语和提示信息
-    //echo "当前时间：" . $currentTime . "<br>";
-    //echo "问候语：" . $greeting . "<br>";
-    //echo "提示信息：" . $warmWords . "<br>";
+    $decoded = json_decode($response, true);
+    if (!is_array($decoded) || !isset($decoded['data']) || !is_array($decoded['data'])) {
+        error_log('admin/users.php 问候语接口返回格式异常');
+        return buildLocalGreetingMessage();
+    }
+
+    $greeting = trim((string)($decoded['data']['greeting'] ?? ''));
+    $tip = trim((string)($decoded['data']['tip'] ?? ''));
+    $currentTime = trim((string)($decoded['data']['currentTime'] ?? ''));
+
+    if ($greeting === '' || $tip === '') {
+        return buildLocalGreetingMessage();
+    }
+
+    return array(
+        'greeting' => $greeting,
+        'tip' => $tip,
+        'currentTime' => $currentTime === '' ? date('Y-m-d H:i:s') : $currentTime
+    );
 }
+
+$greetingData = getGreetingMessage($apiUrl);
+$greeting = $greetingData['greeting'];
+$warmWords = $greetingData['tip'];
+$currentTime = $greetingData['currentTime'];
 
 ?>
