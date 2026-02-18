@@ -6,58 +6,64 @@ require_once '../config/config.php';
  $totalApproved = 0;
  $totalPending = 0;
  $totalRejected = 0;
+ $invalidIp = false;
+ $success = false;
+ $error = false;
+ $ip_address = '';
+ $result = null;
 try {
     
  
     // 判断当前页面 
     if (basename($_SERVER['PHP_SELF']) == 'review_details.php')  {
         // 处理详情页逻辑 
-        $ip_address = $_GET['ip'] ?? '';
-        
+        $ip_address = trim($_GET['ip'] ?? '');
+        $success = isset($_GET['success']) && $_GET['success'] === '1';
+        $error = isset($_GET['error']) && $_GET['error'] === '1';
+
         if (empty($ip_address) || !filter_var($ip_address, FILTER_VALIDATE_IP)) {
-            die("无效的 IP 地址");
+            $invalidIp = true;
         }
- 
-        $action = isset($_GET['action']) ? $_GET['action'] : null;
-        $image_id = isset($_GET['image_id']) ? intval($_GET['image_id']) : null;
- 
-        if ($action && $image_id) {
-            $status = $action === 'approve' ? 'approved' : 'rejected';
-            $sql = "UPDATE images SET status = ? WHERE id = ?";
+
+        if (!$invalidIp) {
+            $action = $_GET['action'] ?? null;
+            $image_id = isset($_GET['image_id']) ? intval($_GET['image_id']) : null;
+
+            if (in_array($action, array('approve', 'reject'), true) && $image_id) {
+                $status = $action === 'approve' ? 'approved' : 'rejected';
+                $sql = "UPDATE images SET status = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                
+                if (!$stmt) {
+                    throw new Exception("Prepare failed: " . $conn->error);
+                }
+    
+                if (!$stmt->bind_param("si", $status, $image_id)) {
+                    throw new Exception("Binding parameters failed: " . $stmt->error);
+                }
+    
+                if (!$stmt->execute()) {
+                    throw new Exception("Execute failed: " . $stmt->error);
+                }
+    
+                header("Location: review_details.php?ip="  . urlencode($ip_address) . "&success=1");
+                exit;
+            }
+     
+            $sql = "SELECT id, filename, upload_time, ip_address, file_path, reviewer, status, ip_location 
+                    FROM images 
+                    WHERE ip_address = ? 
+                    ORDER BY upload_time DESC";
             $stmt = $conn->prepare($sql);
             
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
- 
-            if (!$stmt->bind_param("si", $status, $image_id)) {
-                throw new Exception("Binding parameters failed: " . $stmt->error);
-            }
- 
-            if (!$stmt->execute()) {
-                throw new Exception("Execute failed: " . $stmt->error);
-            }
- 
-            header("Location: review_details.php?ip="  . urlencode($ip_address) . "&success=1");
-            exit;
+     
+            $stmt->bind_param("s", $ip_address);
+            $stmt->execute();
+            $result = $stmt->get_result();
         }
- 
-        $sql = "SELECT id, filename, upload_time, ip_address, file_path, reviewer, status, ip_location 
-                FROM images 
-                WHERE ip_address = ? 
-                ORDER BY upload_time DESC";
-        $stmt = $conn->prepare($sql);
-        
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
- 
-        $stmt->bind_param("s", $ip_address);
-        $stmt->execute();
-        $result = $stmt->get_result();
- 
-        $success = isset($_GET['success']) && $_GET['success'] === '1';
-        $error = isset($_GET['error']) && $_GET['error'] === '1';
     } else {
         // 处理列表页逻辑 
         // 分页相关参数 
@@ -156,10 +162,16 @@ if (isset($_POST['clear_all'])) {
     } else {
         echo "操作失败: " . $conn->error;
     }
+    exit;
 }
  
 // 删除单个记录逻辑 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST['action'] === 'delete_single' && !empty($_POST['id'])) {
+if (
+    $_SERVER["REQUEST_METHOD"] === "POST" &&
+    isset($_POST['action'], $_POST['id']) &&
+    $_POST['action'] === 'delete_single' &&
+    !empty($_POST['id'])
+) {
     $orderId = intval($_POST['id']);
     $sql = "DELETE FROM images WHERE id = ?";
     
@@ -179,6 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST['action'] === 'delete_single
         error_log("预处理失败: " . $conn->error);
         echo "操作失败";
     }
+    exit;
 }
 
 // 关闭数据库连接 

@@ -16,6 +16,18 @@ require_once 'review_db.php';
         .pending{
 			color: #ff4d4f;
 		}
+        .details-empty {
+            padding: 16px;
+            border: 1px solid #e9edf3;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #475467;
+            line-height: 1.8;
+        }
+        .details-empty a {
+            color: #1677ff;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -31,7 +43,12 @@ require_once 'review_db.php';
         <?php if ($error):?>
             <div class="error-message" id="errorMessage">操作失败</div>
         <?php endif;?>
-        <?php if ($result->num_rows > 0):?>
+        <?php if (!empty($invalidIp)): ?>
+            <div class="details-empty">
+                参数异常：未提供有效 IP 地址，无法加载审核详情。<br>
+                请从审核列表进入，或点击 <a href="review_list.php">返回审核列表</a>。
+            </div>
+        <?php elseif ($result && $result->num_rows > 0):?>
             <?php while ($row = $result->fetch_assoc()):?>
                 <div class="info order-details">
                     <div class="image-container">
