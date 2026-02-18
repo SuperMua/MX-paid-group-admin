@@ -76,7 +76,6 @@ require_once 'login_check.php';
 	            <a href="?page=<?php echo $page + 1; ?>">下一页</a>
 	        <?php endif; ?>
 	    </div>
-</body>
 <script>
         let isClearProcessing = false;
 
@@ -146,4 +145,5 @@ require_once 'login_check.php';
             document.getElementById("successModal").style.display = "none";
         }
     </script>
+</body>
 </html>

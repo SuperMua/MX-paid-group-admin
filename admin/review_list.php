@@ -73,7 +73,6 @@ require_once 'review_db.php';
 	    <?php endif; ?>
 	</div>
 </div>
-</body>
 <script>
         let isClearProcessing = false;
 
@@ -143,4 +142,5 @@ require_once 'review_db.php';
             document.getElementById("successModal").style.display = "none";
         }
     </script>
+</body>
 </html>

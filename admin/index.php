@@ -165,7 +165,6 @@ require_once 'query-visitors.php'; //加载数据
 			    <button class="logout-button">退出登录</button>
 			</form>
 	      </div>
-</body>
 <script>
     // 页面加载完成后延迟2秒开始滚动
     window.onload = function() {
@@ -196,5 +195,5 @@ require_once 'query-visitors.php'; //加载数据
         }
     }
 </script>
-
+</body>
 </html>
