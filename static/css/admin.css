@@ -96,6 +96,17 @@ body {
  	padding: 0px 10px 0 10px;
  }
 
+.page-intro {
+	margin: 52px 10px 8px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	border: 1px solid #e6ecf5;
+	background: #f8fafc;
+	color: #667085;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
 .stats {
 	display: flex;
 	justify-content: space-between;
@@ -149,7 +160,7 @@ body {
  }
 
  .order-djsd {
- 	margin-top: 50px;
+ 	margin-top: 8px;
  }
 
  .order-dingdan {
@@ -170,9 +181,13 @@ body {
 
  .no-data {
  	text-align: center;
- 	color: #888;
+ 	color: #667085;
  	font-size: 14px;
- 	margin-top: 20px;
+ 	margin-top: 14px;
+	padding: 18px 14px;
+	border: 1px dashed #d0d5dd;
+	border-radius: 10px;
+	background: #f8fafc;
  }
 
  .navbar {
@@ -345,23 +360,27 @@ body {
  .pagination {
  	display: flex;
  	justify-content: center;
- 	margin-top: 10px;
+ 	margin-top: 14px;
+	gap: 8px;
+	flex-wrap: wrap;
  }
 
  .pagination a {
- 	border: 1px solid #ccc;
- 	padding: 5px 10px;
- 	margin: 0 5px;
+ 	border: 1px solid #d0d5dd;
+ 	padding: 6px 12px;
  	text-decoration: none;
- 	color: #777;
- 	border-radius: 5px;
- 	transition: background-color 0.3s;
+ 	color: #475467;
+ 	border-radius: 8px;
+ 	transition: all 0.2s ease;
  	font-size: 14px;
- 	margin-bottom: 30px;
+ 	margin-bottom: 20px;
+	background: #fff;
  }
 
  .pagination a:hover {
- 	background-color: #f0f0f0;
+ 	background-color: #edf4ff;
+	border-color: #bfd6ff;
+	color: #1d39c4;
  }
 
 
@@ -454,21 +473,23 @@ body {
 
 
  /* 悬浮删除按钮*/
- .more-button {
- 	position: fixed;
- 	right: 5px;
- 	bottom: 20%;
- 	width: 40px;
- 	height: 40px;
- 	background-color: rgba(128, 128, 128, 0.4);
- 	border-radius: 50%;
- 	border: none;
- 	padding: 0;
- 	overflow: hidden;
- 	z-index: 9999;
- 	display: flex;
- 	justify-content: center;
- 	align-items: center;
+.more-button {
+	position: fixed;
+	right: 5px;
+	bottom: 20%;
+	width: 40px;
+	height: 40px;
+	background: linear-gradient(135deg, rgba(22, 119, 255, 0.88), rgba(82, 156, 255, 0.88));
+	border-radius: 50%;
+	border: none;
+	padding: 0;
+	overflow: hidden;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 8px 20px rgba(22, 119, 255, 0.28);
+	cursor: pointer;
  }
 
  .more-button img {
@@ -625,6 +646,12 @@ body {
 
 	.main {
 		padding: 0 0 24px !important;
+	}
+
+	.page-intro {
+		width: min(var(--admin-max-width), calc(100% - 64px));
+		margin: 70px auto 10px;
+		padding: 12px 14px;
 	}
 
 	.navbar {

@@ -17,6 +17,7 @@ require_once 'login_check.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <div class="title">订单详情</div>
     </div>
+    <p class="page-intro">展示全量订单支付情况。删除操作不可恢复，请在导出或核对后执行。</p>
     <div class="statistics order-djsd">
         <p>总订单：<span class="order-dingdan"><?php echo $countRow['total_orders']; ?></span></p>
         <p>已支付：<span class="order-dingdan"><?php echo $countRow['paid_orders']; ?></span></p>

@@ -17,6 +17,7 @@ require_once 'login_check.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <div class="title">访客记录</div>
     </div>
+   <p class="page-intro">用于观察访问来源和行为轨迹。建议按周期归档后再清空，避免影响运营复盘。</p>
    <button class="more-button" onclick="showConfirmModal()" title="清空访客记录">
         <img src="../result/images/shanchu.png" alt="">
    </button>

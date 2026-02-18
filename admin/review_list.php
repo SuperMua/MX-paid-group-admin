@@ -18,7 +18,7 @@ require_once 'review_db.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <p class="title">审核列表</p>
     </div>
-	<div class="main" style="margin-top: 50px;"></div>
+	<p class="page-intro">按 IP 聚合展示待审与已审记录，进入详情后可进行单条通过/驳回和删除操作。</p>
 	<div class="statistics1 order-details">
 	    <p>已审核：<span class="order-dingdan"><?php echo $totalApproved;?></span></p>
 	    <p>待审核：<span class="order-dingdan"><?php echo $totalPending;?></span></p>
