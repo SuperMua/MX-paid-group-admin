@@ -17,18 +17,18 @@ require_once 'login_check.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <div class="title">访客记录</div>
     </div>
-   <button class="more-button" onclick="showConfirmModal()">
+   <button class="more-button" onclick="showConfirmModal()" title="清空访客记录">
         <img src="../result/images/shanchu.png" alt="">
    </button>
    
    <!-- 弹窗1 -->
-       <div id="confirmModal" class="custom-modal">
-           <div class="modal-content">
-               <p>是否清空全部记录？</p>
-               <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
+           <div id="confirmModal" class="custom-modal">
+               <div class="modal-content">
+                   <p>是否清空全部访客记录？</p>
+                   <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
 			   <button class="modal-button confirm" onclick="clearAllRecords()">确认</button>
+               </div>
            </div>
-       </div>
    
        <!-- 弹窗2 -->
        <div id="successModal" class="custom-modal">
@@ -115,6 +115,7 @@ require_once 'login_check.php';
             })
             .catch(error => {
                 console.error("Error:", error);
+                alert("网络异常，请稍后重试");
             });
         }
 
@@ -124,4 +125,3 @@ require_once 'login_check.php';
         }
     </script>
 </html>
-

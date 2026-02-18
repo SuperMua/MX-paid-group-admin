@@ -68,7 +68,7 @@ require_once 'review_db.php';
         <div class="modal-content">
             <p>是否删除记录？</p>
             <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
-			<button class="modal-button confirm" onclick="deleteSingleRecord()">确认</button>
+			<button class="modal-button confirm">确认</button>
         </div>
     </div>
 
@@ -125,8 +125,8 @@ require_once 'review_db.php';
             }
         }
     
-        // 显示确认弹窗并传递当前记录的ID 
-        function showConfirmModal(actionType, id, location) {
+        // 显示确认弹窗并传递当前记录的ID
+        function showConfirmModal(id) {
             document.getElementById("confirmModal").dataset.currentId = id;  // 存储当前操作的ID 
             document.getElementById("confirmModal").style.display = "flex";
             document.getElementById("confirmModal").style.justifyContent = "center";
@@ -139,20 +139,24 @@ require_once 'review_db.php';
             document.querySelectorAll('.info-conuiejk').forEach(button => {
                 button.addEventListener('click', function(e) {
                     const id = this.dataset.id;
-                    showConfirmModal('delete_single', id);
+                    showConfirmModal(id);
                 });
             });
     
             // 绑定模态框确认按钮事件 
             document.querySelector('#confirmModal .confirm').addEventListener('click', function() {
                 const id = document.getElementById("confirmModal").dataset.currentId; 
-                if(id) deleteSingleRecord(id);
                 closeConfirmModal();
+                if(id) deleteSingleRecord(id);
             });
         });
     
         // 执行删除操作
         function deleteSingleRecord(id) {
+            if (!id) {
+                alert("未获取到要删除的记录编号，请刷新后重试");
+                return;
+            }
             fetch("review_db.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -171,10 +175,13 @@ require_once 'review_db.php';
                         location.reload();  // 刷新页面 
                     }, 2000);
                 } else {
-                    console.error("操作失败:", cleanData);
+                    alert("删除失败: " + cleanData);
                 }
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => {
+                console.error("Error:", error);
+                alert("网络异常，请稍后重试");
+            });
         }
     
         // 关闭弹窗函数 

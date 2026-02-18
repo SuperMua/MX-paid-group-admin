@@ -24,14 +24,14 @@ require_once 'review_db.php';
 	    <p>待审核：<span class="order-dingdan"><?php echo $totalPending;?></span></p>
 		<p>未通过‌：<span class="order-dingdan"><?php echo $totalRejected;?></span></p>
 	</div>
-	<button class="more-button" onclick="showConfirmModal()">
+	<button class="more-button" onclick="showConfirmModal()" title="清空审核记录">
 	        <img src="../result/images/shanchu.png" alt="">
 	   </button>
 	   
 	   <!-- 弹窗1 -->
 	       <div id="confirmModal" class="custom-modal">
 	           <div class="modal-content">
-	               <p>是否清空全部记录？</p>
+	               <p>是否清空全部审核记录？</p>
 	               <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
 				   <button class="modal-button confirm" onclick="clearAllRecords()">确认</button>
 	           </div>
@@ -113,6 +113,7 @@ require_once 'review_db.php';
             })
             .catch(error => {
                 console.error("Error:", error);
+                alert("网络异常，请稍后重试");
             });
         }
 

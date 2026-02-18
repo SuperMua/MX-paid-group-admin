@@ -22,7 +22,7 @@ require_once 'login_check.php';
         <p>已支付：<span class="order-dingdan"><?php echo $countRow['paid_orders']; ?></span></p>
         <p>未支付：<span class="order-dingdan"><?php echo $countRow['unpaid_orders']; ?></span></p>
     </div>
-	<button class="more-button" onclick="showConfirmModal('delete_all')">
+	<button class="more-button" onclick="showConfirmModal('delete_all')" title="清空订单记录">
 	     <img src="../result/images/shanchu.png" alt="">
 	</button>
 
@@ -36,7 +36,7 @@ require_once 'login_check.php';
                     <div class="order_kls">
                         <div class="order-hrsk">
                             <span class="info-conpih">订单号：<?php echo $order['order_number']; ?></span>
-							<span class="info-conuie" onclick="showConfirmModal('delete_single', <?php echo intval($order['id']); ?>, '<?php echo htmlspecialchars($order['order_number']); ?>')">
+							<span class="info-conuie" onclick='showConfirmModal("delete_single", <?php echo intval($order['id']); ?>, <?php echo json_encode((string)$order['order_number'], JSON_UNESCAPED_UNICODE); ?>)'>
 							   <img src="../result/images/x.png" alt="">
 							</span>
                         </div>
@@ -134,6 +134,9 @@ require_once 'login_check.php';
                     requestBody = `action=delete_single&order_id=${orderId}`;
                 } else if (actionType === 'delete_all') {
                     requestBody = "action=delete_all";
+                } else {
+                    alert("未知操作类型，请刷新后重试");
+                    return;
                 }
     
                 fetch("order-backend.php", {
@@ -159,6 +162,7 @@ require_once 'login_check.php';
                 })
                 .catch(error => {
                     console.error("Error:", error);
+                    alert("网络异常，请稍后重试");
                 });
             }
         </script>
