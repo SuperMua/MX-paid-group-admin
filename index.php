@@ -11,11 +11,22 @@
 /* 联系方式邮箱：516615710@qq.com                                                          */
 /******************************************************************************************/
 
-if (strpos($_SERVER['REQUEST_URI'], '/admin') === 0) {
-    header('Location: admin/index.php');
-    exit;
-} else {
-    header('Location: result/error.html');
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$normalizedPath = rtrim($requestPath, '/');
+
+if ($normalizedPath === '/admin') {
+    header('Location: /admin/index.php');
     exit;
 }
+
+if ($normalizedPath === '' || $normalizedPath === '/index.php') {
+    $template = strtolower(trim((string)($_GET['template'] ?? $_GET['tpl'] ?? 'v1')));
+    $isTemplateV2 = in_array($template, ['2', 'v2', 'home_v2'], true);
+    $homePage = $isTemplateV2 ? '/public/home_v2.php' : '/public/home_v1.php';
+    header('Location: ' . $homePage);
+    exit;
+}
+
+header('Location: /result/error.html');
+exit;
 ?>
