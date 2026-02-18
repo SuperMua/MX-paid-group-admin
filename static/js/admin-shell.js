@@ -43,6 +43,29 @@
         return active;
     }
 
+    function refreshActiveState() {
+        var activeRoute = detectActiveRoute();
+        var isSettingsActive = activeRoute === 'settings' || String(activeRoute).indexOf('settings_') === 0;
+
+        Array.prototype.forEach.call(document.querySelectorAll('.admin-shell-link'), function (link) {
+            var key = link.getAttribute('data-route-key') || '';
+            if (key && (key === activeRoute || (key === 'settings' && isSettingsActive))) {
+                link.classList.add('is-active');
+            } else {
+                link.classList.remove('is-active');
+            }
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.admin-shell-sublink'), function (link) {
+            var key = link.getAttribute('data-route-key') || '';
+            if (key && key === activeRoute) {
+                link.classList.add('is-active');
+            } else {
+                link.classList.remove('is-active');
+            }
+        });
+    }
+
     function ensureFavicon(path) {
         if (!path) {
             return;
@@ -55,6 +78,11 @@
         }
         link.href = path + (path.indexOf('?') === -1 ? '?v=' : '&v=') + Date.now();
     }
+
+    var shellNavigationState = {
+        isRouting: false,
+        controller: null
+    };
 
     function getBadgeText(name) {
         var plain = (name || '后台').replace(/\s+/g, '');
@@ -130,6 +158,7 @@
         menus.forEach(function (menu) {
             var link = document.createElement('a');
             link.className = 'admin-shell-link';
+            link.setAttribute('data-route-key', menu.key);
             if (menu.key === activeRoute || (menu.key === 'settings' && String(activeRoute).indexOf('settings_') === 0)) {
                 link.classList.add('is-active');
             }
@@ -139,14 +168,12 @@
 
             if (menu.children && menu.children.length) {
                 var sub = document.createElement('div');
-                sub.className = 'admin-shell-subnav';
-                if (menu.key === activeRoute || String(activeRoute).indexOf('settings_') === 0) {
-                    sub.classList.add('is-open');
-                }
+                sub.className = 'admin-shell-subnav is-open';
 
                 menu.children.forEach(function (child) {
                     var childLink = document.createElement('a');
                     childLink.className = 'admin-shell-sublink';
+                    childLink.setAttribute('data-route-key', child.key);
                     if (child.key === activeRoute) {
                         childLink.classList.add('is-active');
                     }
@@ -185,6 +212,165 @@
         document.body.classList.add('admin-shell-enabled');
     }
 
+    function executeScripts(container) {
+        var scripts = container.querySelectorAll('script');
+        Array.prototype.forEach.call(scripts, function (oldScript) {
+            var src = oldScript.getAttribute('src') || '';
+            if (src.indexOf('admin-shell.js') !== -1) {
+                oldScript.parentNode.removeChild(oldScript);
+                return;
+            }
+
+            var newScript = document.createElement('script');
+            Array.prototype.forEach.call(oldScript.attributes, function (attr) {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+            if (!src) {
+                newScript.textContent = oldScript.textContent;
+            }
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        if (typeof window.onload === 'function') {
+            try {
+                window.onload();
+            } catch (error) {
+                console.warn('admin-shell onload call failed:', error);
+            }
+        }
+    }
+
+    function renderFetchedPage(htmlText, targetUrl) {
+        var parser = new DOMParser();
+        var parsedDoc = parser.parseFromString(htmlText, 'text/html');
+        var parsedPath = (new URL(targetUrl, window.location.origin)).pathname.toLowerCase();
+
+        if (parsedPath.indexOf('/admin/login.php') !== -1) {
+            window.location.href = targetUrl;
+            return false;
+        }
+
+        var content = document.querySelector('.admin-shell-content');
+        if (!content || !parsedDoc.body) {
+            window.location.href = targetUrl;
+            return false;
+        }
+
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = parsedDoc.body.innerHTML;
+
+        Array.prototype.forEach.call(wrapper.querySelectorAll('script[src*="admin-shell.js"]'), function (script) {
+            script.parentNode.removeChild(script);
+        });
+
+        content.innerHTML = wrapper.innerHTML;
+        executeScripts(content);
+
+        if (parsedDoc.title) {
+            document.title = parsedDoc.title;
+        }
+
+        currentPath = parsedPath;
+        refreshActiveState();
+        window.scrollTo(0, 0);
+        window.dispatchEvent(new CustomEvent('admin-shell:page-loaded', {
+            detail: { url: targetUrl }
+        }));
+        return true;
+    }
+
+    function navigateWithShell(targetUrl, options) {
+        var config = options || {};
+        if (shellNavigationState.isRouting) {
+            if (shellNavigationState.controller && typeof shellNavigationState.controller.abort === 'function') {
+                shellNavigationState.controller.abort();
+            } else {
+                return;
+            }
+        }
+
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        shellNavigationState.controller = controller;
+        shellNavigationState.isRouting = true;
+        document.body.classList.add('admin-shell-routing');
+
+        fetch(targetUrl, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'AdminShell'
+            },
+            signal: controller ? controller.signal : undefined
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('请求失败');
+                }
+                return Promise.all([response.text(), response.url || targetUrl]);
+            })
+            .then(function (payload) {
+                var htmlText = payload[0];
+                var finalUrl = payload[1];
+                var success = renderFetchedPage(htmlText, finalUrl);
+                if (!success || config.fromPopState) {
+                    return;
+                }
+
+                if (config.replaceState) {
+                    window.history.replaceState({ shell: true }, '', finalUrl);
+                } else {
+                    window.history.pushState({ shell: true }, '', finalUrl);
+                }
+            })
+            .catch(function (error) {
+                if (error && error.name === 'AbortError') {
+                    return;
+                }
+                window.location.href = targetUrl;
+            })
+            .finally(function () {
+                shellNavigationState.isRouting = false;
+                shellNavigationState.controller = null;
+                document.body.classList.remove('admin-shell-routing');
+            });
+    }
+
+    function bindShellNavigation() {
+        document.addEventListener('click', function (event) {
+            var link = event.target.closest('.admin-shell-link, .admin-shell-sublink, .admin-shell-brand');
+            if (!link) {
+                return;
+            }
+            if (!link.closest('.admin-shell-sidebar')) {
+                return;
+            }
+
+            var href = link.getAttribute('href') || '';
+            if (!href || href.indexOf('logout.php') !== -1 || href.indexOf('javascript:') === 0 || href.indexOf('#') === 0) {
+                return;
+            }
+
+            if (event.button !== 0) {
+                return;
+            }
+
+            if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) {
+                return;
+            }
+
+            event.preventDefault();
+            var targetUrl = new URL(href, window.location.href).toString();
+            if (targetUrl === window.location.href) {
+                return;
+            }
+            navigateWithShell(targetUrl, { replaceState: false });
+        });
+
+        window.addEventListener('popstate', function () {
+            navigateWithShell(window.location.href, { fromPopState: true });
+        });
+    }
+
     function initShell() {
         fetch('brand_settings_api.php', { credentials: 'same-origin' })
             .then(function (response) {
@@ -194,9 +380,15 @@
                 var data = payload && payload.success ? payload.data : {};
                 ensureFavicon(data && data.favicon_path ? data.favicon_path : '');
                 buildShell(data || {});
+                refreshActiveState();
+                window.history.replaceState({ shell: true }, '', window.location.href);
+                bindShellNavigation();
             })
             .catch(function () {
                 buildShell({});
+                refreshActiveState();
+                window.history.replaceState({ shell: true }, '', window.location.href);
+                bindShellNavigation();
             });
     }
 
