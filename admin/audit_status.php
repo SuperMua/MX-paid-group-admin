@@ -29,6 +29,29 @@ require_once 'login_check.php';
 			width: 90%;
         }
 
+       .settings-intro {
+            margin: 0 0 14px;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+       .audit-switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 14px;
+            border: 1px solid #e9edf3;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+       .switch-text {
+            font-size: 14px;
+            color: #344054;
+        }
+
        .switch {
             position: relative;
             display: inline-block;
@@ -83,12 +106,32 @@ require_once 'login_check.php';
         }
 
         #statusText {
-            margin-top: 20px;
+            margin-top: 14px;
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            border: 1px solid #d0d5dd;
+            background: #f2f4f7;
+            color: #475467;
+        }
+
+        #statusText.status-on {
+            border-color: #b7eb8f;
+            background: #f6ffed;
+            color: #389e0d;
+        }
+
+        #statusText.status-off {
+            border-color: #ffd8bf;
+            background: #fff7e6;
+            color: #d46b08;
         }
 		.statusfxts{
-			font-size: 14px;
-			color: #ccc;
-			margin-top: 20px;
+			font-size: 13px;
+			color: #98a2b3;
+			margin-top: 14px;
+            line-height: 1.7;
 		}
 
 		@media (min-width: 992px) {
@@ -108,16 +151,25 @@ require_once 'login_check.php';
     </div>
     <div class="container">
         <h4>开启自动审核</h4>
-        <label class="switch">
-            <input type="checkbox" id="toggleSwitch" <?php echo $isAutoAuditEnabled? 'checked' : ''; ?>>
-            <span class="slider"></span>
-        </label>
+        <p class="settings-intro">开启后系统将自动审核提交内容，请谨慎评估业务风险并定期抽检审核结果。</p>
+        <div class="audit-switch-row">
+            <span class="switch-text">自动审核开关</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch" <?php echo $isAutoAuditEnabled? 'checked' : ''; ?>>
+                <span class="slider"></span>
+            </label>
+        </div>
         <div id="statusText"><?php echo $isAutoAuditEnabled? '自动审核已开启' : '自动审核已关闭'; ?></div>
-		<div class="statusfxts">注意:开启自动审核,系统并不会识别内容,请自行承担风险</div>
+		<div class="statusfxts">注意：自动审核不会理解图文语义，建议仅用于低风险场景，并配合人工抽检机制。</div>
     </div>
     <script>
         const toggleSwitch = document.getElementById('toggleSwitch');
         const statusText = document.getElementById('statusText');
+
+        function syncStatusClass(isEnabled) {
+            statusText.classList.toggle('status-on', isEnabled);
+            statusText.classList.toggle('status-off', !isEnabled);
+        }
 
         function toggleAutoAudit() {
             const newStatus = toggleSwitch.checked? 1 : 0;
@@ -129,16 +181,19 @@ require_once 'login_check.php';
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         statusText.textContent = newStatus? '自动审核已开启': '自动审核已关闭';
+                        syncStatusClass(newStatus === 1);
                     } else {
                         console.error('更新状态失败:', response.message);
                         // 恢复开关状态
                         toggleSwitch.checked =!toggleSwitch.checked;
+                        syncStatusClass(toggleSwitch.checked);
                     }
                 }
             };
             xhr.send('status=' + newStatus);
         }
 
+        syncStatusClass(toggleSwitch.checked);
         toggleSwitch.addEventListener('change', toggleAutoAudit);
     </script>
 </body>

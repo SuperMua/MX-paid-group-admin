@@ -10,7 +10,41 @@ require_once 'login_check.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/admin.css">
     <title>清理缓存</title>
-    <style>	
+    <style>
+        .cache-intro {
+            font-size: 13px;
+            color: #667085;
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        .cache-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid #e9edf3;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8fafc;
+            font-size: 14px;
+            color: #475467;
+        }
+
+        .cache-stat strong {
+            color: #101828;
+        }
+
+        .cache-path {
+            display: inline-block;
+            margin: 6px 0 4px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #eef4ff;
+            border: 1px solid #d6e4ff;
+            color: #1d39c4;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -21,9 +55,9 @@ require_once 'login_check.php';
     <!-- 弹窗1 -->
     <div id="confirmModal" class="custom-modal">
         <div class="modal-content">
-            <p>是否清空全部记录？</p>
+            <p>确认清空 upload 目录内的待审图片吗？</p>
             <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
-            <button class="modal-button confirm" onclick="clearAllRecords()">确认</button>
+            <button class="modal-button confirm" onclick="clearAllRecords()">立即清理</button>
         </div>
     </div>
 
@@ -37,12 +71,20 @@ require_once 'login_check.php';
 
     <div class="main" style="margin-top: 50px;">
 		<div id="imageInfo" class="imageInfo">
-		    <p class="qctx">清空 ../upload 文件夹以释放存储空间</p>
-		    <p class="tpdx">图片数量: <span id="imageCount">加载中...</span><span> 张</span></p>
-		    <p class="tpdx">图片总大小: <span id="imageSize">加载中...</span></p>
-			<p class="tpdx-py">注意<br>1:此文件夹用于存储待审核的图片，清空后文件将无法恢复，请谨慎操作;<br>2:在清空文件夹之前，请确保所有图片已完成审核操作。</p>
+		    <p class="qctx">缓存清理会永久删除待审核图片，请在确认业务已完成后再执行。</p>
+            <span class="cache-path">目标目录：../upload</span>
+            <p class="cache-intro">建议先完成审核与归档，再执行清理操作，避免误删后无法恢复。</p>
+		    <div class="cache-stat">
+                <span>当前图片数量</span>
+                <strong><span id="imageCount">加载中...</span> 张</strong>
+            </div>
+            <div class="cache-stat">
+                <span>当前占用空间</span>
+                <strong><span id="imageSize">加载中...</span></strong>
+            </div>
+			<p class="tpdx-py">注意：清理后文件不可恢复；如有争议订单，请先完成审核再操作。</p>
 			<div class="button-containerhk">
-			    <button class="button-qc" onclick="showConfirmModal()">确认清空</button>
+			    <button class="button-qc" onclick="showConfirmModal()">立即清理缓存</button>
 			</div>
 		</div>
 	</div>
@@ -63,6 +105,7 @@ require_once 'login_check.php';
             })
            .catch(error => {
                 console.error("Error:", error);
+                alert("加载缓存信息失败，请稍后重试");
             });
         };
 
@@ -104,6 +147,7 @@ require_once 'login_check.php';
             })
            .catch(error => {
                 console.error("Error:", error);
+                alert("清理失败，请稍后重试");
             });
         }
 
