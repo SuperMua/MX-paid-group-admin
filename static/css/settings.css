@@ -190,17 +190,19 @@ body {
 
 .image-item button {
   position: absolute;
-  top: 4px;
-  right: -6px;
+  top: 6px;
+  right: 6px;
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 999px;
   cursor: pointer;
-  width: 22px;
-  height: 22px;
+  min-width: 44px;
+  height: 24px;
+  padding: 0 10px;
   font-size: 12px;
-  line-height: 1;
+  line-height: 24px;
+  font-weight: 700;
 }
 
 .button-container {
@@ -238,7 +240,7 @@ body {
   background-color: rgba(41, 32, 92, 0.78);
   color: #fff;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 999px;
   z-index: 1000;
 }
 

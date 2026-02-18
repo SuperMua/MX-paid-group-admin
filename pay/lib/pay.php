@@ -2,8 +2,23 @@
 require_once("epay.config.php");
 require_once("EpayCore.class.php");
 require_once 'api.config.php';
-//彩虹易支付配置
-//支付接口地址
+
+// 支付网关地址标准化，避免因为漏协议或漏斜杠导致 submit.php 打不开。
+$baseUrl = trim((string)($baseUrl ?? ''));
+if ($baseUrl !== '' && !preg_match('#^https?://#i', $baseUrl)) {
+    $baseUrl = 'https://' . $baseUrl;
+}
+$baseUrl = $baseUrl === '' ? '' : rtrim($baseUrl, '/') . '/';
+
+if ($baseUrl === '') {
+    exit('<script>alert("支付网关地址未配置，请先在后台支付设置中填写。");history.back();</script>');
+}
+
+if (trim((string)($merchantId ?? '')) === '' || trim((string)($secreKey ?? '')) === '') {
+    exit('<script>alert("商户ID或商户密钥未配置，请先在后台支付设置中完善。");history.back();</script>');
+}
+
+// 彩虹易支付配置
 $epay_config['apiurl'] = $baseUrl;
 
 //商户ID
@@ -19,11 +34,19 @@ $path_notify = "/pay/notify_url.php";
 $path_return = "/pay/return_url.php";
 
 
-$notify_url = $callbackUrl . $path_notify;
+$callbackBase = trim((string)($callbackUrl ?? ''));
+if ($callbackBase === '') {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $callbackBase = $host !== '' ? $scheme . '://' . $host : '';
+}
+$callbackBase = rtrim($callbackBase, '/');
+
+$notify_url = $callbackBase . $path_notify;
 //需http://格式的完整路径，不能加?id=123这类自定义参数 网址/pay/notify_url.php
 
 //页面跳转同步通知页面路径
-$return_url =$callbackUrl . $path_return;
+$return_url = $callbackBase . $path_return;
 //需http://格式的完整路径，不能加?id=123这类自定义参数 网址/pay/return_url.php
 
 //商户订单号

@@ -551,9 +551,13 @@ $conn->close();
     <span id="toastMessage"></span>
 </div>
 <script>
-   // 确保DOM完全加载后执行
-   document.addEventListener('DOMContentLoaded', function() {
-       const previewButtons = document.querySelectorAll('.button.preview');
+   (function () {
+       const container = document.querySelector('.container');
+       if (!container || container.dataset.boundTemplateSettings === '1') {
+           return;
+       }
+       container.dataset.boundTemplateSettings = '1';
+
        const modalOverlay = document.getElementById('modalOverlay');
        const modalContent = document.getElementById('modalContent');
        const modalBody = document.getElementById('modalBody');
@@ -562,136 +566,123 @@ $conn->close();
        const generatedLink = document.getElementById('generatedLink');
        const copyBtn = document.getElementById('copyBtn');
        const notificationArea = document.getElementById('notificationArea');
+       const toast = document.getElementById('toast');
+
+       function showToast(message) {
+           document.getElementById('toastMessage').textContent = message;
+           toast.classList.remove('is-visible');
+           void toast.offsetWidth;
+           toast.classList.add('is-visible');
+           setTimeout(() => {
+               toast.classList.remove('is-visible');
+           }, 2000);
+       }
 
        function closePreviewModal() {
            modalOverlay.style.display = 'none';
            modalContent.style.display = 'none';
            modalBody.innerHTML = '';
        }
-   
-       previewButtons.forEach(button => {
+
+       function openPreview(versionId) {
+           const currentDomain = window.location.origin;
+           const previewPath = versionId === 'v2' ? '/public/home_v2.php' : '/public/home_v1.php';
+           const previewUrl = `${currentDomain}${previewPath}`;
+
+           modalOverlay.style.display = 'block';
+           modalContent.style.display = 'block';
+           modalBody.innerHTML = `<iframe src="${previewUrl}" style="width:100%;height:100%;border:none;"></iframe>`;
+           generatedLink.value = previewUrl;
+           linkGenerator.style.display = 'flex';
+       }
+
+       function appendCopyNotification() {
+           const notification = document.createElement('div');
+           notification.className = 'notification-message';
+           notification.textContent = '✓ 链接已复制';
+           notificationArea.innerHTML = '';
+           notificationArea.appendChild(notification);
+           setTimeout(() => notification.remove(), 2400);
+       }
+
+       document.querySelectorAll('.button.preview').forEach(button => {
            button.addEventListener('click', () => {
-               // 获取当前域名
-               const currentDomain = window.location.origin;
-               
-               // 判断是V1还是V2按钮（通过按钮文字或ID判断）
-               const isV1 = button.id.includes('v1');
-               const isV2 = button.id.includes('v2');
-               
-               // 生成对应的URL
-               let previewUrl, shareUrl;
-               if(isV1) {
-                   previewUrl = `${currentDomain}/public/home_v1.php`;
-                   shareUrl = `${currentDomain}/public/home_v1.php`;
-               } else if(isV2) {
-                   previewUrl = `${currentDomain}/public/home_v2.php`;
-                   shareUrl = `${currentDomain}/public/home_v2.php`;
-               } else {
-                   console.error('无法确定模板版本');
-                   return;
-               }
-               
-               //console.log('生成的预览URL:', previewUrl);
-               //console.log('生成的分享URL:', shareUrl);
-               
-               // 显示弹窗
-               modalOverlay.style.display = 'block';
-               modalContent.style.display = 'block';
-               
-               // 加载iframe
-               modalBody.innerHTML = `<iframe src="${previewUrl}" style="width:100%;height:100%;border:none;"></iframe>`;
-               
-               // 设置可复制的分享链接
-               generatedLink.value = shareUrl;
-               linkGenerator.style.display = 'flex';
+               const versionId = button.id.includes('v2') ? 'v2' : 'v1';
+               openPreview(versionId);
            });
        });
-   
+
        copyBtn.addEventListener('click', () => {
            const text = generatedLink.value;
-           if (!text) return;
-
-           const appendNotification = () => {
-               const notification = document.createElement('div');
-               notification.className = 'notification-message';
-               notification.textContent = '✓ 链接已复制';
-               notificationArea.innerHTML = '';
-               notificationArea.appendChild(notification);
-               setTimeout(() => notification.remove(), 2400);
-           };
+           if (!text) {
+               return;
+           }
 
            if (navigator.clipboard && navigator.clipboard.writeText) {
-               navigator.clipboard.writeText(text).then(appendNotification).catch(() => {
+               navigator.clipboard.writeText(text).then(appendCopyNotification).catch(() => {
                    generatedLink.select();
                    document.execCommand('copy');
-                   appendNotification();
+                   appendCopyNotification();
                });
-           } else {
-               generatedLink.select();
-               document.execCommand('copy');
-               appendNotification();
+               return;
            }
-       });
-   
-       closeButton.addEventListener('click', () => {
-           closePreviewModal();
-       });
-   
-       modalOverlay.addEventListener('click', () => {
-           closePreviewModal();
-       });
-   });
 
-// 文件上传处理
-document.querySelectorAll('.swap').forEach(button => {
-    button.addEventListener('click', function() {
-        const form = this.closest('form');
-        const fileInput = form.querySelector('input[type="file"]');
-        fileInput.click();
-    });
-});
+           generatedLink.select();
+           document.execCommand('copy');
+           appendCopyNotification();
+       });
 
-document.querySelectorAll('input[type="file"]').forEach(input => {
-    input.addEventListener('change', function() {
-        const form = this.closest('form');
-        const formData = new FormData(form);
-        
-        fetch('moban.php', { // 确保URL正确
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP错误 ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(res => {
-            if (res.success) {
-                const img = form.previousElementSibling.querySelector('img');
-                img.src = res.newPath + '?t=' + Date.now();
-                showToast(res.message);
-            } else {
-                alert(res.message || '操作失败');
-            }
-        })
-        .catch(err => {
-            console.error('请求失败:', err);
-            alert(`请求失败: ${err.message}`);
-        });
-    });
-});
+       closeButton.addEventListener('click', closePreviewModal);
+       modalOverlay.addEventListener('click', closePreviewModal);
 
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    document.getElementById('toastMessage').textContent = message;
-    toast.classList.remove('is-visible');
-    void toast.offsetWidth;
-    toast.classList.add('is-visible');
-    setTimeout(() => {
-        toast.classList.remove('is-visible');
-    }, 2000);
-}
+       document.querySelectorAll('.swap').forEach(button => {
+           button.addEventListener('click', function () {
+               const form = this.closest('form');
+               const fileInput = form ? form.querySelector('input[type="file"]') : null;
+               if (fileInput) {
+                   fileInput.click();
+               }
+           });
+       });
+
+       document.querySelectorAll('input[type="file"]').forEach(input => {
+           input.addEventListener('change', function () {
+               const form = this.closest('form');
+               if (!form) {
+                   return;
+               }
+
+               const formData = new FormData(form);
+               fetch('moban.php', {
+                   method: 'POST',
+                   body: formData
+               })
+                   .then(response => {
+                       if (!response.ok) {
+                           throw new Error(`HTTP错误 ${response.status}`);
+                       }
+                       return response.json();
+                   })
+                   .then(res => {
+                       if (!res.success) {
+                           alert(res.message || '操作失败');
+                           return;
+                       }
+
+                       const imageContainer = form.previousElementSibling;
+                       const image = imageContainer ? imageContainer.querySelector('img') : null;
+                       if (image) {
+                           image.src = res.newPath + '?t=' + Date.now();
+                       }
+                       showToast(res.message || '替换成功');
+                   })
+                   .catch(err => {
+                       console.error('请求失败:', err);
+                       alert(`请求失败: ${err.message}`);
+                   });
+           });
+       });
+   })();
 </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>

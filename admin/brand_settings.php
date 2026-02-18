@@ -9,56 +9,9 @@ require_once 'login_check.php';
     <title>品牌设置</title>
     <link rel="stylesheet" href="../static/css/admin.css">
     <style>
-        body {
-            margin: 0;
-            background:
-                radial-gradient(1150px 460px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
-                radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
-                #f5f7ff;
-        }
-
-        .brand-settings-card {
-            margin: 68px auto 24px;
-            width: min(980px, calc(100% - 24px));
-            background: #fff;
-            border: 1px solid rgba(83, 86, 251, 0.16);
-            border-radius: 18px;
-            box-shadow: 0 16px 32px rgba(83, 86, 251, 0.12);
-            padding: 20px 18px;
-        }
-
-        .brand-settings-title {
-            margin: 0 0 8px;
-            color: #2a3352;
-            font-size: 22px;
-        }
-
-        .brand-settings-intro {
-            margin: 0 0 18px;
-            color: #667085;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
         .brand-form-grid {
             display: grid;
-            gap: 14px;
-        }
-
-        .brand-form-item label {
-            display: block;
-            margin-bottom: 8px;
-            color: #4a567a;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .brand-form-item input[type="text"] {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #d8d6ff;
-            border-radius: 10px;
-            font-size: 14px;
+            gap: 12px;
         }
 
         .brand-upload-grid {
@@ -72,6 +25,35 @@ require_once 'login_check.php';
             border-radius: 14px;
             background: #f8f7ff;
             padding: 12px;
+        }
+
+        .brand-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            background: #fff;
+        }
+
+        .brand-preview-badge {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+        }
+
+        .brand-preview-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #344054;
         }
 
         .brand-upload-preview {
@@ -119,7 +101,7 @@ require_once 'login_check.php';
         }
 
         .brand-action-row {
-            margin-top: 18px;
+            margin-top: 12px;
             display: flex;
             justify-content: flex-end;
         }
@@ -137,39 +119,44 @@ require_once 'login_check.php';
         }
 
         .brand-toast {
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 13px;
+            line-height: 1.6;
             color: #5356fb;
-        }
-
-        @media (min-width: 992px) {
-            .brand-settings-card {
-                margin-top: 78px;
-                padding: 24px 26px;
-            }
         }
     </style>
 </head>
-<body>
+<body class="settings-pro-body">
     <div class="navbar">
         <a class="back-button left-arrow" href="settings.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
         <div class="title">品牌设置</div>
     </div>
 
-    <section class="brand-settings-card">
-        <h2 class="brand-settings-title">品牌与图标配置</h2>
-        <p class="brand-settings-intro">
+    <section class="settings-pro-shell">
+        <header class="settings-pro-header">
+            <h2 class="settings-pro-title">品牌与图标配置</h2>
+            <p class="settings-pro-subtitle">
             可自定义后台品牌名称、左侧品牌 Logo、浏览器标签页图标（Favicon）。保存后后台页面自动生效。
-        </p>
+            </p>
+        </header>
 
         <form id="brandSettingsForm">
             <div class="brand-form-grid">
-                <div class="brand-form-item">
-                    <label for="brand_name">品牌名称</label>
-                    <input type="text" id="brand_name" name="brand_name" maxlength="120" placeholder="例如：我的运营后台">
+                <div class="settings-pro-card">
+                    <h3>品牌名称</h3>
+                    <div class="settings-pro-field">
+                        <label for="brand_name">品牌名称</label>
+                        <input class="settings-pro-input" type="text" id="brand_name" name="brand_name" maxlength="120" placeholder="例如：我的运营后台">
+                    </div>
+                    <div class="brand-preview">
+                        <span class="brand-preview-badge" id="brandNameBadge">后台</span>
+                        <span class="brand-preview-name" id="brandNamePreview">付费进群系统</span>
+                    </div>
                 </div>
 
-                <div class="brand-upload-grid">
+                <div class="settings-pro-card">
+                    <h3>品牌素材</h3>
+                    <div class="brand-upload-grid">
                     <div class="brand-upload-card">
                         <div class="brand-upload-preview" id="logoPreview">
                             <span class="brand-upload-empty">暂无 Logo</span>
@@ -185,11 +172,12 @@ require_once 'login_check.php';
                         <button class="brand-file-trigger" type="button" id="faviconTrigger">上传顶部图标</button>
                         <input class="brand-file-input" type="file" id="faviconFile" name="favicon" accept=".png,.jpg,.jpeg,.webp,.svg,.ico">
                     </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="brand-action-row">
-                <button class="brand-save-btn" type="submit" id="saveButton">保存品牌配置</button>
+            <div class="settings-pro-actions">
+                <button class="settings-pro-primary" type="submit" id="saveButton">保存品牌配置</button>
             </div>
             <div class="brand-toast" id="brandToast"></div>
         </form>
@@ -204,9 +192,19 @@ require_once 'login_check.php';
         const faviconPreview = document.getElementById('faviconPreview');
         const toast = document.getElementById('brandToast');
         const saveButton = document.getElementById('saveButton');
+        const brandNamePreview = document.getElementById('brandNamePreview');
+        const brandNameBadge = document.getElementById('brandNameBadge');
+
+        function syncBrandPreview() {
+            const value = (brandNameInput.value || '').trim();
+            const finalName = value || '付费进群系统';
+            brandNamePreview.textContent = finalName;
+            brandNameBadge.textContent = finalName.replace(/\s+/g, '').slice(0, 2) || '后台';
+        }
 
         document.getElementById('logoTrigger').addEventListener('click', () => logoFileInput.click());
         document.getElementById('faviconTrigger').addEventListener('click', () => faviconFileInput.click());
+        brandNameInput.addEventListener('input', syncBrandPreview);
 
         function setPreview(container, imagePath, fallbackText) {
             container.innerHTML = '';
@@ -243,6 +241,7 @@ require_once 'login_check.php';
             brandNameInput.value = data.brand_name || '';
             setPreview(logoPreview, data.logo_path || '', '暂无 Logo');
             setPreview(faviconPreview, data.favicon_path || '', '暂无图标');
+            syncBrandPreview();
         }
 
         logoFileInput.addEventListener('change', () => previewLocalFile(logoFileInput, logoPreview, '暂无 Logo'));
@@ -279,6 +278,7 @@ require_once 'login_check.php';
                 setPreview(faviconPreview, data.favicon_path || '', '暂无图标');
                 logoFileInput.value = '';
                 faviconFileInput.value = '';
+                syncBrandPreview();
             } catch (error) {
                 toast.textContent = error.message || '请求失败，请稍后重试';
             } finally {

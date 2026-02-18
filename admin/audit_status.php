@@ -10,46 +10,14 @@ require_once 'login_check.php';
 	<link rel="stylesheet" href="../static/css/admin.css">
     <title>审核设置</title>
     <style>
-        body {
-            margin: 0;
-            background:
-                radial-gradient(980px 420px at 0% 0%, rgba(83, 86, 251, 0.15), transparent 52%),
-                radial-gradient(980px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 52%),
-                #f5f7ff;
-        }
-
-       .container {
-            width: min(1020px, calc(100% - 24px));
-            margin: 68px auto 24px;
-            border: 1px solid rgba(83, 86, 251, 0.16);
-            border-radius: 18px;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
-        }
-
-       .section-title {
-            margin: 0 0 8px;
-            color: #1f2a47;
-            font-size: 22px;
-            font-weight: 700;
-       }
-
-       .settings-intro {
-            margin: 0 0 14px;
-            color: #667085;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
        .audit-switch-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 14px;
             padding: 12px 14px;
-            border: 1px solid #e9edf3;
-            border-radius: 10px;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            border-radius: 14px;
             background: linear-gradient(135deg, #f7f8ff 0%, #f3f5ff 100%);
         }
 
@@ -134,19 +102,6 @@ require_once 'login_check.php';
             background: #fff7e6;
             color: #d46b08;
         }
-		.statusfxts {
-			font-size: 13px;
-			color: #98a2b3;
-			margin-top: 14px;
-            line-height: 1.7;
-		}
-
-        .status-board {
-            margin-top: 14px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px;
-        }
 
         .status-card {
             border: 1px solid rgba(83, 86, 251, 0.16);
@@ -167,33 +122,33 @@ require_once 'login_check.php';
             color: #98a2b3;
             line-height: 1.6;
         }
-
-		@media (min-width: 992px) {
-			.container {
-				margin-top: 78px;
-				padding: 24px 28px;
-			}
-		}
     </style>
 </head>
 
-<body>
+<body class="settings-pro-body">
     <div class="navbar">
         <a class="back-button left-arrow" href="index.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
         <div class="title">审核设置</div>
     </div>
-    <div class="container">
-        <h2 class="section-title">审核流程开关</h2>
-        <p class="settings-intro">开启后系统将自动审核提交内容，请谨慎评估业务风险并定期抽检审核结果。</p>
-        <div class="audit-switch-row">
-            <span class="switch-text">自动审核开关</span>
-            <label class="switch">
-                <input type="checkbox" id="toggleSwitch" <?php echo $isAutoAuditEnabled? 'checked' : ''; ?>>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div id="statusText"><?php echo $isAutoAuditEnabled? '自动审核已开启' : '自动审核已关闭'; ?></div>
-        <div class="status-board">
+    <main class="settings-pro-shell">
+        <header class="settings-pro-header">
+            <h2 class="settings-pro-title">审核流程开关</h2>
+            <p class="settings-pro-subtitle">开启后系统将自动审核提交内容，请谨慎评估业务风险并定期抽检结果。</p>
+        </header>
+
+        <section class="settings-pro-card">
+            <h3>自动审核状态</h3>
+            <div class="audit-switch-row">
+                <span class="switch-text">自动审核开关</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleSwitch" <?php echo $isAutoAuditEnabled? 'checked' : ''; ?>>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div id="statusText"><?php echo $isAutoAuditEnabled? '自动审核已开启' : '自动审核已关闭'; ?></div>
+        </section>
+
+        <div class="settings-status-grid">
             <div class="status-card">
                 <h4>推荐配置</h4>
                 <p>高价值订单建议关闭自动审核，或配合人工复核名单。</p>
@@ -202,9 +157,12 @@ require_once 'login_check.php';
                 <h4>风险提醒</h4>
                 <p>自动审核无法识别复杂图文语义，请每天抽样检查审核结果。</p>
             </div>
+            <div class="status-card">
+                <h4>运维建议</h4>
+                <p>建议每天固定时段抽检审核日志，发现异常后切换为人工审核。</p>
+            </div>
         </div>
-		<div class="statusfxts">注意：自动审核不会理解图文语义，建议仅用于低风险场景，并配合人工抽检机制。</div>
-    </div>
+    </main>
     <script>
         const toggleSwitch = document.getElementById('toggleSwitch');
         const statusText = document.getElementById('statusText');

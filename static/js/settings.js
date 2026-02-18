@@ -1,4 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initSettingsPage() {
+    var settingsForm = document.getElementById("settingsForm");
+    if (!settingsForm || settingsForm.dataset.settingsBound === "1") {
+        return;
+    }
+    settingsForm.dataset.settingsBound = "1";
+
     loadSettings();
     bindSettingsBlocks();
 
@@ -36,43 +42,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 hiddenInput.type = "hidden";
                 hiddenInput.name = "remove_images[]";
                 hiddenInput.value = removeValue;
-                document.getElementById("settingsForm").appendChild(hiddenInput);
+                settingsForm.appendChild(hiddenInput);
             }
 
             imageItem.remove();
         });
     }
 
-    var settingsForm = document.getElementById("settingsForm");
-    if (settingsForm) {
-        settingsForm.addEventListener("submit", function () {
-            var staleHiddenInputs = this.querySelectorAll("input[data-group-images-json='1']");
-            staleHiddenInputs.forEach(function (input) {
-                input.remove();
-            });
-
-            var groupImages = [];
-            var imageItems = document.querySelectorAll("#group_images_list .image-item");
-            imageItems.forEach(function (item) {
-                if (item.dataset.serverPath) {
-                    groupImages.push(item.dataset.serverPath);
-                    return;
-                }
-
-                var image = item.querySelector("img");
-                if (image && image.src) {
-                    groupImages.push(image.src.replace(/^data:image\/[a-zA-Z0-9.+-]+;base64,/, ""));
-                }
-            });
-
-            var hiddenInput = document.createElement("input");
-            hiddenInput.type = "hidden";
-            hiddenInput.name = "group_images[]";
-            hiddenInput.value = JSON.stringify(groupImages);
-            hiddenInput.setAttribute("data-group-images-json", "1");
-            this.appendChild(hiddenInput);
+    settingsForm.addEventListener("submit", function () {
+        var staleHiddenInputs = this.querySelectorAll("input[data-group-images-json='1']");
+        staleHiddenInputs.forEach(function (input) {
+            input.remove();
         });
-    }
+
+        var groupImages = [];
+        var imageItems = document.querySelectorAll("#group_images_list .image-item");
+        imageItems.forEach(function (item) {
+            if (item.dataset.serverPath) {
+                groupImages.push(item.dataset.serverPath);
+                return;
+            }
+
+            var image = item.querySelector("img");
+            if (image && image.src) {
+                groupImages.push(image.src.replace(/^data:image\/[a-zA-Z0-9.+-]+;base64,/, ""));
+            }
+        });
+
+        var hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "group_images[]";
+        hiddenInput.value = JSON.stringify(groupImages);
+        hiddenInput.setAttribute("data-group-images-json", "1");
+        this.appendChild(hiddenInput);
+    });
 
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("success")) {
@@ -103,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
+}
 
 function bindSettingsBlocks() {
     var toggles = document.querySelectorAll("[data-toggle-block]");
@@ -158,7 +161,7 @@ function createImageItem(imageSrc, serverPath) {
     var removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "remove-image";
-    removeButton.textContent = "x";
+    removeButton.textContent = "删除";
     imageItem.appendChild(removeButton);
 
     return imageItem;
@@ -263,3 +266,5 @@ function setImageSrc(id, src) {
         image.src = src;
     }
 }
+
+initSettingsPage();
