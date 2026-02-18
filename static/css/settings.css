@@ -1,12 +1,38 @@
 /* 模版一设置页（NFTMAX 风格） */
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 460px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+    #f5f7ff;
+}
+
 .container {
-  margin: 50px 10px 80px;
+  margin: 68px auto 80px;
+  width: min(1160px, calc(100% - 24px));
   font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
   background-color: #fff;
   border: 1px solid rgba(83, 86, 251, 0.18);
-  padding: 12px;
+  padding: 18px;
   border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(83, 86, 251, 0.12);
+  box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
+}
+
+.settings-page-head {
+  margin-bottom: 16px;
+}
+
+.settings-page-head h2 {
+  margin: 0 0 8px;
+  color: #1f2a47;
+  font-size: 22px;
+}
+
+.settings-page-head p {
+  margin: 0;
+  font-size: 13px;
+  color: #667085;
+  line-height: 1.7;
 }
 
 .group-info-form {
@@ -34,7 +60,8 @@
   width: 20%;
   padding-right: 10px;
   font-size: 14px;
-  color: #6d7395;
+  color: #4a567a;
+  font-weight: 600;
 }
 
 .group-info-item input {
@@ -78,7 +105,7 @@
 
 .form-group textarea {
   width: 100%;
-  height: 80px;
+  min-height: 84px;
   padding: 10px;
   margin-top: 10px;
   border: 1px solid #d8d6ff;
@@ -123,7 +150,7 @@
 
 .button-container {
   position: fixed;
-  bottom: 20px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
@@ -136,7 +163,7 @@
 .save-button {
   color: #fff;
   width: 90%;
-  height: 42px;
+  height: 44px;
   background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
   border: none;
   border-radius: 22px;
@@ -191,8 +218,7 @@
 
 @media (min-width: 992px) {
   .container {
-    max-width: 1120px;
-    margin: 70px auto 40px;
+    margin: 78px auto 32px;
     padding: 24px 24px 18px;
   }
 

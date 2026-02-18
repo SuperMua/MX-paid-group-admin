@@ -205,81 +205,122 @@ $conn->close();
     <title>模板设置</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
+            background:
+                radial-gradient(1200px 460px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
+                radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+                #f5f7ff;
         }
+
         .container {
-            width: 95%;
-            max-width: 500px;
-            background-color: #fff;
-            border-radius: 8px;
+            width: min(1180px, calc(100% - 24px));
+            margin: 68px auto 24px;
+            background: #fff;
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 50px;
+            box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
         }
+
+        .template-settings-head {
+            padding: 18px 18px 12px;
+            border-bottom: 1px solid rgba(83, 86, 251, 0.12);
+        }
+
+        .template-settings-head h2 {
+            margin: 0 0 8px;
+            color: #1f2a47;
+            font-size: 22px;
+        }
+
+        .template-settings-head p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #667085;
+        }
+
         .row {
             display: flex;
-            justify-content: space-between;
-			gap: 16px;
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(83, 86, 251, 0.12);
         }
-        .template, .qr-code {
-            width: 45%;
+
+        .row:last-child {
+            border-bottom: none;
         }
-        .template h3, .qr-code h3 {
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-			margin-left: 10px;
+
+        .template,
+        .qr-code {
+            flex: 1 1 280px;
+            min-width: 0;
+            border: 1px solid rgba(83, 86, 251, 0.14);
+            border-radius: 14px;
+            padding: 12px;
+            background: #fafaff;
         }
+
+        .template h3,
+        .qr-code h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            color: #3c4871;
+        }
+
         .image-placeholder {
             width: 100%;
             height: 220px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .image-placeholder img {
-            width: 100%;
-            height: 220px;
-            border-radius: 5px;
-			border: 1px solid #ccc;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
-        .button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .button.edit {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .button.preview {
-            background-color: #2196F3;
-            color: white;
-        }
-        .button.swap {
-            background-color: #2196F3;
-            color: white;
-            width: 100%;
-            margin-top: 15px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid rgba(83, 86, 251, 0.22);
+            overflow: hidden;
         }
 
-        /* 弹窗和遮罩样式 */
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .buttons a {
+            flex: 1;
+        }
+
+        .button {
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button.edit,
+        .button.preview,
+        .button.swap {
+            color: #fff;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+            box-shadow: 0 12px 22px rgba(83, 86, 251, 0.24);
+        }
+
+        .button.swap {
+            margin-top: 12px;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -287,204 +328,164 @@ $conn->close();
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(10, 13, 32, 0.66);
             z-index: 1000;
         }
-        /*.modal-header {
-            position: relative;
-            padding: 10px;
-            background-color: #f0f0f0;
-        }*/
-        .modal-body {
-            height: calc(100% - 30px);
-            overflow: auto;
+
+        .modal-content {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(1200px, calc(100% - 24px));
+            height: min(86vh, 900px);
+            background-color: #eef3ff;
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 1001;
+            border: 1px solid rgba(83, 86, 251, 0.22);
+            box-shadow: 0 24px 44px rgba(9, 20, 40, 0.34);
         }
+
+        .link-generator {
+            display: flex;
+            gap: 10px;
+            padding: 12px 56px 0 14px;
+        }
+
+        #generatedLink {
+            flex: 1;
+            padding: 9px 11px;
+            border: 1px solid #cfd4ff;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        #copyBtn {
+            padding: 0 16px;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+        }
+
+        .modal-body {
+            height: calc(100% - 58px);
+            padding: 8px 14px 12px;
+        }
+
         .modal-body iframe {
             width: 100%;
             height: 100%;
             border: none;
-			margin-top: 15px;
+            border-radius: 12px;
+            background: #fff;
         }
-		/* 添加成功提示样式 */
-            /* 弹窗和遮罩样式 */
-            .modal-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.7);
-                z-index: 1000;
+
+        .close-button {
+            position: absolute;
+            top: 4px;
+            right: 14px;
+            color: #4d5780;
+            cursor: pointer;
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .notification-area {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            pointer-events: none;
+            z-index: 1002;
+        }
+
+        .notification-message {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 14px;
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(25, 137, 57, 0.92);
+            box-shadow: 0 8px 16px rgba(12, 52, 21, 0.3);
+            animation: fadeInOut 2.4s ease-in-out;
+        }
+
+        #toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(32, 37, 65, 0.9);
+            color: #fff;
+            font-size: 13px;
+            z-index: 1200;
+        }
+
+        #toast.is-visible {
+            display: block;
+            animation: toastFade 2s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-8px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-8px); }
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translate(-50%, -42%); }
+            15% { opacity: 1; transform: translate(-50%, -50%); }
+            85% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -58%); }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                margin-top: 78px;
             }
-            .modal-content {
-                display: none; 
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 90%;
-                max-width: 500px;
-                height: 80%;
-                background-color: #eef3ff;
-                border-radius: 8px 8px 0 0;
-                overflow: hidden;
-                z-index: 1001;
+
+            .image-placeholder {
+                height: 260px;
             }
-            .close-button {
-                position: absolute;
-                top: 0px;
-                right: 12px;
-                /*width: 50px;
-                height: 28px;
-                border-radius: 5px;
-                background-color: #bfbfbf;*/
-                color: #666;;
-                border: none;
-                cursor: pointer;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .buttons {
+                flex-direction: column;
             }
-            .modal-body {
-                height: calc(100% - 30px);
-                overflow: auto;
+
+            .link-generator {
+                flex-direction: column;
+                padding-right: 14px;
             }
-            /* 优化后的弹窗提示样式 */
-            #toast {
-                display: none;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.5);
-                color: white;
-                padding: 10px 20px;
-                border-radius: 4px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                font-size: 16px;
-                text-align: center;
-                white-space: nowrap;
-                animation: showToast 2s forwards;
-				font-size: 14px;
+
+            #copyBtn {
+                height: 38px;
             }
-            /* 弹窗提示动画 */
-            @keyframes showToast {
-                0% { opacity: 0; transform: translate(-50%, -60%); }
-                10% { opacity: 1; }
-                90% { opacity: 1; }
-                100% { opacity: 0; transform: translate(-50%, -40%); }
-            }
-		/* 链接生成器样式 */
-		.link-generator {
-		    display: flex;
-		    gap: 10px;
-		    flex-grow: 1;
-			margin-top: 20px;
-		}
-		
-		#generatedLink {
-		    flex: 1;
-		    padding: 8px;
-		    border: 1px solid #ddd;
-		    border-radius: 4px;
-		}
-		
-		#copyBtn {
-		    padding: 8px 15px;
-		    background: #4285f4;
-		    color: white;
-		    border: none;
-		    border-radius: 4px;
-		    cursor: pointer;
-		}
-		
-		/* 新增通知区域样式 */
-		.notification-area {
-		    position: absolute;
-		    top: 10px;
-		    left: 0;
-		    right: 0;
-		    text-align: center;
-		    pointer-events: none; /* 防止阻挡点击 */
-		    z-index: 1002; /* 确保在弹窗上方 */
-		}
-		
-		/* 修改成功提示样式 */
-		.notification-message {
-		    display: inline-block;
-		    padding: 8px 16px;
-		    background: rgba(76, 175, 80, 0.9);
-		    color: white;
-		    border-radius: 4px;
-		    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-		    animation: fadeInOut 2.5s ease-in-out;
-		    opacity: 0;
-		}
-		
-		@keyframes fadeInOut {
-		    0% { opacity: 0; transform: translateY(-20px); }
-		    20% { opacity: 1; transform: translateY(0); }
-		    80% { opacity: 1; transform: translateY(0); }
-		    100% { opacity: 0; transform: translateY(-20px); }
-		}
-
-		@media (min-width: 992px) {
-			body {
-				background: #fafbfc;
-				padding: 0;
-			}
-
-			.container {
-				width: min(1180px, calc(100% - 64px));
-				max-width: none;
-				margin-top: 76px;
-				border: 1px solid rgba(0, 0, 0, 0.08);
-				border-radius: 12px;
-				box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-			}
-
-			.row {
-				padding: 20px;
-			}
-
-			.template,
-			.qr-code {
-				width: calc(50% - 8px);
-			}
-
-			.image-placeholder,
-			.image-placeholder img {
-				height: 280px;
-			}
-
-			.button {
-				padding: 8px 16px;
-			}
-
-			.modal-content {
-				width: min(1180px, calc(100% - 64px));
-				max-width: none;
-				height: 86%;
-				border-radius: 12px;
-			}
-
-			.modal-body iframe {
-				margin-top: 12px;
-				border-radius: 8px;
-			}
-		}
-
-		
+        }
     </style>
 </head>
 <body>
 <div class="navbar">
-    <a class="back-button left-arrow" href="settings.php"></a>
+    <a class="back-button left-arrow" href="settings.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
     <div class="title">模板设置</div>
 </div>
 <div class="container">
+    <div class="template-settings-head">
+        <h2>模板与二维码资产</h2>
+        <p>这里可以管理模板预览、群二维码与客服二维码。点击“预览”可实时查看前台页面效果。</p>
+    </div>
     <div class="row">
         <div class="template">
             <h3>模板一</h3>
@@ -560,7 +561,13 @@ $conn->close();
        const linkGenerator = document.getElementById('linkGenerator');
        const generatedLink = document.getElementById('generatedLink');
        const copyBtn = document.getElementById('copyBtn');
-       const copySuccess = document.getElementById('copySuccess');
+       const notificationArea = document.getElementById('notificationArea');
+
+       function closePreviewModal() {
+           modalOverlay.style.display = 'none';
+           modalContent.style.display = 'none';
+           modalBody.innerHTML = '';
+       }
    
        previewButtons.forEach(button => {
            button.addEventListener('click', () => {
@@ -601,33 +608,37 @@ $conn->close();
        });
    
        copyBtn.addEventListener('click', () => {
-           generatedLink.select();
-           document.execCommand('copy');
-           
-           // 创建通知元素
-           const notification = document.createElement('div');
-           notification.className = 'notification-message';
-           notification.textContent = '✓ 链接已复制';
-           
-           // 添加到通知区域
-           const notificationArea = document.getElementById('notificationArea');
-           notificationArea.innerHTML = '';
-           notificationArea.appendChild(notification);
-           
-           // 3秒后自动移除
-           setTimeout(() => {
-               notification.remove();
-           }, 2500);
+           const text = generatedLink.value;
+           if (!text) return;
+
+           const appendNotification = () => {
+               const notification = document.createElement('div');
+               notification.className = 'notification-message';
+               notification.textContent = '✓ 链接已复制';
+               notificationArea.innerHTML = '';
+               notificationArea.appendChild(notification);
+               setTimeout(() => notification.remove(), 2400);
+           };
+
+           if (navigator.clipboard && navigator.clipboard.writeText) {
+               navigator.clipboard.writeText(text).then(appendNotification).catch(() => {
+                   generatedLink.select();
+                   document.execCommand('copy');
+                   appendNotification();
+               });
+           } else {
+               generatedLink.select();
+               document.execCommand('copy');
+               appendNotification();
+           }
        });
    
        closeButton.addEventListener('click', () => {
-           modalOverlay.style.display = 'none';
-           modalContent.style.display = 'none';
+           closePreviewModal();
        });
    
        modalOverlay.addEventListener('click', () => {
-           modalOverlay.style.display = 'none';
-           modalContent.style.display = 'none';
+           closePreviewModal();
        });
    });
 
@@ -673,13 +684,12 @@ document.querySelectorAll('input[type="file"]').forEach(input => {
 
 function showToast(message) {
     const toast = document.getElementById('toast');
-    toast.style.display = 'block';
-    toast.style.animation = 'none';
-    toast.offsetHeight; // 触发重绘
     document.getElementById('toastMessage').textContent = message;
-    toast.style.animation = 'slideIn 0.5s, fadeOut 0.5s 1.5s';
+    toast.classList.remove('is-visible');
+    void toast.offsetWidth;
+    toast.classList.add('is-visible');
     setTimeout(() => {
-        toast.style.display = 'none';
+        toast.classList.remove('is-visible');
     }, 2000);
 }
 </script>

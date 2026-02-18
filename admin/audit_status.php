@@ -11,23 +11,29 @@ require_once 'login_check.php';
     <title>审核设置</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
             margin: 0;
-            background-color: #fafbfc;
+            background:
+                radial-gradient(980px 420px at 0% 0%, rgba(83, 86, 251, 0.15), transparent 52%),
+                radial-gradient(980px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 52%),
+                #f5f7ff;
         }
 
        .container {
-		   margin: 50px 10px 0px 10px;
-            background-color: #fff;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            width: min(1020px, calc(100% - 24px));
+            margin: 68px auto 24px;
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 18px;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-			width: 90%;
+            background: #fff;
+            box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
         }
+
+       .section-title {
+            margin: 0 0 8px;
+            color: #1f2a47;
+            font-size: 22px;
+            font-weight: 700;
+       }
 
        .settings-intro {
             margin: 0 0 14px;
@@ -44,12 +50,13 @@ require_once 'login_check.php';
             padding: 12px 14px;
             border: 1px solid #e9edf3;
             border-radius: 10px;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f7f8ff 0%, #f3f5ff 100%);
         }
 
        .switch-text {
             font-size: 14px;
             color: #344054;
+            font-weight: 600;
         }
 
        .switch {
@@ -92,11 +99,11 @@ require_once 'login_check.php';
         }
 
         input:checked +.slider {
-            background-color: #2196F3;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
         }
 
         input:focus +.slider {
-            box-shadow: 0 0 1px #2196F3;
+            box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.18);
         }
 
         input:checked +.slider:before {
@@ -127,17 +134,43 @@ require_once 'login_check.php';
             background: #fff7e6;
             color: #d46b08;
         }
-		.statusfxts{
+		.statusfxts {
 			font-size: 13px;
 			color: #98a2b3;
 			margin-top: 14px;
             line-height: 1.7;
 		}
 
+        .status-board {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .status-card {
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 14px;
+            background: #fafaff;
+            padding: 12px;
+        }
+
+        .status-card h4 {
+            margin: 0 0 6px;
+            font-size: 14px;
+            color: #3e4b74;
+        }
+
+        .status-card p {
+            margin: 0;
+            font-size: 12px;
+            color: #98a2b3;
+            line-height: 1.6;
+        }
+
 		@media (min-width: 992px) {
 			.container {
-				width: min(980px, calc(100% - 64px));
-				margin: 76px auto 24px;
+				margin-top: 78px;
 				padding: 24px 28px;
 			}
 		}
@@ -150,7 +183,7 @@ require_once 'login_check.php';
         <div class="title">审核设置</div>
     </div>
     <div class="container">
-        <h4>开启自动审核</h4>
+        <h2 class="section-title">审核流程开关</h2>
         <p class="settings-intro">开启后系统将自动审核提交内容，请谨慎评估业务风险并定期抽检审核结果。</p>
         <div class="audit-switch-row">
             <span class="switch-text">自动审核开关</span>
@@ -160,6 +193,16 @@ require_once 'login_check.php';
             </label>
         </div>
         <div id="statusText"><?php echo $isAutoAuditEnabled? '自动审核已开启' : '自动审核已关闭'; ?></div>
+        <div class="status-board">
+            <div class="status-card">
+                <h4>推荐配置</h4>
+                <p>高价值订单建议关闭自动审核，或配合人工复核名单。</p>
+            </div>
+            <div class="status-card">
+                <h4>风险提醒</h4>
+                <p>自动审核无法识别复杂图文语义，请每天抽样检查审核结果。</p>
+            </div>
+        </div>
 		<div class="statusfxts">注意：自动审核不会理解图文语义，建议仅用于低风险场景，并配合人工抽检机制。</div>
     </div>
     <script>

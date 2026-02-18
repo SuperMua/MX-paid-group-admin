@@ -9,8 +9,16 @@ require_once 'login_check.php';
     <title>品牌设置</title>
     <link rel="stylesheet" href="../static/css/admin.css">
     <style>
+        body {
+            margin: 0;
+            background:
+                radial-gradient(1150px 460px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
+                radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+                #f5f7ff;
+        }
+
         .brand-settings-card {
-            margin: 70px auto 30px;
+            margin: 68px auto 24px;
             width: min(980px, calc(100% - 24px));
             background: #fff;
             border: 1px solid rgba(83, 86, 251, 0.16);
@@ -132,6 +140,13 @@ require_once 'login_check.php';
             margin-top: 10px;
             font-size: 13px;
             color: #5356fb;
+        }
+
+        @media (min-width: 992px) {
+            .brand-settings-card {
+                margin-top: 78px;
+                padding: 24px 26px;
+            }
         }
     </style>
 </head>

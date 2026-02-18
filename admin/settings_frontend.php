@@ -6,24 +6,28 @@ require_once 'login_check.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../static/css/admin.css">
+    <link rel="stylesheet" href="../static/css/admin.css">
     <title>任务设置</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #fafbfc;
+            background:
+                radial-gradient(1150px 420px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
+                radial-gradient(920px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+                #f5f7ff;
             margin: 0;
-            padding: 10px;
-            padding-bottom: 80px; /* 为底部固定按钮预留空间 */
+            padding: 0;
+            padding-bottom: 86px;
         }
 
         form {
-            background-color: #fff;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-			margin-top: 40px;
+            width: min(1140px, calc(100% - 24px));
+            margin: 68px auto 24px;
+            background: #fff;
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 18px;
+            box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .form-intro {
@@ -33,92 +37,113 @@ require_once 'login_check.php';
             line-height: 1.6;
         }
 
+        .section-title {
+            margin: 0 0 8px;
+            color: #1f2a47;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-			font-size: 14px;
-			color: #8b8a8a;
+            margin-bottom: 7px;
+            font-size: 14px;
+            color: #4a567a;
+            font-weight: 600;
         }
 
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 11px 12px;
+            margin-bottom: 12px;
+            border: 1px solid #d8d6ff;
+            border-radius: 12px;
             box-sizing: border-box;
-			outline: none;
-			font-size: 14px;
+            outline: none;
+            font-size: 14px;
+            color: #2a3653;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #5356fb;
+            box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.14);
         }
 
         .field-tip {
-            margin-top: -8px;
+            margin-top: -2px;
             margin-bottom: 12px;
             font-size: 12px;
             color: #98a2b3;
         }
 
-        /* 优化图片和上传按钮的布局 */
         .image-upload-container {
             display: flex;
             align-items: center;
+            gap: 12px;
             margin-bottom: 15px;
+            padding: 12px;
+            border: 1px dashed rgba(83, 86, 251, 0.3);
+            border-radius: 14px;
+            background: #f9f9ff;
         }
 
-        /* 优化图片上传按钮样式 */
         .upload-button {
             width: 80px;
             height: 120px;
-            border: 1px dashed #ccc;
-            border-radius: 5px;
+            border: 1px dashed rgba(83, 86, 251, 0.4);
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            margin-left: 20px;
+            background: #fff;
+            transition: all 0.2s ease;
         }
-        .upload-button span{
-			color: #ccc;
-			font-size: 24px;
-		}
-		
-		.upload-button:hover {
-			border-color: #0056b3;
-			box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-		}
 
-        /* 隐藏原生的文件输入框 */
+        .upload-button span {
+            color: #8f95d8;
+            font-size: 24px;
+        }
+
+        .upload-button:hover {
+            border-color: #5356fb;
+            box-shadow: 0 0 0 4px rgba(83, 86, 251, 0.12);
+        }
+
         .upload-button input[type="file"] {
             display: none;
         }
 
-        /* 图片显示样式 */
         img.preview {
             width: 80px;
             height: 120px;
             object-fit: cover;
-			border-radius: 5px;
-			border: 1px solid #ccc;
+            border-radius: 12px;
+            border: 1px solid rgba(83, 86, 251, 0.24);
+            box-shadow: 0 10px 24px rgba(83, 86, 251, 0.16);
         }
 
-        /* 固定在底部的更新按钮 */
         input[type="submit"] {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
             color: white;
-            padding: 12px 20px;
+            padding: 12px 22px;
             border: none;
-            border-radius: 20px;
+            border-radius: 999px;
             cursor: pointer;
-            width: calc(100% - 40px); /* 考虑页面左右的 padding */
+            width: calc(100% - 32px);
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 18px;
+            left: 16px;
+            right: 16px;
+            font-weight: 700;
+            box-shadow: 0 16px 28px rgba(83, 86, 251, 0.3);
         }
 
         input[type="submit"]:hover {
-            background-color: #45a049;
+            filter: brightness(1.03);
         }
 
         #custom-modal {
@@ -133,52 +158,49 @@ require_once 'login_check.php';
         }
 
         .modal-content {
-			width: 180px;
-			min-height: 44px;
-			padding: 10px 12px;
-            background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明背景 */
-            border-radius: 5px;
+            width: 220px;
+            min-height: 44px;
+            padding: 10px 12px;
+            background-color: rgba(32, 37, 65, 0.86);
+            border-radius: 999px;
             color: #fff;
             text-align: center;
-			font-size: 14px;
-			line-height: 1.4;
+            font-size: 13px;
+            line-height: 1.4;
         }
-		.renwu{
-			height: 100px;
-		}
-		.renwu_mdj{
-			height: 40px;
-		}
-		.renwu_times{
-			height: 80px;
-		}
-		.renwu_prompt{
-			height: 40px;
-		}
 
-		@media (min-width: 992px) {
-			body {
-				padding: 0;
-				background: #fafbfc;
-			}
+        .renwu {
+            min-height: 100px;
+        }
 
-			form {
-				width: min(1100px, calc(100% - 64px));
-				margin: 76px auto 32px;
-				padding: 24px 24px 18px;
-				box-sizing: border-box;
-			}
+        .renwu_mdj {
+            min-height: 48px;
+        }
 
-			input[type="submit"] {
-				position: sticky;
-				bottom: 16px;
-				left: auto;
-				width: 220px;
-				margin-left: auto;
-				display: block;
-				border-radius: 10px;
-			}
-		}
+        .renwu_times {
+            min-height: 80px;
+        }
+
+        .renwu_prompt {
+            min-height: 48px;
+        }
+
+        @media (min-width: 992px) {
+            form {
+                margin-top: 78px;
+                padding: 24px 28px 20px;
+            }
+
+            input[type="submit"] {
+                position: sticky;
+                bottom: 16px;
+                left: auto;
+                right: auto;
+                width: 220px;
+                margin-left: auto;
+                border-radius: 12px;
+            }
+        }
     </style>
 </head>
 
@@ -188,6 +210,7 @@ require_once 'login_check.php';
         <div class="title">任务设置</div>
     </div>
     <form class="task-settings-form" action="settings_backend.php" method="post" enctype="multipart/form-data">
+        <h2 class="section-title">任务流程配置</h2>
         <p class="form-intro">配置前台任务文案、审核时效和示例图片。建议先保存基础文案，再上传示例图。</p>
         <label for="title">任务标题:</label>
         <input type="text" id="title" name="title" placeholder="填写任务标题">

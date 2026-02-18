@@ -13,6 +13,10 @@ require_once 'login_check.php';  //验证是否登陆
 		   display: none;
 	   }
 
+       .settings-main {
+           margin-top: 58px !important;
+       }
+
 	   .settings-sidebar .menu-item a {
 		   display: grid;
 		   grid-template-columns: 20px 1fr;
@@ -37,25 +41,40 @@ require_once 'login_check.php';  //验证是否登陆
 	   @media (min-width: 992px) {
 		   .settings-headline {
 			   display: block;
-			   width: min(1200px, calc(100% - 64px));
-			   margin: 76px auto 12px;
+			   width: min(1200px, calc(100% - 24px));
+			   margin: 78px auto 10px;
 			   color: #667085;
 			   font-size: 14px;
 		   }
 
 		   .settings-main {
-			   margin-top: 84px !important;
+			   margin-top: 18px !important;
 		   }
 
 		   .settings-sidebar {
 			   grid-template-columns: repeat(2, minmax(0, 1fr));
+               width: min(1200px, calc(100% - 24px));
+               margin: 0 auto;
+               gap: 14px;
 		   }
 
-		   .settings-sidebar .menu-item a .menu-desc {
-			   display: block;
-			   font-size: 12px;
-			   color: #98a2b3;
-		   }
+           .settings-sidebar .menu-item {
+               border-radius: 16px;
+               border: 1px solid rgba(83, 86, 251, 0.16);
+               box-shadow: 0 16px 30px rgba(83, 86, 251, 0.1);
+           }
+
+           .settings-sidebar .menu-item a {
+               min-height: 88px;
+               align-content: center;
+           }
+
+           .settings-sidebar .menu-item a .menu-desc {
+               display: block;
+               font-size: 12px;
+               color: #98a2b3;
+               line-height: 1.6;
+           }
 	   }
     </style>
 </head>

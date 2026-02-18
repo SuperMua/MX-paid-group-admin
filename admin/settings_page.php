@@ -17,6 +17,10 @@ require_once 'login_check.php';
 </div>
 <div class="container select-buttons-container">
     <form id="settingsForm" method="post" enctype="multipart/form-data" action="settings_crud.php">
+        <div class="settings-page-head">
+            <h2>模板一内容配置</h2>
+            <p>维护群名称、价格、文案和图片资源，保存后前台页面会实时按最新配置展示。</p>
+        </div>
         <div class="group-info-form">
             <div class="group-info-item">
                 <label for="group_title">群名称</label>

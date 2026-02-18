@@ -210,6 +210,8 @@ if ($result && $result->num_rows > 0) {
 
 $conn->close();
 ?>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,389 +219,411 @@ $conn->close();
     <title>模版二设置</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #fafbfc;
-            padding: 10px;
-			margin-bottom: 40px;
-			margin: 0;
+            margin: 0;
+            background:
+                radial-gradient(1200px 460px at 0% 0%, rgba(83, 86, 251, 0.14), transparent 55%),
+                radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+                #f5f7ff;
+            padding-bottom: 18px;
         }
 
-        /* 表单区域样式 */
-       .form-section {
-           /*max-width: 600px; /* 可根据需要调整 */
-           margin: 0 auto; /* 整个表单区域居中 */
-           padding: 20px 20px 10px 20px;
-           background-color: white;
-           border: 1px solid rgba(0, 0, 0, 0.08);
-           border-radius: 8px;
-           box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-		   font-size: 14px;
-		   margin-top: 40px;
-       }
-       
-       .form-section form {
-           display: flex;
-           flex-direction: column;
-           gap: 15px; /* 表单项之间的间距 */
-       }
-       
-       .form-item {
-           display: flex;
-           align-items: center;
-       }
-       
-       .form-item label {
-           /*flex: 0 0 90px; /* 固定标签宽度 */
-           margin-right: 10px;
-          /* text-align: right; /* 标签文字右对齐 */
-		  color: #8b8a8a;
-       }
-       
-       .form-item input {
-           flex: 1; /* 输入框占据剩余空间 */
-           padding: 10px;
-           border: 1px solid #ccc;
-           border-radius: 5px;
-       }
-       
-       .submit {
-           padding: 10px 30px;
-           background-color: #257ef8;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           font-size: 14px;
-           cursor: pointer;
-           margin: 20px auto 0; /* 上下20px，左右auto实现水平居中 */
-           display: block; /* 必须设置为block才能使margin auto生效 */
-           width: fit-content; /* 按钮宽度根据内容自适应 */
-       }
-
-        /* 群聊列表区域样式 */
-       .group-list-section {
-            margin-top: 20px;
-			margin-bottom: 40px;
+        .form-section,
+        .group-list-section {
+            width: min(1180px, calc(100% - 24px));
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
         }
 
-       .group-list-header {
+        .form-section {
+            margin-top: 68px;
+            padding: 20px;
+        }
+
+        .panel-head {
+            margin-bottom: 14px;
+        }
+
+        .panel-head h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            color: #1f2a47;
+        }
+
+        .panel-head p {
+            margin: 0;
+            font-size: 13px;
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .form-section form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .form-item {
+            display: grid;
+            grid-template-columns: 88px minmax(0, 1fr);
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-item label {
+            color: #4a567a;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-item input {
+            padding: 11px 12px;
+            border: 1px solid #d8d6ff;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-item input:focus,
+        .form-group input:focus {
+            border-color: #5356fb;
+            box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.14);
+        }
+
+        .submit {
+            justify-self: end;
+            min-width: 160px;
+            border: none;
+            border-radius: 999px;
+            padding: 11px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+            box-shadow: 0 14px 26px rgba(83, 86, 251, 0.26);
+        }
+
+        .group-list-section {
+            margin-top: 14px;
+            margin-bottom: 22px;
+            padding: 16px;
+        }
+
+        .group-list-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-       .group-list-header h2 {
+        .group-list-header h2 {
             margin: 0;
-            font-size: 15px;
-			margin-left: 10px;
-			color: #8b8a8a;
+            font-size: 16px;
+            color: #2f3b64;
         }
 
-       .group-list-header button {
-            color: #257ef8;
-            text-decoration: none;
-            font-size: 14px;
-            margin-right: 10px;
-			border: none; /* 完全移除边框 */
-			background: transparent;
-        }
-
-       .group-item {
-            background-color: white;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-       .group-avatar {
-            width: 60px;
-            height: 60px;
-            background-color: #ddd;
-            margin-right: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            border-radius: 4px;
-        }
-		.group-avatar img{
-			width: 60px;
-			height: 60px;
-			border-radius: 5px;
-		}
-
-       .group-info {
-            flex: 1;
-        }
-
-       .group-name {
-            font-size: 15px;
-            margin-bottom: 5px;
-        }
-
-       .group-message {
+        .group-list-header button {
+            border: none;
+            border-radius: 999px;
+            padding: 9px 16px;
+            color: #fff;
             font-size: 13px;
-            color: #8b8a8a;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+            cursor: pointer;
+            box-shadow: 0 12px 22px rgba(83, 86, 251, 0.22);
         }
 
-       .group-actions {
+        .group-item {
+            border: 1px solid rgba(83, 86, 251, 0.16);
+            border-radius: 14px;
+            background: #fafaff;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .group-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            overflow: hidden;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .group-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .group-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #344054;
+            margin-bottom: 4px;
+        }
+
+        .group-message {
+            font-size: 13px;
+            color: #667085;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        .group-actions {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            gap: 6px;
         }
 
-       .group-actions button {
-            padding: 5px 10px;
-            margin-bottom: 5px;
+        .group-actions button {
             border: none;
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 999px;
+            padding: 7px 13px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
+            min-width: 72px;
         }
 
-       .edit-button {
-            background-color: #257ef8;
-            color: white;
+        .edit-button {
+            color: #fff;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
         }
 
-       .delete-button {
-            background-color: #e74c3c;
-            color: white;
+        .delete-button {
+            color: #fff;
+            background: linear-gradient(135deg, #ff6464 0%, #f53939 100%);
         }
 
-        /* 弹窗通用样式 */
-       .popup {
+        .popup {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(10, 13, 32, 0.64);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 12px;
+            box-sizing: border-box;
         }
 
-       .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            position: relative; /* 新增相对定位，作为关闭按钮的参考容器 */
-       }
+        .popup-content,
         .popup-content2 {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 220px;
-            position: relative; /* 新增相对定位，作为关闭按钮的参考容器 */
-       }
+            width: min(560px, calc(100% - 10px));
+            background: #fff;
+            border: 1px solid rgba(83, 86, 251, 0.18);
+            border-radius: 16px;
+            padding: 18px;
+            position: relative;
+            box-shadow: 0 24px 44px rgba(8, 16, 35, 0.36);
+        }
 
-       .popup-header {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 15px;
+        .popup-content2 {
+            width: min(340px, calc(100% - 10px));
+        }
+
+        .popup-header {
+            text-align: left;
+            margin-bottom: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2e3a63;
         }
 
         .popup-close {
-            position: absolute; /* 绝对定位，相对于popup-content定位 */
-            top: 0px; /* 距离顶部10px */
-            right: 10px; /* 距离右侧10px */
+            position: absolute;
+            top: 4px;
+            right: 12px;
             cursor: pointer;
-            font-size: 30px; /* 适当增大字体大小，视觉更明显 */
+            font-size: 30px;
+            color: #6c76a1;
+            line-height: 1;
         }
 
-       .form-group {
-            margin-bottom: 15px;
-            display: flex;
+        .form-group {
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 10px;
             align-items: center;
-			color: #8b8a8a;
-			font-size: 14px;
+            color: #4a567a;
+            font-size: 14px;
         }
 
-       .form-group label {
-            margin-right: 10px;
+        .form-group input {
+            padding: 9px 10px;
+            border: 1px solid #d8d6ff;
+            border-radius: 10px;
+            outline: none;
         }
 
-       .form-group input {
-            flex: 2;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-       
-	   .avatar-upload {
-	       width: 80px;
-	       height: 80px;
-	       border: 1px dashed #ccc;
-	       border-radius: 4px;
-	       display: flex;
-	       justify-content: center;
-	       align-items: center;
-	       margin: 0 auto 40px;
-	       cursor: pointer;
-	       position: relative;
-	       overflow: hidden;
-	   }
-	   
-	   .avatar-upload .avatar-label {
-	       display: flex;
-	       justify-content: center;
-	       align-items: center;
-	       width: 100%;
-	       height: 100%;
-	       position: absolute;
-	       z-index: 1;
-	       background-color: rgba(255, 255, 255, 0.8); /* 背景颜色，可选 */
-		   font-size: 14px;
-	   }
-	   
-	   .avatar-upload .avatar-label small {
-	       font-size: 24px;
-	       color: #ccc;
-	   }
-	   
-	   .avatar-upload img {
-	       width: 100%;
-	       height: 100%;
-	       border-radius: 4px;
-	       display: none; /* 默认隐藏 */
-	       object-fit: cover; /* 确保图片覆盖整个容器 */
-	       position: absolute;
-	       top: 0;
-	       left: 0;
-	       z-index: 2; /* 确保图片在加号上方 */
-	   }
-	   .avatar-upload input[type="file"] {
-	       position: absolute;
-	       top: 0;
-	       left: 0;
-	       width: 100%;
-	       height: 100%;
-	       opacity: 0;
-	       cursor: pointer;
-	       z-index: 3; /* 修改为正值确保点击优先级 */
-	   }
-	   
-       .button-group {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-       .button-group button {
-            padding: 10px 30px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 4px;
+        .avatar-upload {
+            width: 84px;
+            height: 84px;
+            border: 1px dashed rgba(83, 86, 251, 0.4);
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 14px;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: #f8f8ff;
         }
 
-       .confirm-btn {
-            background-color: #257ef8;
-            color: white;
+        .avatar-upload .avatar-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1;
+            color: #8b91d2;
         }
 
-       .cancel-btn {
-            background-color: #ddd;
+        .avatar-upload .avatar-label small {
+            font-size: 24px;
         }
-		
-		/* 成功提示弹窗样式 */
-		.success-popup {
-		    display: none; /* 默认隐藏 */
-		    position: fixed;
-		    top: 50%;
-		    left: 50%;
-		    transform: translate(-50%, -50%);
-		    width: 100px;
-		    height: 40px;
-		    background-color: rgba(0, 0, 0, 0.7);
-		    color: white;
-		    text-align: center;
-		    line-height: 40px;
-		    border-radius: 5px;
-		    font-size: 14px;
-		    z-index: 1000; /* 确保在最上层 */
-		    animation: fadeInOut 2s ease-in-out; /* 可选：添加淡入淡出效果 */
-		}
 
-		@media (min-width: 992px) {
-			body {
-				padding: 0;
-			}
+        .avatar-upload img {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            display: none;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
 
-			.form-section,
-			.group-list-section {
-				width: min(1180px, calc(100% - 64px));
-				margin-left: auto;
-				margin-right: auto;
-				box-sizing: border-box;
-			}
+        .avatar-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 3;
+        }
 
-			.form-section {
-				margin-top: 76px;
-				padding: 24px;
-			}
+        .button-group {
+            text-align: right;
+            margin-top: 14px;
+        }
 
-			.group-list-section {
-				margin-top: 16px;
-				display: grid;
-				gap: 12px;
-				margin-bottom: 24px;
-			}
+        .button-group button {
+            border: none;
+            border-radius: 999px;
+            padding: 9px 16px;
+            cursor: pointer;
+            font-weight: 700;
+        }
 
-			.group-list-header {
-				padding: 0 8px;
-			}
+        .confirm-btn {
+            color: #fff;
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+        }
 
-			.group-item {
-				margin-bottom: 0;
-				display: grid;
-				grid-template-columns: 72px 1fr auto;
-				gap: 14px;
-				align-items: center;
-				padding: 14px;
-			}
+        .cancel-btn {
+            color: #4b556d;
+            background: #f1f3ff;
+            margin-right: 8px;
+        }
 
-			.group-avatar,
-			.group-avatar img {
-				width: 72px;
-				height: 72px;
-			}
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 16px;
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(28, 34, 61, 0.88);
+            font-size: 13px;
+            z-index: 1100;
+            animation: fadeInOut 2s ease-in-out;
+        }
 
-			.popup-content {
-				width: min(560px, calc(100% - 32px));
-			}
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -42%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -58%); }
+        }
 
-			.popup-content2 {
-				width: min(320px, calc(100% - 32px));
-			}
+        @media (min-width: 992px) {
+            .form-section {
+                margin-top: 78px;
+                padding: 24px;
+            }
 
-			.popup-content .form-group {
-				display: grid;
-				grid-template-columns: 70px 1fr;
-				gap: 12px;
-				align-items: center;
-			}
+            .group-list-section {
+                margin-top: 16px;
+                margin-bottom: 24px;
+            }
+        }
 
-			.popup-content .button-group {
-				text-align: right;
-			}
-		}	
+        @media (max-width: 768px) {
+            .form-item,
+            .form-group {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .submit {
+                width: 100%;
+            }
+
+            .group-item {
+                grid-template-columns: 1fr;
+                align-items: start;
+            }
+
+            .group-actions {
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <a class="back-button left-arrow" href="moban.php"></a>
+        <a class="back-button left-arrow" href="moban.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
         <div class="title">模版二设置</div>
     </div>
     <!-- 表单区域 -->
     <div class="form-section">
+        <div class="panel-head">
+            <h2>模板二价格与入口</h2>
+            <p>可配置入群金额、底部按钮文案，并维护群聊列表内容用于前台展示。</p>
+        </div>
         <form method="post">
             <div class="form-item">
                 <label for="amount">入群金额：</label>
@@ -703,9 +727,20 @@ $conn->close();
 	  // 显示通用弹窗（添加/编辑）
 	    function showCommonPopup(title, id = null) {
 	        const popup = document.getElementById('common-popup');
+            const avatarInput = document.getElementById('avatar-upload');
+            const avatarPreview = document.getElementById('avatar-preview');
+            const plusSign = document.querySelector('.avatar-label small');
 	        popup.querySelector('.popup-header').textContent = title;
 	        if (id) {
 	            popup.querySelector('input[name="id"]').value = id;
+            } else {
+                popup.querySelector('input[name="id"]').value = '';
+                popup.querySelector('input[name="nickname"]').value = '';
+                popup.querySelector('input[name="content"]').value = '';
+                avatarInput.value = '';
+                avatarPreview.src = '';
+                avatarPreview.style.display = 'none';
+                plusSign.style.display = 'block';
 	        }
 	        popup.style.display = 'flex';
 	    }
@@ -732,6 +767,7 @@ $conn->close();
 	        const nicknameInput = popup.querySelector('input[name="nickname"]');
 	        const contentInput = popup.querySelector('input[name="content"]');
 	        const avatarPreview = popup.querySelector('#avatar-preview');
+            const plusSign = document.querySelector('.avatar-label small');
 	
 	        // 获取当前群组信息
 	        const group = document.querySelector(`.group-item[data-id="${id}"]`);
@@ -744,6 +780,7 @@ $conn->close();
 	        contentInput.value = content;
 	        avatarPreview.src = avatar;
 	        avatarPreview.style.display = 'block';
+            plusSign.style.display = 'none';
 	
 	        showCommonPopup('编辑群组', id);
 	    }
@@ -765,6 +802,11 @@ $conn->close();
 	        const content = popup.querySelector('input[name="content"]').value;
 	        const avatar = popup.querySelector('input[name="avatar"]').files[0];
 	        const id = popup.querySelector('input[name="id"]').value;
+
+            if (!nickname.trim() || !content.trim()) {
+                alert('请先填写群昵称和群消息');
+                return;
+            }
 	
 	        const formData = new FormData();
 	        formData.append('nickname', nickname);

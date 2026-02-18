@@ -10,171 +10,169 @@ require_once 'login_check.php';
     <title>账号设置</title>
     <style>
       body {
-          font-family: Arial, sans-serif;
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
-          background-color: #fafbfc;
           margin: 0;
+          background:
+              radial-gradient(1200px 500px at 0% 0%, rgba(83, 86, 251, 0.15), transparent 55%),
+              radial-gradient(900px 420px at 100% 0%, rgba(245, 57, 248, 0.12), transparent 50%),
+              #f5f7ff;
       }
-      
+
       .settings-container {
-          background-color: #fff;
-          border: 1px solid rgba(0, 0, 0, 0.08);
+          width: min(1040px, calc(100% - 24px));
+          margin: 68px auto 24px;
+          border: 1px solid rgba(83, 86, 251, 0.16);
+          border-radius: 18px;
+          background: #fff;
+          box-shadow: 0 18px 36px rgba(83, 86, 251, 0.12);
           padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-          width: 90%;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          margin: 50px 10px 0px 10px;
       }
-      
+
+      .section-title {
+          margin: 0 0 8px;
+          color: #1f2a47;
+          font-size: 22px;
+          font-weight: 700;
+      }
+
       .current-user {
-          margin-bottom: 20px;
-          font-size: 16px;
-          color: #333;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 14px;
+          padding: 8px 12px;
+          border-radius: 999px;
+          background: #eef0ff;
+          color: #39426c;
+          font-size: 14px;
+          font-weight: 600;
       }
 
       .settings-intro {
-          margin: 0 0 14px;
+          margin: 0 0 16px;
           font-size: 13px;
+          line-height: 1.7;
           color: #667085;
       }
-      
+
       .avatar-section {
           display: flex;
           align-items: center;
-          margin-bottom: 20px;
+          gap: 12px;
+          margin-bottom: 18px;
       }
-      
-      .avatar-label {
-          margin-bottom: 5px;
-      }
-      
+
       .avatar-container {
-          position: relative;
-          width: 80px;
-          height: 80px;
-          margin-right: 10px;
-		  border: 1px solid #dbdbdb;
-		  border-radius: 5px;
-		  
+          width: 84px;
+          height: 84px;
+          border-radius: 16px;
+          border: 1px solid rgba(83, 86, 251, 0.22);
+          overflow: hidden;
+          box-shadow: 0 8px 22px rgba(83, 86, 251, 0.14);
       }
-      
+
       #avatar {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: 5px;
       }
-      
+
       #upload-button {
-          width: 80px;
-          height: 80px;
-          border: 1px dashed #ccc;
-          border-radius: 5px;
-          background-color: rgba(255, 255, 255, 0.7);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 30px;
-          color: #ccc;
+          width: 84px;
+          height: 84px;
+          border-radius: 16px;
+          border: 1px dashed rgba(83, 86, 251, 0.45);
+          background: #f7f8ff;
+          color: #7a80ca;
+          font-size: 28px;
           cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
       }
-      
+
+      #upload-button:hover {
+          border-color: #5356fb;
+          color: #5356fb;
+          box-shadow: 0 0 0 4px rgba(83, 86, 251, 0.14);
+      }
+
       #avatar-input {
           display: none;
       }
-      
+
       .input-group {
-          margin-bottom: 15px;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center; /* 让整个输入框组居中 */
+          margin-bottom: 14px;
       }
-      
+
       .input-group label {
           display: block;
-          margin-bottom: 5px;
+          margin-bottom: 7px;
+          color: #4a5578;
           font-size: 14px;
-          color: #666;
-          width: 90%; /* 与输入框宽度一致，方便对齐 */
-          text-align: left; /* 标签文字靠左 */
+          font-weight: 600;
       }
-      
+
       .input-group input {
-          width: 90%; /* 可根据需要调整输入框宽度 */
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
+          width: 100%;
+          padding: 11px 12px;
+          border: 1px solid #d8d6ff;
+          border-radius: 12px;
+          color: #26324f;
+          font-size: 14px;
+          outline: none;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .input-group input:focus {
+          border-color: #5356fb;
+          box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.14);
       }
 
       .input-tip {
-          width: 90%;
-          margin: 6px 0 0;
+          margin: 7px 0 0;
           font-size: 12px;
           color: #98a2b3;
       }
-      
-      button {
-          width: 100%;
-          padding: 10px;
-          background-color: #007BFF;
-          color: #fff;
+
+      .settings-save-btn {
+          min-width: 200px;
           border: none;
-          border-radius: 20px;
+          border-radius: 999px;
+          padding: 12px 20px;
+          color: #fff;
+          font-weight: 700;
           cursor: pointer;
-		  margin-top: 30px;
+          background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+          box-shadow: 0 14px 28px rgba(83, 86, 251, 0.26);
       }
-      
-      button:hover {
-          background-color: #0056b3;
+
+      .settings-save-wrap {
+          margin-top: 18px;
+          display: flex;
+          justify-content: flex-end;
       }
-      
+
       .custom-popup {
           position: fixed;
-          top: 30%;
+          top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          background-color: rgba(0, 0, 0, 0.5);
-          color: white;
-          padding: 10px 20px;
-          border-radius: 5px;
-          z-index: 1000;
           display: none;
-		  font-size: 14px;
+          padding: 10px 18px;
+          border-radius: 999px;
+          background: rgba(38, 44, 75, 0.88);
+          color: #fff;
+          font-size: 13px;
+          z-index: 1000;
       }
 
-	  @media (min-width: 992px) {
-		  .settings-container {
-			  width: min(980px, calc(100% - 64px));
-			  margin: 76px auto 24px;
-			  padding: 24px 28px;
-		  }
-
-		  .input-group {
-			  align-items: flex-start;
-		  }
-
-		  .input-group label,
-		  .input-group input {
-			  width: min(620px, 100%);
-		  }
-
-		  .input-tip {
-			  width: min(620px, 100%);
-		  }
-
-		  button {
-			  width: 220px;
-			  align-self: flex-end;
-			  margin-top: 12px;
-			  border-radius: 10px;
-		  }
-	  }
+      @media (min-width: 992px) {
+          .settings-container {
+              margin-top: 78px;
+              padding: 24px 28px;
+          }
+      }
     </style>
 </head>
 
@@ -184,6 +182,7 @@ require_once 'login_check.php';
         <div class="title">账号设置</div>
     </div>
     <div class="settings-container">
+        <h2 class="section-title">账号安全与资料</h2>
         <div class="current-user">
             当前昵称：<span id="current-username"></span>
         </div>
@@ -204,7 +203,9 @@ require_once 'login_check.php';
             <input type="password" id="password" placeholder="请输入新密码（留空则不修改）" autocomplete="new-password">
             <p class="input-tip">提示：密码留空时仅更新昵称或头像，不会覆盖原密码。</p>
         </div>
-        <button onclick="updateSettings()">保存账号设置</button>
+        <div class="settings-save-wrap">
+            <button class="settings-save-btn" onclick="updateSettings()">保存账号设置</button>
+        </div>
     </div>
     <div class="custom-popup" id="popup">修改成功</div>
 

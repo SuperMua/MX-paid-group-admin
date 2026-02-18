@@ -10,135 +10,127 @@ require_once 'login_check.php';
     <title>支付设置</title>
     <style>
        body {
-           font-family: Arial, sans-serif;
-           display: flex;
-           justify-content: center;
-           align-items: flex-start;
-           background-color: #fafbfc;
            margin: 0;
+           background:
+               radial-gradient(1100px 450px at 100% 0%, rgba(245, 57, 248, 0.1), transparent 50%),
+               radial-gradient(1000px 380px at 0% 0%, rgba(83, 86, 251, 0.16), transparent 55%),
+               #f5f7ff;
        }
-       
+
        .settings-container {
-           background-color: #fff;
-           border: 1px solid rgba(0, 0, 0, 0.08);
+           width: min(1080px, calc(100% - 24px));
+           margin: 68px auto 24px;
+           border: 1px solid rgba(83, 86, 251, 0.16);
+           border-radius: 18px;
+           background: #fff;
+           box-shadow: 0 18px 34px rgba(83, 86, 251, 0.12);
            padding: 20px;
-           border-radius: 12px;
-           box-shadow: 0 10px 24px rgba(16, 24, 40, 0.05);
-           width: 90%;
-           display: flex;
-           flex-direction: column;
-           align-items: flex-start;
-           margin: 50px 10px 0px 10px;
        }
-       
-       .input-group {
-           margin-bottom: 15px;
-           width: 100%;
-           display: flex;
-           flex-direction: column;
-           align-items: center; /* 让整个输入框组居中 */
-       }
-       
-       .input-group label {
-           display: block;
-           margin-bottom: 5px;
-           font-size: 14px;
-           color: #666;
-           width: 90%; /* 与输入框宽度一致，方便对齐 */
-           text-align: left; /* 标签文字靠左 */
-       }
-       
-       .input-group input {
-           width: 90%; /* 可根据需要调整输入框宽度 */
-           padding: 10px;
-           border: 1px solid #ccc;
-           border-radius: 5px;
+
+       .section-title {
+           margin: 0 0 8px;
+           color: #1f2a47;
+           font-size: 22px;
        }
 
        .settings-intro {
-           margin: 0 0 14px;
+           margin: 0 0 16px;
            font-size: 13px;
            color: #667085;
+           line-height: 1.7;
+       }
+
+       .input-group {
+           margin-bottom: 14px;
+       }
+
+       .input-group label {
+           display: block;
+           margin-bottom: 7px;
+           font-size: 14px;
+           color: #4a567a;
+           font-weight: 600;
+       }
+
+       .input-group input {
+           width: 100%;
+           padding: 11px 12px;
+           border: 1px solid #d8d6ff;
+           border-radius: 12px;
+           font-size: 14px;
+           outline: none;
+           transition: border-color 0.2s ease, box-shadow 0.2s ease;
+       }
+
+       .input-group input:focus {
+           border-color: #5356fb;
+           box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.14);
        }
 
        .input-tip {
-           width: 90%;
-           margin: 6px 0 0;
+           margin: 7px 0 0;
            font-size: 12px;
            color: #98a2b3;
        }
-       
-       button {
-           width: 100%;
-           padding: 10px;
-           background-color: #007BFF;
-           color: #fff;
+
+       .settings-save-wrap {
+           margin-top: 20px;
+           display: flex;
+           justify-content: flex-end;
+       }
+
+       .settings-save-btn {
+           min-width: 200px;
            border: none;
-           border-radius: 20px;
+           border-radius: 999px;
+           padding: 12px 20px;
+           color: #fff;
+           font-weight: 700;
            cursor: pointer;
-       	   margin-top: 30px;
-		   margin-bottom: 20px;
+           background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+           box-shadow: 0 14px 28px rgba(83, 86, 251, 0.26);
        }
-       
-       button:hover {
-           background-color: #0056b3;
+
+       .input-xt {
+           margin: 14px 0 0;
+           padding: 8px 12px;
+           border-radius: 999px;
+           font-size: 12px;
+           color: #667085;
+           background: #f1f3ff;
+           display: inline-flex;
        }
-       
+
        .custom-popup {
            position: fixed;
-           top: 30%;
+           top: 50%;
            left: 50%;
            transform: translate(-50%, -50%);
-           background-color: rgba(0, 0, 0, 0.5);
-           color: white;
-           padding: 10px 20px;
-           border-radius: 5px;
-           z-index: 1000;
            display: none;
-       	   font-size: 14px;
+           padding: 10px 18px;
+           border-radius: 999px;
+           background: rgba(39, 45, 75, 0.88);
+           color: #fff;
+           font-size: 13px;
+           z-index: 1000;
        }
-	   .input-xt{
-		   margin: auto;
-		   font-size: 14px;
-		   color: #ccc;
-	   }
 
-	   @media (min-width: 992px) {
-		   .settings-container {
-			   width: min(980px, calc(100% - 64px));
-			   margin: 76px auto 24px;
-			   padding: 24px 28px;
-		   }
-
-		   .input-group {
-			   align-items: flex-start;
-		   }
-
-		   .input-group label,
-		   .input-group input {
-			   width: min(760px, 100%);
-		   }
-
-		   .input-tip {
-			   width: min(760px, 100%);
-		   }
-
-		   button {
-			   width: 220px;
-			   align-self: flex-end;
-			   margin-bottom: 8px;
-			   border-radius: 10px;
-		   }
-	   }
+       @media (min-width: 992px) {
+           .settings-container {
+               margin-top: 78px;
+               padding: 24px 28px;
+           }
+       }
     </style>
 </head>
 
 <body>
-<div class="navbar">
+    <div class="navbar">
         <a class="back-button left-arrow" href="index.php" onclick="if(history.length>1){history.back();return false;}if(document.referrer){location.href=document.referrer;return false;}"></a>
         <div class="title">支付设置</div>
     </div>
     <div class="settings-container">
+	   <h2 class="section-title">支付网关参数</h2>
 	   <p class="settings-intro">请填写支付平台参数，保存后立即生效；建议优先在测试环境验证回调链路。</p>
         <div class="input-group">
             <label for="api_url">支付地址api</label>
@@ -158,7 +150,9 @@ require_once 'login_check.php';
 		    <input type="url" id="callback_url" placeholder="例如：https://example.com/pay/notify_url.php" spellcheck="false">
             <p class="input-tip">请确保公网可访问，且回调地址与支付平台后台配置保持一致。</p>
 		</div>
-        <button onclick="updatePaymentSettings()">保存支付设置</button>
+        <div class="settings-save-wrap">
+            <button class="settings-save-btn" onclick="updatePaymentSettings()">保存支付设置</button>
+        </div>
 		<p class="input-xt">本系统已对接易支付</p>
     </div>
     <div class="custom-popup" id="popup">更新成功</div>
