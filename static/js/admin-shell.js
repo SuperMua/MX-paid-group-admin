@@ -14,25 +14,33 @@
         return;
     }
 
-    function detectActiveMenu() {
-        var map = [
-            { key: 'index', match: ['/admin/index.php', '/admin/groups.php'] },
-            { key: 'order', match: ['/admin/order.php'] },
-            { key: 'review', match: ['/admin/review_list.php', '/admin/review_details.php'] },
-            { key: 'visitor', match: ['/admin/visitor.php'] },
-            { key: 'settings', match: ['/admin/settings.php', '/admin/admin_settings.php', '/admin/payment_settings.php', '/admin/settings_frontend.php', '/admin/settings_page.php', '/admin/settings_page2.php', '/admin/moban.php', '/admin/audit_status.php', '/admin/brand_settings.php'] },
-            { key: 'other', match: ['/admin/upload_cache.php'] }
-        ];
+    function detectActiveRoute() {
+        var routeMap = {
+            index: ['/admin/index.php', '/admin/groups.php'],
+            order: ['/admin/order.php'],
+            review: ['/admin/review_list.php', '/admin/review_details.php'],
+            visitor: ['/admin/visitor.php'],
+            settings: ['/admin/settings.php'],
+            settings_template: ['/admin/moban.php', '/admin/settings_page.php', '/admin/settings_page2.php'],
+            settings_task: ['/admin/settings_frontend.php'],
+            settings_account: ['/admin/admin_settings.php'],
+            settings_payment: ['/admin/payment_settings.php'],
+            settings_audit: ['/admin/audit_status.php'],
+            settings_brand: ['/admin/brand_settings.php'],
+            other: ['/admin/upload_cache.php']
+        };
 
-        for (var i = 0; i < map.length; i += 1) {
-            var item = map[i];
-            for (var j = 0; j < item.match.length; j += 1) {
-                if (currentPath.indexOf(item.match[j]) !== -1) {
-                    return item.key;
+        var active = '';
+        Object.keys(routeMap).some(function (key) {
+            return routeMap[key].some(function (path) {
+                if (currentPath.indexOf(path) !== -1) {
+                    active = key;
+                    return true;
                 }
-            }
-        }
-        return '';
+                return false;
+            });
+        });
+        return active;
     }
 
     function ensureFavicon(path) {
@@ -58,7 +66,7 @@
             return;
         }
 
-        var activeMenu = detectActiveMenu();
+        var activeRoute = detectActiveRoute();
         var brandName = (brand && brand.brand_name) ? brand.brand_name : '付费进群系统';
         var logoPath = brand && brand.logo_path ? brand.logo_path : '';
 
@@ -103,19 +111,52 @@
             { key: 'order', label: '查看订单', href: 'order.php' },
             { key: 'review', label: '任务审核', href: 'review_list.php' },
             { key: 'visitor', label: '访客记录', href: 'visitor.php' },
-            { key: 'settings', label: '系统设置', href: 'settings.php' },
+            {
+                key: 'settings',
+                label: '系统设置',
+                href: 'settings.php',
+                children: [
+                    { key: 'settings_template', label: '模板设置', href: 'moban.php' },
+                    { key: 'settings_task', label: '任务设置', href: 'settings_frontend.php' },
+                    { key: 'settings_account', label: '账号设置', href: 'admin_settings.php' },
+                    { key: 'settings_payment', label: '支付设置', href: 'payment_settings.php' },
+                    { key: 'settings_audit', label: '审核设置', href: 'audit_status.php' },
+                    { key: 'settings_brand', label: '品牌设置', href: 'brand_settings.php' }
+                ]
+            },
             { key: 'other', label: '其他工具', href: 'upload_cache.php' }
         ];
 
         menus.forEach(function (menu) {
             var link = document.createElement('a');
             link.className = 'admin-shell-link';
-            if (menu.key === activeMenu) {
+            if (menu.key === activeRoute || (menu.key === 'settings' && String(activeRoute).indexOf('settings_') === 0)) {
                 link.classList.add('is-active');
             }
             link.href = menu.href;
             link.textContent = menu.label;
             nav.appendChild(link);
+
+            if (menu.children && menu.children.length) {
+                var sub = document.createElement('div');
+                sub.className = 'admin-shell-subnav';
+                if (menu.key === activeRoute || String(activeRoute).indexOf('settings_') === 0) {
+                    sub.classList.add('is-open');
+                }
+
+                menu.children.forEach(function (child) {
+                    var childLink = document.createElement('a');
+                    childLink.className = 'admin-shell-sublink';
+                    if (child.key === activeRoute) {
+                        childLink.classList.add('is-active');
+                    }
+                    childLink.href = child.href;
+                    childLink.textContent = child.label;
+                    sub.appendChild(childLink);
+                });
+
+                nav.appendChild(sub);
+            }
         });
         aside.appendChild(nav);
 
@@ -152,15 +193,9 @@
             .then(function (payload) {
                 var data = payload && payload.success ? payload.data : {};
                 ensureFavicon(data && data.favicon_path ? data.favicon_path : '');
-                if (document.querySelector('.dashboard-layout')) {
-                    return;
-                }
                 buildShell(data || {});
             })
             .catch(function () {
-                if (document.querySelector('.dashboard-layout')) {
-                    return;
-                }
                 buildShell({});
             });
     }

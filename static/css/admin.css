@@ -447,6 +447,49 @@ button[type="submit"] {
   height: 20px;
 }
 
+.admin-action-bar {
+  width: min(var(--admin-max-width), calc(100% - 20px));
+  margin: 10px auto 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-pill-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.admin-pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.admin-pill-btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #5356fb 0%, #6f75ff 100%);
+  box-shadow: 0 10px 18px rgba(83, 86, 251, 0.2);
+}
+
+.admin-pill-btn-danger {
+  color: #fff;
+  background: linear-gradient(135deg, #f539f8 0%, #e34ce6 100%);
+  box-shadow: 0 10px 18px rgba(245, 57, 248, 0.22);
+}
+
+.admin-pill-btn-light {
+  color: #3f47d9;
+  background: #eff0ff;
+  border: 1px solid rgba(83, 86, 251, 0.2);
+}
+
 .custom-modal {
   display: none;
   position: fixed;
@@ -677,6 +720,38 @@ select:focus {
   box-shadow: 0 10px 20px rgba(83, 86, 251, 0.25);
 }
 
+.admin-shell-subnav {
+  display: none;
+  margin: 2px 0 8px;
+  padding-left: 14px;
+  border-left: 2px solid rgba(83, 86, 251, 0.16);
+}
+
+.admin-shell-subnav.is-open {
+  display: block;
+}
+
+.admin-shell-sublink {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 10px;
+  color: #63709a;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-shell-sublink:hover {
+  color: #4047dc;
+  background: #f4f4ff;
+}
+
+.admin-shell-sublink.is-active {
+  color: #2f35cd;
+  background: #ececff;
+}
+
 .admin-shell-logout-form {
   margin-top: auto;
 }
@@ -758,6 +833,16 @@ select:focus {
 
   .admin-shell-enabled .main {
     margin-top: 12px;
+  }
+
+  .admin-shell-enabled .dashboard-aside {
+    display: none !important;
+  }
+
+  .admin-shell-enabled .dashboard-layout {
+    width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
   }
 
   .admin-shell-enabled .logout-button {
@@ -936,5 +1021,10 @@ select:focus {
     margin-bottom: 12px;
     padding: 12px 14px;
     border-radius: 12px;
+  }
+
+  .admin-action-bar {
+    width: min(1260px, 100%);
+    margin: 12px 0 14px;
   }
 }
