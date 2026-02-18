@@ -18,22 +18,22 @@ require_once 'review_db.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <p class="title">审核列表</p>
     </div>
-	<p class="page-intro">按 IP 聚合展示待审与已审记录，进入详情后可进行单条通过/驳回和删除操作。</p>
 	<div class="statistics1 order-details">
 	    <p>已审核：<span class="order-dingdan"><?php echo $totalApproved;?></span></p>
 	    <p>待审核：<span class="order-dingdan"><?php echo $totalPending;?></span></p>
 		<p>未通过‌：<span class="order-dingdan"><?php echo $totalRejected;?></span></p>
 	</div>
-	<button class="more-button" onclick="showConfirmModal()" title="清空审核记录">
-	        <img src="../result/images/shanchu.png" alt="">
-	   </button>
+    <div class="admin-action-bar">
+        <a class="admin-pill-btn admin-pill-btn-primary" href="review_export.php">导出 Excel</a>
+        <button class="admin-pill-btn admin-pill-btn-danger" type="button" onclick="showConfirmModal()">清空记录</button>
+    </div>
 	   
 	   <!-- 弹窗1 -->
 	       <div id="confirmModal" class="custom-modal">
 	           <div class="modal-content">
-	               <p>是否清空全部审核记录？</p>
+	               <p>是否清空全部审核记录？（删除后不可恢复）</p>
 	               <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
-				   <button class="modal-button confirm" onclick="clearAllRecords()">确认</button>
+				   <button class="modal-button confirm" onclick="clearAllRecords()">二次确认删除</button>
 	           </div>
 	       </div>
 	   
@@ -86,7 +86,7 @@ require_once 'review_db.php';
             document.getElementById("confirmModal").style.alignItems = "center";
             const confirmButton = document.querySelector("#confirmModal .confirm");
             confirmButton.disabled = false;
-            confirmButton.textContent = "确认";
+            confirmButton.textContent = "二次确认删除";
         }
 
         // 关闭确认弹窗
@@ -133,7 +133,7 @@ require_once 'review_db.php';
             .finally(() => {
                 isClearProcessing = false;
                 confirmButton.disabled = false;
-                confirmButton.textContent = "确认";
+                confirmButton.textContent = "二次确认删除";
             });
         }
 

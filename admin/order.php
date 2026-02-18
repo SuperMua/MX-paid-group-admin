@@ -17,15 +17,15 @@ require_once 'login_check.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <div class="title">订单详情</div>
     </div>
-    <p class="page-intro">展示全量订单支付情况。删除操作不可恢复，请在导出或核对后执行。</p>
     <div class="statistics order-djsd">
         <p>总订单：<span class="order-dingdan"><?php echo $countRow['total_orders']; ?></span></p>
         <p>已支付：<span class="order-dingdan"><?php echo $countRow['paid_orders']; ?></span></p>
         <p>未支付：<span class="order-dingdan"><?php echo $countRow['unpaid_orders']; ?></span></p>
     </div>
-	<button class="more-button" onclick="showConfirmModal('delete_all')" title="清空订单记录">
-	     <img src="../result/images/shanchu.png" alt="">
-	</button>
+    <div class="admin-action-bar">
+        <a class="admin-pill-btn admin-pill-btn-primary" href="order_export.php">导出 Excel</a>
+        <button class="admin-pill-btn admin-pill-btn-danger" type="button" onclick="showConfirmModal('delete_all')">清空记录</button>
+    </div>
 
     <!-- 内容容器 -->
     <div class="content-container order-content-grid">
@@ -37,9 +37,7 @@ require_once 'login_check.php';
                     <div class="order_kls">
                         <div class="order-hrsk">
                             <span class="info-conpih">订单号：<?php echo $order['order_number']; ?></span>
-							<span class="info-conuie" onclick='showConfirmModal("delete_single", <?php echo intval($order['id']); ?>, <?php echo json_encode((string)$order['order_number'], JSON_UNESCAPED_UNICODE); ?>)'>
-							   <img src="../result/images/x.png" alt="">
-							</span>
+                            <button class="admin-pill-btn admin-pill-btn-light" type="button" onclick='showConfirmModal("delete_single", <?php echo intval($order['id']); ?>, <?php echo json_encode((string)$order['order_number'], JSON_UNESCAPED_UNICODE); ?>)'>删除</button>
                         </div>
                         <div class="order-item_yup">
                             <div class="order-info">
@@ -86,7 +84,7 @@ require_once 'login_check.php';
         <div class="modal-content">
             <p id="confirmMessage"></p>
             <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
-			<button class="modal-button confirm" onclick="confirmAction()">确认</button>
+			<button class="modal-button confirm" onclick="confirmAction()">二次确认删除</button>
         </div>
     </div>
 
@@ -114,12 +112,12 @@ require_once 'login_check.php';
                 const confirmMessage = document.getElementById("confirmMessage");
                 const confirmButton = document.querySelector("#confirmModal .confirm");
                 if (actionType === 'delete_single') {
-                    confirmMessage.textContent = `是否删除订单：${orderNumber}`;
+                    confirmMessage.textContent = `是否删除订单：${orderNumber}（删除后不可恢复）`;
                 } else if (actionType === 'delete_all') {
-                    confirmMessage.textContent = "是否删除全部订单记录？";
+                    confirmMessage.textContent = "是否清空全部订单记录？（删除后不可恢复）";
                 }
                 confirmButton.disabled = false;
-                confirmButton.textContent = "确认";
+                confirmButton.textContent = "二次确认删除";
             
                 // 存储操作类型、订单ID和订单编号
                 document.getElementById("confirmModal").setAttribute("data-action", actionType);
@@ -185,7 +183,7 @@ require_once 'login_check.php';
                 .finally(() => {
                     isActionProcessing = false;
                     confirmButton.disabled = false;
-                    confirmButton.textContent = "确认";
+                    confirmButton.textContent = "二次确认删除";
                 });
             }
         </script>

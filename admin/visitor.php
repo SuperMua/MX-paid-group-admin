@@ -17,17 +17,17 @@ require_once 'login_check.php';
         <a class="back-button left-arrow" href="index.php"></a>
         <div class="title">访客记录</div>
     </div>
-   <p class="page-intro">用于观察访问来源和行为轨迹。建议按周期归档后再清空，避免影响运营复盘。</p>
-   <button class="more-button" onclick="showConfirmModal()" title="清空访客记录">
-        <img src="../result/images/shanchu.png" alt="">
-   </button>
+   <div class="admin-action-bar">
+        <a class="admin-pill-btn admin-pill-btn-primary" href="visitor_export.php">导出 Excel</a>
+        <button class="admin-pill-btn admin-pill-btn-danger" type="button" onclick="showConfirmModal()">清空记录</button>
+   </div>
    
    <!-- 弹窗1 -->
            <div id="confirmModal" class="custom-modal">
                <div class="modal-content">
-                   <p>是否清空全部访客记录？</p>
+                   <p>是否清空全部访客记录？（删除后不可恢复）</p>
                    <button class="modal-button cancel" onclick="closeConfirmModal()">取消</button>
-			   <button class="modal-button confirm" onclick="clearAllRecords()">确认</button>
+			   <button class="modal-button confirm" onclick="clearAllRecords()">二次确认删除</button>
                </div>
            </div>
    
@@ -89,7 +89,7 @@ require_once 'login_check.php';
             document.getElementById("confirmModal").style.alignItems = "center";
             const confirmButton = document.querySelector("#confirmModal .confirm");
             confirmButton.disabled = false;
-            confirmButton.textContent = "确认";
+            confirmButton.textContent = "二次确认删除";
         }
 
         // 关闭确认弹窗
@@ -136,7 +136,7 @@ require_once 'login_check.php';
             .finally(() => {
                 isClearProcessing = false;
                 confirmButton.disabled = false;
-                confirmButton.textContent = "确认";
+                confirmButton.textContent = "二次确认删除";
             });
         }
 
