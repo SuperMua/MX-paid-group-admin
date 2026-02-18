@@ -213,6 +213,9 @@ require_once 'login_check.php';
                    });
            }
        </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 
 </html>
+
+

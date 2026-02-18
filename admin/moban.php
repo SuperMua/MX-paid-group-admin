@@ -683,5 +683,8 @@ function showToast(message) {
     }, 2000);
 }
 </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+

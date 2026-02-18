@@ -122,5 +122,8 @@ require_once 'login_check.php';
     <div class="success-message" id="success-message">保存成功</div>	
 </div>
 <script src="../static/js/settings.js"></script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+

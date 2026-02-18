@@ -196,6 +196,7 @@ require_once 'login_check.php';
         syncStatusClass(toggleSwitch.checked);
         toggleSwitch.addEventListener('change', toggleAutoAudit);
     </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 
 </html>
@@ -204,3 +205,5 @@ require_once 'login_check.php';
 // 关闭数据库连接
 $conn->close();
 ?>
+
+

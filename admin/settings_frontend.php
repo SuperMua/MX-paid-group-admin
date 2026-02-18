@@ -307,6 +307,9 @@ require_once 'login_check.php';
             xhr.send(formData);
         });
     </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 
 </html>
+
+

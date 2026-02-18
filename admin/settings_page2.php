@@ -845,6 +845,9 @@ $conn->close();
 	        }
 	    <?php endif; ?>
 	</script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
      
+
+

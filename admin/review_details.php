@@ -223,5 +223,8 @@ require_once 'review_db.php';
             document.getElementById("confirmModal").style.display = "none";
         }	
     </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+

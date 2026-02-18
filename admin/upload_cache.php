@@ -156,5 +156,8 @@ require_once 'login_check.php';
             document.getElementById("successModal").style.display = "none";
         }
     </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+
