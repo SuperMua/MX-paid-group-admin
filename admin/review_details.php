@@ -35,7 +35,7 @@ require_once 'review_db.php';
         <a class="back-button left-arrow" href="review_list.php"></a>
         <p class="title">审核详情</p>
     </div>
-    <div class="main" style="margin-top: 50px;"></div>
+    <p class="page-intro">点击图片可放大预览，并在底部执行通过/不通过操作；删除操作不可恢复。</p>
     <div class="container review-details-container">
         <?php if ($success):?>
             <div class="success-message" id="successMessage">操作成功</div>
@@ -65,7 +65,10 @@ require_once 'review_db.php';
                 </div>
             <?php endwhile;?>
         <?php else:?>
-            <p class="shuju">没有数据</p>
+            <div class="details-empty">
+                当前 IP 暂无审核数据，可能已清空或尚未上传。<br>
+                可点击 <a href="review_list.php">返回审核列表</a> 继续处理其他记录。
+            </div>
         <?php endif;?>
     </div>
     <!-- 图片弹窗 -->
@@ -98,6 +101,8 @@ require_once 'review_db.php';
     </div>
 
     <script>
+        let isDeleteProcessing = false;
+
         function showPreview(img, ip, imageId) {
             const previewContainer = document.getElementById('imagePreviewContainer');  
             const previewImage = document.getElementById('previewImage');  
@@ -170,14 +175,21 @@ require_once 'review_db.php';
     
         // 执行删除操作
         function deleteSingleRecord(id) {
+            if (isDeleteProcessing) {
+                return;
+            }
             if (!id) {
                 alert("未获取到要删除的记录编号，请刷新后重试");
                 return;
             }
+            const confirmButton = document.querySelector('#confirmModal .confirm');
+            isDeleteProcessing = true;
+            confirmButton.disabled = true;
+            confirmButton.textContent = '处理中...';
             fetch("review_db.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "action=delete_single&id=" + id 
+                body: "action=delete_single&id=" + encodeURIComponent(id) 
             })
             .then(response => response.text()) 
             .then(data => {
@@ -198,6 +210,11 @@ require_once 'review_db.php';
             .catch(error => {
                 console.error("Error:", error);
                 alert("网络异常，请稍后重试");
+            })
+            .finally(() => {
+                isDeleteProcessing = false;
+                confirmButton.disabled = false;
+                confirmButton.textContent = '确认';
             });
         }
     

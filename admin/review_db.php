@@ -31,22 +31,26 @@ try {
 
             if (in_array($action, array('approve', 'reject'), true) && $image_id) {
                 $status = $action === 'approve' ? 'approved' : 'rejected';
-                $sql = "UPDATE images SET status = ? WHERE id = ?";
+                $sql = "UPDATE images SET status = ? WHERE id = ? AND ip_address = ?";
                 $stmt = $conn->prepare($sql);
                 
                 if (!$stmt) {
                     throw new Exception("Prepare failed: " . $conn->error);
                 }
     
-                if (!$stmt->bind_param("si", $status, $image_id)) {
+                if (!$stmt->bind_param("sis", $status, $image_id, $ip_address)) {
                     throw new Exception("Binding parameters failed: " . $stmt->error);
                 }
     
                 if (!$stmt->execute()) {
                     throw new Exception("Execute failed: " . $stmt->error);
                 }
-    
-                header("Location: review_details.php?ip="  . urlencode($ip_address) . "&success=1");
+
+                if ($stmt->affected_rows > 0) {
+                    header("Location: review_details.php?ip="  . urlencode($ip_address) . "&success=1");
+                } else {
+                    header("Location: review_details.php?ip="  . urlencode($ip_address) . "&error=1");
+                }
                 exit;
             }
      
