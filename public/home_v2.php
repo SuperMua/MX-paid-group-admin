@@ -40,8 +40,29 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../result/images/logo.ico">
     <link rel="stylesheet" href="../static/css/style2.css">
     <title>加入<?php echo $city;?>群聊</title>
+    <script>
+        fetch('../admin/brand_settings_api.php')
+            .then(function(response) { return response.json(); })
+            .then(function(payload) {
+                if (!payload || !payload.success) {
+                    return;
+                }
+                var data = payload.data || {};
+                if (data.favicon_path) {
+                    var icon = document.querySelector('link[rel="icon"]');
+                    if (!icon) {
+                        icon = document.createElement('link');
+                        icon.rel = 'icon';
+                        document.head.appendChild(icon);
+                    }
+                    icon.href = data.favicon_path;
+                }
+            })
+            .catch(function() {});
+    </script>
     <style>
        
     </style>
@@ -171,4 +192,3 @@ $conn->close();
 	<script src="../static/js/visitor.js"></script>
 </body>
 </html>
-

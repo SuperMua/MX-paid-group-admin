@@ -107,8 +107,19 @@ require_once 'login_check.php';  //验证是否登陆
 					</a>
 				    <span class="menu-arrow"></span>
 				</div>
+				<div class="menu-item">
+				    <a href="brand_settings.php">
+				        <span class="menu-item-icon icon_8"></span>
+						<span class="menu-title">品牌设置</span>
+						<span class="menu-desc">自定义品牌名称、Logo 与顶部图标</span>
+					</a>
+				    <span class="menu-arrow"></span>
+				</div>
 				
 		    </div>
 	</div>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+

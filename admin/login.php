@@ -18,6 +18,7 @@ if (!empty($error)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
+    <link rel="icon" href="../result/images/logo.ico">
     <style>
         :root {
             --login-primary: #5356fb;
@@ -148,6 +149,29 @@ if (!empty($error)) {
             <button type="submit">登 录</button>
         </form>
     </div>
+    <script>
+        fetch('brand_settings_api.php')
+            .then(function(response) { return response.json(); })
+            .then(function(payload) {
+                if (!payload || !payload.success) {
+                    return;
+                }
+                var data = payload.data || {};
+                if (data.brand_name) {
+                    document.title = data.brand_name + ' - 登录';
+                }
+                if (data.favicon_path) {
+                    var icon = document.querySelector('link[rel="icon"]');
+                    if (!icon) {
+                        icon = document.createElement('link');
+                        icon.rel = 'icon';
+                        document.head.appendChild(icon);
+                    }
+                    icon.href = data.favicon_path;
+                }
+            })
+            .catch(function() {});
+    </script>
 </body>
 
 </html>

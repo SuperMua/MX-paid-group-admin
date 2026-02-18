@@ -69,6 +69,13 @@ require_once 'query-visitors.php'; //加载数据
 		   background: linear-gradient(135deg, #f539f8, #5356fb);
 	   }
 
+	   .dashboard-brand-logo {
+		   width: 36px;
+		   height: 36px;
+		   border-radius: 10px;
+		   object-fit: cover;
+	   }
+
 	   .dashboard-brand-title {
 		   font-size: 22px;
 		   font-weight: 700;
@@ -220,9 +227,10 @@ require_once 'query-visitors.php'; //加载数据
 <body>
     <div class="dashboard-layout">
         <aside class="dashboard-aside">
-            <div class="dashboard-brand">
-                <span class="dashboard-brand-badge">NFT</span>
-                <span class="dashboard-brand-title">运营后台</span>
+            <div class="dashboard-brand" id="dashboardBrandWrap">
+                <span class="dashboard-brand-badge" id="dashboardBrandBadge">NFT</span>
+                <img src="" alt="品牌Logo" class="dashboard-brand-logo" id="dashboardBrandLogo" style="display:none;">
+                <span class="dashboard-brand-title" id="dashboardBrandTitle">运营后台</span>
             </div>
             <div class="sidebar-user">
                 <img src="<?php echo htmlspecialchars($adminInfo['avatar']); ?>" alt="用户头像" class="sidebar-avatar">
@@ -363,8 +371,58 @@ require_once 'query-visitors.php'; //加载数据
         </div>
     </div>
 <script>
+    function applyBrandSettings() {
+        fetch('brand_settings_api.php')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(payload) {
+                if (!payload || !payload.success) {
+                    return;
+                }
+                var data = payload.data || {};
+                var brandName = (data.brand_name || '').trim();
+                var logoPath = (data.logo_path || '').trim();
+                var faviconPath = (data.favicon_path || '').trim();
+
+                if (brandName) {
+                    var titleNode = document.getElementById('dashboardBrandTitle');
+                    if (titleNode) {
+                        titleNode.textContent = brandName;
+                    }
+                    document.title = brandName + ' - 控制台';
+                }
+
+                if (logoPath) {
+                    var logoNode = document.getElementById('dashboardBrandLogo');
+                    var badgeNode = document.getElementById('dashboardBrandBadge');
+                    if (logoNode) {
+                        logoNode.src = logoPath;
+                        logoNode.style.display = 'inline-block';
+                    }
+                    if (badgeNode) {
+                        badgeNode.style.display = 'none';
+                    }
+                }
+
+                if (faviconPath) {
+                    var faviconNode = document.querySelector('link[rel="icon"]');
+                    if (!faviconNode) {
+                        faviconNode = document.createElement('link');
+                        faviconNode.rel = 'icon';
+                        document.head.appendChild(faviconNode);
+                    }
+                    faviconNode.href = faviconPath + (faviconPath.indexOf('?') === -1 ? '?v=' : '&v=') + Date.now();
+                }
+            })
+            .catch(function() {
+                // 忽略品牌配置读取失败，保留默认展示
+            });
+    }
+
     // 页面加载完成后延迟2秒开始滚动
     window.onload = function() {
+        applyBrandSettings();
         startScroll();
     };
 
@@ -392,5 +450,8 @@ require_once 'query-visitors.php'; //加载数据
         }
     }
 </script>
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
+
+
