@@ -36,6 +36,12 @@ require_once 'login_check.php';
           font-size: 16px;
           color: #333;
       }
+
+      .settings-intro {
+          margin: 0 0 14px;
+          font-size: 13px;
+          color: #667085;
+      }
       
       .avatar-section {
           display: flex;
@@ -105,6 +111,13 @@ require_once 'login_check.php';
           border: 1px solid #ccc;
           border-radius: 5px;
       }
+
+      .input-tip {
+          width: 90%;
+          margin: 6px 0 0;
+          font-size: 12px;
+          color: #98a2b3;
+      }
       
       button {
           width: 100%;
@@ -151,6 +164,10 @@ require_once 'login_check.php';
 			  width: min(620px, 100%);
 		  }
 
+		  .input-tip {
+			  width: min(620px, 100%);
+		  }
+
 		  button {
 			  width: 220px;
 			  align-self: flex-end;
@@ -170,6 +187,7 @@ require_once 'login_check.php';
         <div class="current-user">
             当前昵称：<span id="current-username"></span>
         </div>
+        <p class="settings-intro">支持修改昵称、登录密码和头像，建议定期更新密码以提升后台安全性。</p>
         <div class="avatar-section">
             <div class="avatar-container">
                 <img id="avatar" src="#" alt="用户头像">
@@ -179,13 +197,14 @@ require_once 'login_check.php';
         </div>
         <div class="input-group">
             <label for="username">修改昵称</label>
-            <input type="text" id="username" placeholder="请输入用户名">
+            <input type="text" id="username" placeholder="请输入新的昵称（可留空）" autocomplete="username">
         </div>
         <div class="input-group">
             <label for="password">修改密码</label>
-            <input type="password" id="password" placeholder="请输入密码">
+            <input type="password" id="password" placeholder="请输入新密码（留空则不修改）" autocomplete="new-password">
+            <p class="input-tip">提示：密码留空时仅更新昵称或头像，不会覆盖原密码。</p>
         </div>
-        <button onclick="updateSettings()">确认修改</button>
+        <button onclick="updateSettings()">保存账号设置</button>
     </div>
     <div class="custom-popup" id="popup">修改成功</div>
 

@@ -54,6 +54,19 @@ require_once 'login_check.php';
            border: 1px solid #ccc;
            border-radius: 5px;
        }
+
+       .settings-intro {
+           margin: 0 0 14px;
+           font-size: 13px;
+           color: #667085;
+       }
+
+       .input-tip {
+           width: 90%;
+           margin: 6px 0 0;
+           font-size: 12px;
+           color: #98a2b3;
+       }
        
        button {
            width: 100%;
@@ -106,6 +119,10 @@ require_once 'login_check.php';
 			   width: min(760px, 100%);
 		   }
 
+		   .input-tip {
+			   width: min(760px, 100%);
+		   }
+
 		   button {
 			   width: 220px;
 			   align-self: flex-end;
@@ -122,24 +139,26 @@ require_once 'login_check.php';
         <div class="title">支付设置</div>
     </div>
     <div class="settings-container">
-	   <p>完善支付接口</p>
+	   <p class="settings-intro">请填写支付平台参数，保存后立即生效；建议优先在测试环境验证回调链路。</p>
         <div class="input-group">
             <label for="api_url">支付地址api</label>
-            <input type="text" id="api_url" placeholder="请输入支付接口地址 格式https://域名/">
+            <input type="url" id="api_url" placeholder="例如：https://pay.example.com/" spellcheck="false">
+            <p class="input-tip">示例：https://你的支付域名/ ，末尾建议保留 / 。</p>
         </div>
         <div class="input-group">
             <label for="merchant_id">商户id</label>
-            <input type="text" id="merchant_id" placeholder="请输入商户 ID">
+            <input type="text" id="merchant_id" placeholder="请输入商户 ID（数字或字母）" spellcheck="false">
         </div>
         <div class="input-group">
-            <label for="secre_key">商户秘钥key</label>
-            <input type="text" id="secre_key" placeholder="请输入商户密钥">
+            <label for="secre_key">商户秘钥 Key</label>
+            <input type="text" id="secre_key" placeholder="请输入商户密钥 Key" spellcheck="false">
         </div>
 		<div class="input-group">
 		    <label for="callback_url">回调地址</label>
-		    <input type="text" id="callback_url" placeholder="请输入回调地址 格式http://域名">
+		    <input type="url" id="callback_url" placeholder="例如：https://example.com/pay/notify_url.php" spellcheck="false">
+            <p class="input-tip">请确保公网可访问，且回调地址与支付平台后台配置保持一致。</p>
 		</div>
-        <button onclick="updatePaymentSettings()">确认更新</button>
+        <button onclick="updatePaymentSettings()">保存支付设置</button>
 		<p class="input-xt">本系统已对接易支付</p>
     </div>
     <div class="custom-popup" id="popup">更新成功</div>

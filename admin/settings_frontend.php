@@ -26,6 +26,13 @@ require_once 'login_check.php';
 			margin-top: 40px;
         }
 
+        .form-intro {
+            margin: 0 0 14px;
+            font-size: 13px;
+            color: #667085;
+            line-height: 1.6;
+        }
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -44,6 +51,13 @@ require_once 'login_check.php';
             box-sizing: border-box;
 			outline: none;
 			font-size: 14px;
+        }
+
+        .field-tip {
+            margin-top: -8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #98a2b3;
         }
 
         /* 优化图片和上传按钮的布局 */
@@ -119,14 +133,15 @@ require_once 'login_check.php';
         }
 
         .modal-content {
-			width: 80px;
-			height: 40px;
+			width: 180px;
+			min-height: 44px;
+			padding: 10px 12px;
             background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明背景 */
             border-radius: 5px;
             color: #fff;
             text-align: center;
 			font-size: 14px;
-			line-height: 14px;
+			line-height: 1.4;
         }
 		.renwu{
 			height: 100px;
@@ -173,6 +188,7 @@ require_once 'login_check.php';
         <div class="title">任务设置</div>
     </div>
     <form class="task-settings-form" action="settings_backend.php" method="post" enctype="multipart/form-data">
+        <p class="form-intro">配置前台任务文案、审核时效和示例图片。建议先保存基础文案，再上传示例图。</p>
         <label for="title">任务标题:</label>
         <input type="text" id="title" name="title" placeholder="填写任务标题">
 
@@ -184,6 +200,7 @@ require_once 'login_check.php';
 
         <label for="review_time">审核时间:</label>
         <textarea class="renwu_times" type="text" id="review_time" name="review_time" placeholder="填写任务审核时间"></textarea>
+        <p class="field-tip">示例：工作日 09:00-22:00 审核，节假日顺延至次日。</p>
 
         <label for="download_img">下载图片:</label>
         <div class="image-upload-container">
@@ -205,8 +222,9 @@ require_once 'login_check.php';
 
         <label for="prompt">任务数量:</label>
         <textarea class="renwu_prompt" id="prompt" name="prompt" placeholder="填写图片数量"></textarea>
+        <p class="field-tip">示例：上传 3 张清晰截图，避免图片过暗或裁剪不完整。</p>
 
-        <input type="submit" value="确认更新">
+        <input type="submit" value="保存任务设置">
     </form>
 
     <div id="custom-modal">
