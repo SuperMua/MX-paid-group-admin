@@ -722,6 +722,31 @@ body {
 		gap: 18px;
 	}
 
+	.order-list-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+		gap: 12px;
+	}
+
+	.order-list-grid .order_kls {
+		margin-bottom: 0;
+	}
+
+	.visitor-list-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	.visitor-list-grid .order-list {
+		margin: 0;
+	}
+
+	.visitor-list-grid .order-item {
+		height: 100%;
+	}
+
 	.amount {
 		font-size: 24px;
 	}

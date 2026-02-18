@@ -342,5 +342,46 @@ a:active {
 		width: min(420px, 100%);
 		margin-bottom: 16px;
 	}
+
+	.review-list-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+		gap: 12px;
+		padding: 12px;
+		box-sizing: border-box;
+	}
+
+	.review-list-container .task {
+		margin: 0;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-radius: 10px;
+		background: #fff;
+		border-bottom: none;
+	}
+
+	.review-list-container .view-details {
+		white-space: nowrap;
+		align-self: center;
+	}
+
+	.review-list-container .pagination,
+	.review-list-container .shuju {
+		grid-column: 1 / -1;
+	}
+
+	.review-details-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+		gap: 12px;
+		padding: 12px;
+		box-sizing: border-box;
+	}
+
+	.review-details-container .info {
+		margin: 0;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-radius: 10px;
+		background: #fff;
+	}
 }
 
