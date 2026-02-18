@@ -19,80 +19,116 @@ if (!empty($error)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <style>
-        /* 全局样式 */
+        :root {
+            --login-primary: #1677ff;
+            --login-primary-hover: #0f63d4;
+            --login-card-radius: 16px;
+            --login-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+            --login-border: rgba(255, 255, 255, 0.22);
+            --login-text: #1f2937;
+            --login-sub: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            background: linear-gradient(to bottom, #2d59ff, #9ff9f9);
-            color: #333;
+            display: grid;
+            place-items: center;
+            color: var(--login-text);
+            background:
+                radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.26) 0, rgba(255, 255, 255, 0) 42%),
+                radial-gradient(circle at 80% 14%, rgba(187, 247, 255, 0.32) 0, rgba(187, 247, 255, 0) 40%),
+                linear-gradient(135deg, #0d47a1 0%, #1565c0 34%, #1d4ed8 62%, #60a5fa 100%);
+            padding: 24px;
         }
 
-       .login-container {
-            background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景，更炫酷 */
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            transition: all 0.3s ease; /* 添加过渡效果，让变化更平滑 */
-            margin: 30px; /* 使登录框与屏幕边框保持30px距离 */
-            box-sizing: border-box; /* 新增，确保内边距和边框计算在宽度内 */
+        .login-container {
+            width: min(100%, 460px);
+            padding: 34px 32px;
+            border-radius: var(--login-card-radius);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--login-border);
+            backdrop-filter: blur(6px);
+            box-shadow: var(--login-shadow);
         }
 
-       .login-container h2 {
+        .login-container h2 {
+            margin: 0 0 8px;
             text-align: center;
-            margin-bottom: 30px;
-            color: #2fbf63;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 文字阴影，增强立体感 */
+            color: #0f172a;
+            font-size: 28px;
+            letter-spacing: 1px;
         }
 
-       .login-container input[type="text"],
-       .login-container input[type="password"] {
+        .login-subtitle {
+            margin: 0 0 26px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--login-sub);
+        }
+
+        .login-error {
+            margin: 0 0 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #fff1f0;
+            border: 1px solid #ffccc7;
+            color: #cf1322;
+            font-size: 13px;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: none;
-            border-bottom: 1px solid #ccc; /* 底部边框样式，更简洁美观 */
-            border-radius: 0; /* 去掉默认圆角，采用底部边框体现输入框 */
-            background-color: transparent; /* 透明背景，融入整体 */
-            outline: none; /* 去掉聚焦时的默认外框 */
-            transition: border-bottom-color 0.3s ease; /* 过渡效果，改变输入框边框颜色时更平滑 */
-            box-sizing: border-box; /* 确保输入框内边距和边框计算在宽度内 */
+            border: 1px solid #d0d5dd;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: #fff;
+            color: #111827;
         }
 
-       .login-container input[type="text"]:focus,
-       .login-container input[type="password"]:focus {
-            border-bottom-color: #4CAF50; /* 聚焦时改变边框颜色 */
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: var(--login-primary);
+            box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.15);
         }
 
-       .login-container button {
+        .login-container button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(to bottom, #9ff9f9, #2e82ff);
-            color: white;
             border: none;
-            border-radius: 30px; /* 更大的圆角，更美观 */
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 6px;
+            font-size: 15px;
             font-weight: bold;
-            transition: background-color 0.3s ease; /* 按钮背景色过渡效果 */
-			margin-top: 20px;
-			margin-bottom: 40px;
+            color: #fff;
+            background: linear-gradient(135deg, #1677ff 0%, #3b82f6 100%);
+            cursor: pointer;
+            transition: transform 0.15s ease, background-color 0.2s ease;
         }
 
-       .login-container button:hover {
-            background-color: #45a049;
+        .login-container button:hover {
+            background: linear-gradient(135deg, var(--login-primary-hover) 0%, #2563eb 100%);
+            transform: translateY(-1px);
         }
 
-        /* 响应式设计，针对手机端进行调整 */
-        @media (max-width: 768px) {
-           .login-container {
-                width: calc(100% - 40px); /* 手机端时也保持左右各20px距离 */
+        @media (min-width: 992px) {
+            .login-container {
+                width: min(100%, 520px);
+                padding: 40px 40px;
+            }
+
+            .login-container h2 {
+                font-size: 30px;
             }
         }
     </style>
@@ -101,8 +137,9 @@ if (!empty($error)) {
 <body>
     <div class="login-container">
         <h2>管理员登录</h2>
-		<?php if (isset($error)): ?>
-		        <p style="color: red;"><?php echo $error; ?></p>
+        <p class="login-subtitle">请输入管理员账号和密码后继续</p>
+		<?php if (!empty($error)): ?>
+		        <p class="login-error"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
 		    <?php endif; ?>
         <form action="login_process.php" method="post">
             <input type="text" id="name" name="name" placeholder="用户名" required>

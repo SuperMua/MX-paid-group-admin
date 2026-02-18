@@ -35,7 +35,7 @@ require_once 'login_check.php';
         </div>
     </div>
 
-    <div class="main" style="margin-top: 50px;"></div>
+    <div class="main" style="margin-top: 50px;">
 		<div id="imageInfo" class="imageInfo">
 		    <p class="qctx">清空 ../upload 文件夹以释放存储空间</p>
 		    <p class="tpdx">图片数量: <span id="imageCount">加载中...</span><span> 张</span></p>
@@ -45,6 +45,7 @@ require_once 'login_check.php';
 			    <button class="button-qc" onclick="showConfirmModal()">确认清空</button>
 			</div>
 		</div>
+	</div>
     <script>
         // 页面加载完成后获取图片信息
         window.onload = function() {
@@ -111,4 +112,5 @@ require_once 'login_check.php';
             document.getElementById("successModal").style.display = "none";
         }
     </script>
+</body>
 </html>
