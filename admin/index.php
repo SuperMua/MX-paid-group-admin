@@ -41,8 +41,147 @@ require_once 'query-visitors.php'; //加载数据
 		   display: none;
 	   }
 
+	   .dashboard-layout {
+		   width: 100%;
+	   }
+
+	   .dashboard-aside {
+		   display: none;
+	   }
+
+	   .dashboard-brand {
+		   display: flex;
+		   align-items: center;
+		   gap: 10px;
+		   margin-bottom: 18px;
+	   }
+
+	   .dashboard-brand-badge {
+		   width: 36px;
+		   height: 36px;
+		   border-radius: 50%;
+		   display: inline-flex;
+		   align-items: center;
+		   justify-content: center;
+		   font-size: 13px;
+		   font-weight: 700;
+		   color: #fff;
+		   background: linear-gradient(135deg, #f539f8, #5356fb);
+	   }
+
+	   .dashboard-brand-title {
+		   font-size: 22px;
+		   font-weight: 700;
+		   color: #2b3553;
+		   letter-spacing: 0.2px;
+	   }
+
+	   .dashboard-section-title {
+		   margin: 16px 0 10px;
+		   color: #5356fb;
+		   font-size: 14px;
+		   font-weight: 700;
+	   }
+
+	   .sidebar-avatar {
+		   width: 42px;
+		   height: 42px;
+		   border-radius: 50%;
+		   border: 2px solid #fff;
+		   box-shadow: 0 8px 16px rgba(83, 86, 251, 0.22);
+	   }
+
+	   .sidebar-user {
+		   display: flex;
+		   align-items: center;
+		   gap: 10px;
+		   margin-bottom: 12px;
+		   padding: 10px;
+		   border-radius: 12px;
+		   background: #f8f7ff;
+	   }
+
+	   .sidebar-user-meta {
+		   min-width: 0;
+	   }
+
+	   .sidebar-user-name {
+		   font-size: 14px;
+		   font-weight: 600;
+		   color: #2d3250;
+		   white-space: nowrap;
+		   overflow: hidden;
+		   text-overflow: ellipsis;
+	   }
+
+	   .sidebar-user-tip {
+		   font-size: 12px;
+		   color: #8b93b1;
+		   margin-top: 2px;
+	   }
+
 	   @media (min-width: 992px) {
+		   .dashboard-layout {
+			   display: grid;
+			   grid-template-columns: 280px minmax(0, 1fr);
+			   gap: 20px;
+			   width: min(1400px, calc(100% - 28px));
+			   margin: 12px auto;
+		   }
+
+		   .dashboard-aside {
+			   display: flex;
+			   flex-direction: column;
+			   height: calc(100vh - 24px);
+			   position: sticky;
+			   top: 12px;
+			   border: 1px solid rgba(83, 86, 251, 0.15);
+			   border-radius: 20px;
+			   padding: 18px 14px;
+			   background: #fff;
+			   box-shadow: 0 14px 32px rgba(83, 86, 251, 0.12);
+			   overflow: auto;
+		   }
+
+		   .dashboard-aside .sidebar {
+			   display: flex;
+			   flex-direction: column;
+			   box-shadow: none;
+			   border: none;
+			   border-radius: 14px;
+			   background: transparent;
+		   }
+
+		   .dashboard-aside .menu-item {
+			   min-height: 48px;
+			   border-radius: 12px;
+			   border-bottom: none;
+			   margin-bottom: 2px;
+		   }
+
+		   .dashboard-aside .menu-item a {
+			   flex-direction: row;
+			   align-items: center;
+			   gap: 2px;
+			   font-size: 15px;
+		   }
+
+		   .dashboard-aside .menu-arrow {
+			   margin-left: 8px;
+		   }
+
+		   .dashboard-aside .logout-button {
+			   width: 100%;
+			   margin-top: auto;
+		   }
+
+		   .dashboard-content {
+			   min-width: 0;
+		   }
+
 		   .body-ui {
+			   width: 100% !important;
+			   margin-top: 0;
 			   background: linear-gradient(134.38deg, #f539f8 0%, #c342f9 43.55%, #5356fb 104.51%);
 		   }
 
@@ -71,100 +210,158 @@ require_once 'query-visitors.php'; //加载数据
 			   width: 64px;
 			   height: 64px;
 		   }
+
+		   .main {
+			   display: none;
+		   }
 	   }
     </style>
 </head>
 <body>
-	<div class="body-ui">
-		<div class="header">
-		     <span class="dashboard-chip">运营控制台</span>
+    <div class="dashboard-layout">
+        <aside class="dashboard-aside">
+            <div class="dashboard-brand">
+                <span class="dashboard-brand-badge">NFT</span>
+                <span class="dashboard-brand-title">运营后台</span>
+            </div>
+            <div class="sidebar-user">
+                <img src="<?php echo htmlspecialchars($adminInfo['avatar']); ?>" alt="用户头像" class="sidebar-avatar">
+                <div class="sidebar-user-meta">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars($adminInfo['name']); ?></div>
+                    <div class="sidebar-user-tip">欢迎回来，开始今日巡检</div>
+                </div>
+            </div>
+            <div class="dashboard-section-title">功能菜单</div>
+            <div class="sidebar">
+                <div class="menu-item">
+                    <a href="order.php">
+                        <span class="menu-item-icon icon_1"></span>查看订单
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+                <div class="menu-item">
+                    <a href="review_list.php">
+                        <span class="menu-item-icon icon_2"></span>任务审核
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+                <div class="menu-item">
+                    <a href="visitor.php">
+                        <span class="menu-item-icon icon_3"></span>访客记录
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+                <div class="menu-item">
+                    <a href="settings.php">
+                        <span class="menu-item-icon icon_4"></span>系统设置
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+                <div class="menu-item">
+                    <a href="upload_cache.php">
+                        <span class="menu-item-icon icon_5"></span>其他
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+            </div>
+            <form action="logout.php" method="post">
+                <button class="logout-button">退出登录</button>
+            </form>
+        </aside>
+
+        <div class="dashboard-content">
+            <div class="body-ui">
+                <div class="header">
+                     <span class="dashboard-chip">运营控制台</span>
+                </div>
+                <div class="user-info">
+                    <img src="<?php echo htmlspecialchars($adminInfo['avatar']); ?>" alt="用户头像" class="user-avatar">
+                    <div class="user-details">
+                        <span>昵称：<?php echo htmlspecialchars($adminInfo['name']); ?></span><br>
+                        <div class="scroll-container">
+                            <div class="scroll-text" id="scrollText">
+                                 <?php echo $greeting; ?>! <?php echo $warmWords; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <p class="stat-value"><?php echo number_format($totalIncome, 2); ?></p>
+                        <p>总收入</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value"><?php echo number_format($todayIncome, 2); ?></p>
+                        <p>今日收入</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value"><?php echo $todayOrders; ?></p>
+                        <p>今日订单</p>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <a href="visitor.php">
+                        <p class="stat-value"><?php echo $yesterdayVisitors; ?></p>
+                        <p>昨日访客</p>
+                        </a>
+                    </div>
+                    <div class="stat-item">
+                        <a href="visitor.php">
+                        <p class="stat-value"><?php echo $todayVisitors; ?></p>
+                        <p>今日访客</p>
+                        </a>
+                    </div>
+                    <div class="stat-item">
+                        <a href="review_list.php">
+                        <p class="stat-value"><?php echo $unreviewedCount; ?></p>
+                        <p>待审核</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;"></div>
+            <div class="main">
+                <div class="sidebar">
+                    <div class="menu-item">
+                        <a href="order.php">
+                            <span class="menu-item-icon icon_1"></span>查看订单
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                    <div class="menu-item">
+                        <a href="review_list.php">
+                            <span class="menu-item-icon icon_2"></span>任务审核
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                    <div class="menu-item">
+                        <a href="visitor.php">
+                            <span class="menu-item-icon icon_3"></span>访客记录
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                    <div class="menu-item">
+                        <a href="settings.php">
+                            <span class="menu-item-icon icon_4"></span>系统设置
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                    <div class="menu-item">
+                        <a href="upload_cache.php">
+                            <span class="menu-item-icon icon_5"></span>其他
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                </div>
+                <form action="logout.php" method="post">
+                    <button class="logout-button">退出登录</button>
+                </form>
+            </div>
         </div>
-		<div class="user-info">
-		    <img src="<?php echo htmlspecialchars($adminInfo['avatar']); ?>" alt="用户头像" class="user-avatar">
-		    <div class="user-details">
-			    <span>昵称：<?php echo htmlspecialchars($adminInfo['name']); ?></span><br>
-				<div class="scroll-container">
-				    <div class="scroll-text" id="scrollText">
-				         <?php echo $greeting; ?>! <?php echo $warmWords; ?>
-				    </div>
-				</div>
-		        <!--<span>日期：<?php echo htmlspecialchars($adminInfo['date']); ?></span>-->
-		    </div>
-		</div>
-		<div class="stats">
-		    <div class="stat-item">
-		        <p class="stat-value"><?php echo number_format($totalIncome, 2); ?></p>
-		        <p>总收入</p>
-		    </div>
-		    <div class="stat-item">
-		        <p class="stat-value"><?php echo number_format($todayIncome, 2); ?></p>
-		        <p>今日收入</p>
-		    </div>
-		    <div class="stat-item">
-		        <p class="stat-value"><?php echo $todayOrders; ?></p>
-		        <p>今日订单</p>
-		    </div>
-		</div>
-		
-		<div class="stats">
-		    <div class="stat-item">
-			    <a href="visitor.php">
-		        <p class="stat-value"><?php echo $yesterdayVisitors; ?></p>
-		        <p>昨日访客</p>
-				</a>
-		    </div>
-		    <div class="stat-item">
-			    <a href="visitor.php">
-		        <p class="stat-value"><?php echo $todayVisitors; ?></p>
-		        <p>今日访客</p>
-				</a>
-		    </div>
-		    <div class="stat-item">
-			    <a href="review_list.php">
-		        <p class="stat-value"><?php echo $unreviewedCount; ?></p>
-		        <p>待审核</p>
-				</a>
-		    </div>
-		</div>
-	</div>
-	<div style="margin-top: 10px;"></div>
-	<div class="main">
-		    <div class="sidebar">
-		        <div class="menu-item">
-		            <a href="order.php">
-		                <span class="menu-item-icon icon_1"></span>查看订单
-					</a>
-		            <span class="menu-arrow"></span>
-		        </div>
-				<div class="menu-item">
-				    <a href="review_list.php">
-				        <span class="menu-item-icon icon_2"></span>任务审核
-					</a>
-				    <span class="menu-arrow"></span>
-				</div>
-				<div class="menu-item">
-				    <a href="visitor.php">
-				        <span class="menu-item-icon icon_3"></span>访客记录
-					</a>
-				    <span class="menu-arrow"></span>
-				</div>
-				<div class="menu-item">
-				    <a href="settings.php">
-				        <span class="menu-item-icon icon_4"></span>系统设置
-					</a>
-				    <span class="menu-arrow"></span>
-				</div>
-				<div class="menu-item">
-				    <a href="upload_cache.php">
-				        <span class="menu-item-icon icon_5"></span>其他
-					</a>
-				    <span class="menu-arrow"></span>
-				</div>
-		    </div>
-			<form action="logout.php" method="post">
-			    <button class="logout-button">退出登录</button>
-			</form>
-	      </div>
+    </div>
 <script>
     // 页面加载完成后延迟2秒开始滚动
     window.onload = function() {
