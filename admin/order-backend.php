@@ -2,6 +2,7 @@
 // 引入数据库配置文件
 require_once '../config/config.php';
 require_once 'login_check.php';  
+require_once 'virtual_data_helper.php';
 
 // 定义支付方式的映射数组
 $paymentMethodMap = [
@@ -15,6 +16,29 @@ $perPage = 10;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 // 计算偏移量
 $offset = ($page - 1) * $perPage;
+
+if (vd_is_enabled()) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action'])) {
+            if ($_POST['action'] === 'delete_all') {
+                vd_clear_orders();
+                echo "操作成功";
+            } elseif ($_POST['action'] === 'delete_single' && !empty($_POST['order_id'])) {
+                vd_delete_order_by_id((int) $_POST['order_id']);
+                echo "操作成功";
+            } else {
+                echo "操作失败";
+            }
+        }
+        exit;
+    }
+
+    $mockPayload = vd_get_orders_page($page, $perPage);
+    $orders = $mockPayload['orders'];
+    $countRow = $mockPayload['countRow'];
+    $conn->close();
+    return;
+}
 
 // 查询订单列表，包括支付状态
 $ordersSql = "SELECT * FROM orders ORDER BY payment_time DESC LIMIT?,?";

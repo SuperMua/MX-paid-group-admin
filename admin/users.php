@@ -1,5 +1,6 @@
 <?php
 require_once 'login_check.php';
+require_once 'virtual_data_helper.php';
 // 引入数据库配置文件
 require_once '../config/config.php';
 
@@ -30,19 +31,24 @@ unset($_SESSION['todayIncome']);
 unset($_SESSION['todayOrders']);
 //session_destroy(); // 销毁会话
 
-// 查询待审核的不同IP地址的数量
-$sql = "SELECT COUNT(DISTINCT ip_address) AS unreviewedCount FROM images WHERE status = 'pending'";
-$result = $conn->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
-    $unreviewedCount = $row['unreviewedCount'];
-    
-    // 返回待审核的不同IP地址的数量
-    // echo $unreviewedCount;
+if (vd_is_enabled()) {
+    $snapshot = vd_get_dashboard_snapshot();
+    $unreviewedCount = $snapshot['unreviewed_count'];
 } else {
-    $unreviewedCount = 0;
-    error_log('admin/users.php 查询待审核数量失败: ' . $conn->error);
+    // 查询待审核的不同IP地址的数量
+    $sql = "SELECT COUNT(DISTINCT ip_address) AS unreviewedCount FROM images WHERE status = 'pending'";
+    $result = $conn->query($sql);
+
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $unreviewedCount = $row['unreviewedCount'];
+        
+        // 返回待审核的不同IP地址的数量
+        // echo $unreviewedCount;
+    } else {
+        $unreviewedCount = 0;
+        error_log('admin/users.php 查询待审核数量失败: ' . $conn->error);
+    }
 }
 
 // 关闭数据库连接

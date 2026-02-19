@@ -1,6 +1,7 @@
 <?php
 // groups.php
 require_once 'login_check.php';
+require_once 'virtual_data_helper.php';
 
 // 引入数据库配置文件
 require_once '../config/config.php';
@@ -12,6 +13,27 @@ if ($adminStmt->num_rows > 0) {
     $adminInfo = $adminStmt->fetch_assoc();
 } else {
     die("没有找到管理员信息");
+}
+
+if (vd_is_enabled()) {
+    $snapshot = vd_get_dashboard_snapshot();
+    $translatedOrders = vd_get_orders_all();
+
+    session_start();
+    $_SESSION['totalIncome'] = $snapshot['total_income'];
+    $_SESSION['todayIncome'] = $snapshot['today_income'];
+    $_SESSION['todayOrders'] = $snapshot['today_orders'];
+    $_SESSION['orders'] = $translatedOrders;
+    $_SESSION['adminInfo'] = $adminInfo;
+
+    $conn->close();
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? str_replace('\\', '/', $_SERVER['SCRIPT_NAME']) : '';
+    $scriptDir = $scriptName !== '' ? dirname($scriptName) : '/admin';
+    if ($scriptDir === '\\' || $scriptDir === '/' || $scriptDir === '.') {
+        $scriptDir = '/admin';
+    }
+    header('Location: ' . rtrim($scriptDir, '/') . '/index.php');
+    exit;
 }
 
 // 定义支付方式的映射数组

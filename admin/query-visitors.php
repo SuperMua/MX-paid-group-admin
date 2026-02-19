@@ -1,5 +1,6 @@
 <?php
 require_once 'login_check.php';
+require_once 'virtual_data_helper.php';
 // 引入数据库配置文件
 require '../config/config.php';
 
@@ -69,6 +70,24 @@ function getTotalRecords($conn) {
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 // 每页显示的记录数
 $limit = 10;
+
+if (vd_is_enabled()) {
+    if (isset($_POST['clear_all'])) {
+        vd_clear_visitors();
+        echo "操作成功";
+        exit;
+    }
+
+    $mockPayload = vd_get_visitors_payload($page, $limit);
+    $allVisitors = $mockPayload['allVisitors'];
+    $totalVisitors = $mockPayload['totalVisitors'];
+    $todayVisitors = $mockPayload['todayVisitors'];
+    $yesterdayVisitors = $mockPayload['yesterdayVisitors'];
+    $totalRecords = $mockPayload['totalRecords'];
+    $totalPages = $mockPayload['totalPages'];
+    $conn->close();
+    return;
+}
 
 // 获取总访问量
 $totalVisitors = getTotalVisitors($conn);

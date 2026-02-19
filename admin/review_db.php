@@ -1,6 +1,7 @@
 <?php 
 require_once 'login_check.php'; 
 require_once '../config/config.php'; 
+require_once 'virtual_data_helper.php';
 
  // 变量初始化 
  $totalApproved = 0;
@@ -9,13 +10,44 @@ require_once '../config/config.php';
  $invalidIp = false;
  $success = false;
  $error = false;
- $ip_address = '';
- $result = null;
+$ip_address = '';
+$result = null;
+$useVirtualData = vd_is_enabled();
 try {
     
  
     // 判断当前页面 
-    if (basename($_SERVER['PHP_SELF']) == 'review_details.php')  {
+    if ($useVirtualData && basename($_SERVER['PHP_SELF']) == 'review_details.php') {
+        $ip_address = trim($_GET['ip'] ?? '');
+        $success = isset($_GET['success']) && $_GET['success'] === '1';
+        $error = isset($_GET['error']) && $_GET['error'] === '1';
+
+        if (empty($ip_address) || !filter_var($ip_address, FILTER_VALIDATE_IP)) {
+            $invalidIp = true;
+        }
+
+        if (!$invalidIp) {
+            $action = $_GET['action'] ?? null;
+            $image_id = isset($_GET['image_id']) ? intval($_GET['image_id']) : null;
+            if (in_array($action, array('approve', 'reject'), true) && $image_id) {
+                $status = $action === 'approve' ? 'approved' : 'rejected';
+                $updated = vd_update_review_status($image_id, $ip_address, $status);
+                header("Location: review_details.php?ip=" . urlencode($ip_address) . ($updated ? "&success=1" : "&error=1"));
+                exit;
+            }
+            $result = new VirtualArrayResult(vd_get_review_details($ip_address));
+        }
+    } elseif ($useVirtualData) {
+        $recordsPerPage = 15;
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $mockPayload = vd_get_review_list_payload($page, $recordsPerPage);
+        $totalRecords = $mockPayload['totalRecords'];
+        $totalPages = $mockPayload['totalPages'];
+        $result = new VirtualArrayResult($mockPayload['rows']);
+        $totalApproved = $mockPayload['totalApproved'];
+        $totalPending = $mockPayload['totalPending'];
+        $totalRejected = $mockPayload['totalRejected'];
+    } elseif (basename($_SERVER['PHP_SELF']) == 'review_details.php')  {
         // 处理详情页逻辑 
         $ip_address = trim($_GET['ip'] ?? '');
         $success = isset($_GET['success']) && $_GET['success'] === '1';
@@ -111,26 +143,28 @@ try {
         $result = $stmt->get_result();
     }
  
-    // 新增：统计已审核和未审核的数量 
-    $sqlStatusCounts = "SELECT 
-                        (SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'approved') AS approved_count,
-						(SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'rejected') AS rejected_count,
-						(SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'pending') AS pending_count 
-                        FROM images";
+    if (!$useVirtualData) {
+        // 新增：统计已审核和未审核的数量 
+        $sqlStatusCounts = "SELECT 
+                            (SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'approved') AS approved_count,
+                            (SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'rejected') AS rejected_count,
+                            (SELECT COUNT(DISTINCT ip_address) FROM images WHERE status = 'pending') AS pending_count 
+                            FROM images";
+        
+        $statusStmt = $conn->prepare($sqlStatusCounts);
+        
+        if (!$statusStmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
     
-    $statusStmt = $conn->prepare($sqlStatusCounts);
-    
-    if (!$statusStmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
- 
-    $statusStmt->execute();
-    $statusResult = $statusStmt->get_result();
-    
-    if ($statusRow = $statusResult->fetch_assoc()) {
-        $totalApproved = $statusRow['approved_count'];
-        $totalPending = $statusRow['pending_count'];
-        $totalRejected = $statusRow['rejected_count'];
+        $statusStmt->execute();
+        $statusResult = $statusStmt->get_result();
+        
+        if ($statusRow = $statusResult->fetch_assoc()) {
+            $totalApproved = $statusRow['approved_count'];
+            $totalPending = $statusRow['pending_count'];
+            $totalRejected = $statusRow['rejected_count'];
+        }
     }
  
 } catch (Exception $e) {
@@ -159,12 +193,17 @@ if (!isset($page)) {
  
 // 检查是否接收到清空请求
 if (isset($_POST['clear_all'])) {
-    // 执行清空表的SQL语句
-    $sql = "TRUNCATE TABLE images"; // 或使用 DELETE FROM images
-    if ($conn->query($sql) === TRUE) {
+    if ($useVirtualData) {
+        vd_clear_reviews();
         echo "操作成功";
     } else {
-        echo "操作失败: " . $conn->error;
+        // 执行清空表的SQL语句
+        $sql = "TRUNCATE TABLE images"; // 或使用 DELETE FROM images
+        if ($conn->query($sql) === TRUE) {
+            echo "操作成功";
+        } else {
+            echo "操作失败: " . $conn->error;
+        }
     }
     exit;
 }
@@ -177,23 +216,28 @@ if (
     !empty($_POST['id'])
 ) {
     $orderId = intval($_POST['id']);
-    $sql = "DELETE FROM images WHERE id = ?";
-    
-    // 检查预处理语句是否创建成功 
-    $stmt = null;
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $orderId);
-        if ($stmt->execute()) {
-            echo "操作成功";
+    if ($useVirtualData) {
+        vd_delete_review_by_id($orderId);
+        echo "操作成功";
+    } else {
+        $sql = "DELETE FROM images WHERE id = ?";
+        
+        // 检查预处理语句是否创建成功 
+        $stmt = null;
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("i", $orderId);
+            if ($stmt->execute()) {
+                echo "操作成功";
+            } else {
+                error_log("删除失败: " . $stmt->error);
+                echo "操作失败";
+            }
+            // 关闭预处理语句
+            $stmt->close();
         } else {
-            error_log("删除失败: " . $stmt->error);
+            error_log("预处理失败: " . $conn->error);
             echo "操作失败";
         }
-        // 关闭预处理语句
-        $stmt->close();
-    } else {
-        error_log("预处理失败: " . $conn->error);
-        echo "操作失败";
     }
     exit;
 }

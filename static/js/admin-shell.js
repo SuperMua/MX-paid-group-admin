@@ -178,7 +178,9 @@
             settings_payment: ['/admin/payment_settings.php'],
             settings_audit: ['/admin/audit_status.php'],
             settings_brand: ['/admin/brand_settings.php'],
-            other: ['/admin/upload_cache.php']
+            other_cache: ['/admin/upload_cache.php'],
+            other_virtual: ['/admin/virtual_data.php'],
+            other: ['/admin/upload_cache.php', '/admin/virtual_data.php']
         };
 
         var active = '';
@@ -197,10 +199,11 @@
     function refreshActiveState() {
         var activeRoute = detectActiveRoute();
         var isSettingsActive = activeRoute === 'settings' || String(activeRoute).indexOf('settings_') === 0;
+        var isOtherActive = activeRoute === 'other' || String(activeRoute).indexOf('other_') === 0;
 
         Array.prototype.forEach.call(document.querySelectorAll('.admin-shell-link'), function (link) {
             var key = link.getAttribute('data-route-key') || '';
-            if (key && (key === activeRoute || (key === 'settings' && isSettingsActive))) {
+            if (key && (key === activeRoute || (key === 'settings' && isSettingsActive) || (key === 'other' && isOtherActive))) {
                 link.classList.add('is-active');
             } else {
                 link.classList.remove('is-active');
@@ -303,14 +306,26 @@
                     { key: 'settings_brand', label: '品牌设置', href: 'brand_settings.php' }
                 ]
             },
-            { key: 'other', label: '其他工具', href: 'upload_cache.php' }
+            {
+                key: 'other',
+                label: '其他工具',
+                href: 'upload_cache.php',
+                children: [
+                    { key: 'other_cache', label: '缓存清理', href: 'upload_cache.php' },
+                    { key: 'other_virtual', label: '虚拟数据', href: 'virtual_data.php' }
+                ]
+            }
         ];
 
         menus.forEach(function (menu) {
             var link = document.createElement('a');
             link.className = 'admin-shell-link';
             link.setAttribute('data-route-key', menu.key);
-            if (menu.key === activeRoute || (menu.key === 'settings' && String(activeRoute).indexOf('settings_') === 0)) {
+            if (
+                menu.key === activeRoute ||
+                (menu.key === 'settings' && String(activeRoute).indexOf('settings_') === 0) ||
+                (menu.key === 'other' && String(activeRoute).indexOf('other_') === 0)
+            ) {
                 link.classList.add('is-active');
             }
             link.href = menu.href;

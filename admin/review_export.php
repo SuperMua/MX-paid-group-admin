@@ -1,9 +1,7 @@
 <?php
 require_once 'login_check.php';
 require_once '../config/config.php';
-
-$sql = "SELECT id, ip_address, ip_location, filename, status, upload_time FROM images ORDER BY upload_time DESC";
-$result = $conn->query($sql);
+require_once 'virtual_data_helper.php';
 
 $filename = 'review_' . date('Ymd_His') . '.csv';
 header('Content-Type: text/csv; charset=UTF-8');
@@ -19,8 +17,10 @@ $statusMap = array(
     'rejected' => '不通过'
 );
 
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
+if (vd_is_enabled()) {
+    $rows = vd_get_dataset();
+    $reviewRows = isset($rows['reviews']) ? $rows['reviews'] : array();
+    foreach ($reviewRows as $row) {
         fputcsv($output, array(
             $row['id'],
             $row['ip_address'],
@@ -29,6 +29,21 @@ if ($result) {
             $statusMap[$row['status']] ?? $row['status'],
             $row['upload_time']
         ));
+    }
+} else {
+    $sql = "SELECT id, ip_address, ip_location, filename, status, upload_time FROM images ORDER BY upload_time DESC";
+    $result = $conn->query($sql);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            fputcsv($output, array(
+                $row['id'],
+                $row['ip_address'],
+                $row['ip_location'],
+                $row['filename'],
+                $statusMap[$row['status']] ?? $row['status'],
+                $row['upload_time']
+            ));
+        }
     }
 }
 
