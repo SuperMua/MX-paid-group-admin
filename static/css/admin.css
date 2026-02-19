@@ -273,6 +273,22 @@ body {
     var(--admin-bg);
 }
 
+/* 后台统一隐藏滚动条轨道：保留鼠标滚轮/触控滚动能力 */
+html,
+body,
+body * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+body *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent;
+}
+
 a {
   text-decoration: none;
   color: inherit;
