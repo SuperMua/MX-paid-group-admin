@@ -307,22 +307,22 @@ $conn->close();
             max-width: 100%;
             max-height: 100%;
             aspect-ratio: 9 / 19.5;
-            border-radius: 42px;
-            padding: 6px;
-            background: linear-gradient(145deg, #a2a8b1 0%, #696f79 28%, #9da3ad 58%, #5e646e 100%);
+            border-radius: 32px;
+            padding: 5px;
+            background: linear-gradient(148deg, #b8bec7 0%, #7a828e 36%, #aab1bb 68%, #6d7480 100%);
             box-shadow:
-                0 24px 36px rgba(18, 24, 41, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.32),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.34);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+                0 18px 28px rgba(18, 24, 41, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         .iphone17-pro::before {
             content: "";
             position: absolute;
             inset: 3px;
-            border-radius: 38px;
-            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
             pointer-events: none;
         }
 
@@ -365,7 +365,7 @@ $conn->close();
         .iphone17-pro-screen {
             width: 100%;
             height: 100%;
-            border-radius: 35px;
+            border-radius: 26px;
             overflow: hidden;
             background: #f5f7ff;
             border: 1px solid rgba(255, 255, 255, 0.09);
@@ -382,26 +382,26 @@ $conn->close();
 
         .iphone17-pro-island {
             position: absolute;
-            top: 13px;
+            top: 11px;
             left: 50%;
             transform: translateX(-50%);
-            width: 108px;
-            height: 28px;
+            width: 74px;
+            height: 20px;
             border-radius: 999px;
             background: #020203;
             box-shadow:
                 inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-                0 3px 8px rgba(0, 0, 0, 0.34);
+                0 2px 6px rgba(0, 0, 0, 0.34);
             pointer-events: none;
         }
 
         .iphone17-pro-indicator {
             position: absolute;
-            bottom: 12px;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 92px;
-            height: 4px;
+            width: 70px;
+            height: 3px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.52);
             pointer-events: none;
