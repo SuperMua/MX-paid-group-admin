@@ -43,6 +43,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'get_dataset_json') {
+        echo json_encode(array(
+            'success' => true,
+            'message' => '读取成功',
+            'dataset_json' => vd_get_dataset_json_pretty(),
+            'state' => vd_get_state_payload()
+        ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'get_template_json') {
+        echo json_encode(array(
+            'success' => true,
+            'message' => '模板已载入',
+            'dataset_json' => vd_get_template_json_pretty(),
+            'state' => vd_get_state_payload()
+        ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'save_dataset_json') {
+        $jsonText = isset($_POST['dataset_json']) ? (string) $_POST['dataset_json'] : '';
+        $message = '';
+        if (!vd_save_dataset_from_json($jsonText, $message)) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $message
+            ), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        echo json_encode(array(
+            'success' => true,
+            'message' => $message,
+            'dataset_json' => vd_get_dataset_json_pretty(),
+            'state' => vd_get_state_payload()
+        ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
     echo json_encode(array('success' => false, 'message' => '未知操作'), JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -131,9 +170,70 @@ $snapshot = $state['snapshot'];
             line-height: 1.7;
         }
 
+        .virtual-editor-wrap {
+            margin-top: 18px;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            border-radius: 16px;
+            background: #f9faff;
+            padding: 12px;
+        }
+
+        .virtual-editor-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .virtual-editor-title {
+            margin: 0;
+            font-size: 14px;
+            color: #2d3c67;
+            font-weight: 700;
+        }
+
+        .virtual-editor-tip {
+            margin: 0;
+            font-size: 12px;
+            color: #667085;
+        }
+
+        .virtual-editor-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .virtual-json-editor {
+            width: 100%;
+            min-height: 320px;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(83, 86, 251, 0.26);
+            background: #101827;
+            color: #ecf2ff;
+            font-size: 12px;
+            line-height: 1.65;
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .virtual-json-editor:focus {
+            outline: none;
+            border-color: rgba(83, 86, 251, 0.8);
+            box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.2);
+        }
+
         @media (max-width: 991px) {
             .virtual-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .virtual-json-editor {
+                min-height: 260px;
             }
         }
     </style>
@@ -176,6 +276,22 @@ $snapshot = $state['snapshot'];
         </div>
 
         <p class="virtual-note">说明：开启后仅影响后台展示数据，不修改真实业务表。你可在演示结束后点击“清空并关闭”恢复默认真实数据模式。</p>
+
+        <div class="virtual-editor-wrap">
+            <div class="virtual-editor-head">
+                <div>
+                    <p class="virtual-editor-title">全量自定义数据（JSON）</p>
+                    <p class="virtual-editor-tip">支持自定义 `orders / visitors / reviews` 全字段，保存后自动开启虚拟模式。</p>
+                </div>
+                <div class="virtual-editor-actions">
+                    <button class="admin-pill-btn admin-pill-btn-light" type="button" id="loadCurrentBtn">读取当前数据</button>
+                    <button class="admin-pill-btn admin-pill-btn-light" type="button" id="loadTemplateBtn">填入模板</button>
+                    <button class="admin-pill-btn admin-pill-btn-light" type="button" id="formatJsonBtn">格式化JSON</button>
+                    <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="saveJsonBtn">保存自定义</button>
+                </div>
+            </div>
+            <textarea id="datasetEditor" class="virtual-json-editor" spellcheck="false" placeholder='{\n  "orders": [],\n  "visitors": [],\n  "reviews": []\n}'></textarea>
+        </div>
     </section>
 </main>
 <div class="settings-pro-toast" id="vdToast">操作成功</div>
@@ -192,6 +308,11 @@ $snapshot = $state['snapshot'];
     const toggleBtn = document.getElementById('toggleBtn');
     const regenerateBtn = document.getElementById('regenerateBtn');
     const clearBtn = document.getElementById('clearBtn');
+    const loadCurrentBtn = document.getElementById('loadCurrentBtn');
+    const loadTemplateBtn = document.getElementById('loadTemplateBtn');
+    const saveJsonBtn = document.getElementById('saveJsonBtn');
+    const formatJsonBtn = document.getElementById('formatJsonBtn');
+    const datasetEditor = document.getElementById('datasetEditor');
     const toast = document.getElementById('vdToast');
 
     function showToast(message, isError) {
@@ -294,6 +415,84 @@ $snapshot = $state['snapshot'];
                 showToast('请求失败，请稍后重试', true);
             });
     });
+
+    loadCurrentBtn.addEventListener('click', function () {
+        postAction('get_dataset_json')
+            .then(function (resp) {
+                if (!resp.success) {
+                    showToast(resp.message || '读取失败', true);
+                    return;
+                }
+                datasetEditor.value = resp.dataset_json || '';
+                updateState(resp.state || {});
+                showToast(resp.message || '已读取', false);
+            })
+            .catch(function () {
+                showToast('请求失败，请稍后重试', true);
+            });
+    });
+
+    loadTemplateBtn.addEventListener('click', function () {
+        postAction('get_template_json')
+            .then(function (resp) {
+                if (!resp.success) {
+                    showToast(resp.message || '读取失败', true);
+                    return;
+                }
+                datasetEditor.value = resp.dataset_json || '';
+                showToast(resp.message || '模板已载入', false);
+            })
+            .catch(function () {
+                showToast('请求失败，请稍后重试', true);
+            });
+    });
+
+    formatJsonBtn.addEventListener('click', function () {
+        const raw = (datasetEditor.value || '').trim();
+        if (!raw) {
+            showToast('请先输入 JSON 内容', true);
+            return;
+        }
+        try {
+            const obj = JSON.parse(raw);
+            datasetEditor.value = JSON.stringify(obj, null, 2);
+            showToast('JSON 已格式化', false);
+        } catch (err) {
+            showToast('JSON 格式错误：' + err.message, true);
+        }
+    });
+
+    saveJsonBtn.addEventListener('click', function () {
+        const raw = (datasetEditor.value || '').trim();
+        if (!raw) {
+            showToast('请先输入 JSON 内容', true);
+            return;
+        }
+        postAction('save_dataset_json', { dataset_json: raw })
+            .then(function (resp) {
+                if (!resp.success) {
+                    showToast(resp.message || '保存失败', true);
+                    return;
+                }
+                datasetEditor.value = resp.dataset_json || raw;
+                updateState(resp.state || {});
+                showToast(resp.message || '保存成功', false);
+            })
+            .catch(function () {
+                showToast('请求失败，请稍后重试', true);
+            });
+    });
+
+    postAction('get_dataset_json')
+        .then(function (resp) {
+            if (!resp.success) {
+                return;
+            }
+            datasetEditor.value = resp.dataset_json || '';
+        })
+        .catch(function () {
+            // 忽略初始化失败
+        });
 })();
 </script>
 <script src="../static/js/admin-shell.js"></script>

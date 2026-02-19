@@ -513,3 +513,208 @@ function vd_get_state_payload() {
         'snapshot' => $snapshot
     );
 }
+
+function vd_get_dataset_template() {
+    $now = date('Y-m-d H:i:s');
+    $todayOrderNo = date('YmdHis') . '001';
+    return array(
+        'orders' => array(
+            array(
+                'id' => 1,
+                'name' => '演示订单',
+                'order_number' => $todayOrderNo,
+                'ip_address' => '123.45.67.89',
+                'ip_location' => '广东省 深圳市',
+                'money' => '9.90',
+                'payment_method' => 'wxpay',
+                'payment_time' => $now,
+                'payment_status' => '已支付'
+            )
+        ),
+        'visitors' => array(
+            array(
+                'id' => 1,
+                'ip_address' => '123.45.67.89',
+                'ip_location' => '广东省 深圳市',
+                'user_agent' => 'iPhone Safari',
+                'visit_time' => $now,
+                'page_url' => '/public/home_v1.php'
+            )
+        ),
+        'reviews' => array(
+            array(
+                'id' => 1,
+                'filename' => 'demo_1.jpg',
+                'upload_time' => $now,
+                'ip_address' => '123.45.67.89',
+                'file_path' => '../upload/demo_1.jpg',
+                'reviewer' => '管理员',
+                'status' => 'pending',
+                'ip_location' => '广东省 深圳市'
+            )
+        )
+    );
+}
+
+function vd_get_dataset_for_edit() {
+    vd_boot_session();
+    if (!empty($_SESSION['virtual_data']['dataset']) && is_array($_SESSION['virtual_data']['dataset'])) {
+        return $_SESSION['virtual_data']['dataset'];
+    }
+    return vd_get_dataset_template();
+}
+
+function vd_normalize_datetime($value) {
+    $text = trim((string) $value);
+    if ($text === '') {
+        return date('Y-m-d H:i:s');
+    }
+    $timestamp = strtotime($text);
+    if ($timestamp === false) {
+        return date('Y-m-d H:i:s');
+    }
+    return date('Y-m-d H:i:s', $timestamp);
+}
+
+function vd_normalize_ip($value) {
+    $text = trim((string) $value);
+    if ($text !== '' && filter_var($text, FILTER_VALIDATE_IP)) {
+        return $text;
+    }
+    return vd_make_ip();
+}
+
+function vd_normalize_dataset($incoming) {
+    $dataset = is_array($incoming) ? $incoming : array();
+    $orders = isset($dataset['orders']) && is_array($dataset['orders']) ? $dataset['orders'] : array();
+    $visitors = isset($dataset['visitors']) && is_array($dataset['visitors']) ? $dataset['visitors'] : array();
+    $reviews = isset($dataset['reviews']) && is_array($dataset['reviews']) ? $dataset['reviews'] : array();
+
+    $normalizedOrders = array();
+    foreach ($orders as $index => $row) {
+        $item = is_array($row) ? $row : array();
+        $paymentMethod = isset($item['payment_method']) ? (string) $item['payment_method'] : 'wxpay';
+        if (!in_array($paymentMethod, array('wxpay', 'alipay'), true)) {
+            $paymentMethod = 'wxpay';
+        }
+        $paymentStatus = isset($item['payment_status']) ? (string) $item['payment_status'] : '已支付';
+        if (!in_array($paymentStatus, array('已支付', '未支付'), true)) {
+            $paymentStatus = '已支付';
+        }
+        $money = isset($item['money']) ? (float) $item['money'] : 0;
+        if ($money < 0) {
+            $money = 0;
+        }
+        $paymentTime = vd_normalize_datetime($item['payment_time'] ?? '');
+        $orderNumber = trim((string) ($item['order_number'] ?? ''));
+        if ($orderNumber === '') {
+            $orderNumber = date('YmdHis', strtotime($paymentTime)) . str_pad((string) ($index + 1), 3, '0', STR_PAD_LEFT);
+        }
+        $normalizedOrders[] = array(
+            'id' => isset($item['id']) ? (int) $item['id'] : ($index + 1),
+            'name' => trim((string) ($item['name'] ?? '演示订单')),
+            'order_number' => $orderNumber,
+            'ip_address' => vd_normalize_ip($item['ip_address'] ?? ''),
+            'ip_location' => trim((string) ($item['ip_location'] ?? '未知地区')),
+            'money' => number_format($money, 2, '.', ''),
+            'payment_method' => $paymentMethod,
+            'payment_time' => $paymentTime,
+            'payment_status' => $paymentStatus
+        );
+    }
+    usort($normalizedOrders, function ($a, $b) {
+        return strcmp($b['payment_time'], $a['payment_time']);
+    });
+
+    $normalizedVisitors = array();
+    foreach ($visitors as $index => $row) {
+        $item = is_array($row) ? $row : array();
+        $normalizedVisitors[] = array(
+            'id' => isset($item['id']) ? (int) $item['id'] : ($index + 1),
+            'ip_address' => vd_normalize_ip($item['ip_address'] ?? ''),
+            'ip_location' => trim((string) ($item['ip_location'] ?? '未知地区')),
+            'user_agent' => trim((string) ($item['user_agent'] ?? 'Windows Chrome')),
+            'visit_time' => vd_normalize_datetime($item['visit_time'] ?? ''),
+            'page_url' => trim((string) ($item['page_url'] ?? '/public/home_v1.php'))
+        );
+    }
+    usort($normalizedVisitors, function ($a, $b) {
+        return strcmp($b['visit_time'], $a['visit_time']);
+    });
+
+    $normalizedReviews = array();
+    foreach ($reviews as $index => $row) {
+        $item = is_array($row) ? $row : array();
+        $status = isset($item['status']) ? (string) $item['status'] : 'pending';
+        if (!in_array($status, array('pending', 'approved', 'rejected'), true)) {
+            $status = 'pending';
+        }
+        $filename = trim((string) ($item['filename'] ?? 'demo_1.jpg'));
+        if ($filename === '') {
+            $filename = 'demo_1.jpg';
+        }
+        $filePath = trim((string) ($item['file_path'] ?? ''));
+        if ($filePath === '') {
+            $filePath = '../upload/' . $filename;
+        }
+        $normalizedReviews[] = array(
+            'id' => isset($item['id']) ? (int) $item['id'] : ($index + 1),
+            'filename' => $filename,
+            'upload_time' => vd_normalize_datetime($item['upload_time'] ?? ''),
+            'ip_address' => vd_normalize_ip($item['ip_address'] ?? ''),
+            'file_path' => $filePath,
+            'reviewer' => trim((string) ($item['reviewer'] ?? '管理员')),
+            'status' => $status,
+            'ip_location' => trim((string) ($item['ip_location'] ?? '未知地区'))
+        );
+    }
+    usort($normalizedReviews, function ($a, $b) {
+        return strcmp($b['upload_time'], $a['upload_time']);
+    });
+
+    return array(
+        'orders' => $normalizedOrders,
+        'visitors' => $normalizedVisitors,
+        'reviews' => $normalizedReviews
+    );
+}
+
+function vd_set_custom_dataset($dataset, $enable = true) {
+    vd_boot_session();
+    $normalized = vd_normalize_dataset($dataset);
+    $_SESSION['virtual_data']['dataset'] = $normalized;
+    $_SESSION['virtual_data']['seed'] = 'custom-' . substr(md5(vd_now_string() . mt_rand(1000, 9999)), 0, 10);
+    $_SESSION['virtual_data']['generated_at'] = vd_now_string();
+    $_SESSION['virtual_data']['updated_at'] = vd_now_string();
+    $_SESSION['virtual_data']['enabled'] = $enable ? true : false;
+}
+
+function vd_get_dataset_json_pretty() {
+    $dataset = vd_get_dataset_for_edit();
+    return json_encode($dataset, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+}
+
+function vd_get_template_json_pretty() {
+    return json_encode(vd_get_dataset_template(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+}
+
+function vd_save_dataset_from_json($jsonText, &$message) {
+    $message = '';
+    $raw = trim((string) $jsonText);
+    if ($raw === '') {
+        $message = 'JSON 内容不能为空';
+        return false;
+    }
+    $decoded = json_decode($raw, true);
+    if (!is_array($decoded)) {
+        $message = 'JSON 格式不正确：' . json_last_error_msg();
+        return false;
+    }
+    if (!isset($decoded['orders']) || !isset($decoded['visitors']) || !isset($decoded['reviews'])) {
+        $message = 'JSON 顶层必须包含 orders、visitors、reviews 三个数组';
+        return false;
+    }
+    vd_set_custom_dataset($decoded, true);
+    $message = '自定义数据已保存并开启';
+    return true;
+}
