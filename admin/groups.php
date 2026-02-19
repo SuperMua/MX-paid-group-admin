@@ -74,6 +74,11 @@ $_SESSION['adminInfo'] = $adminInfo; // 存储管理员信息到会话
 $conn->close();
 
 // 重定向到dashboard.php
-header("Location: index.php");
+$scriptName = isset($_SERVER['SCRIPT_NAME']) ? str_replace('\\', '/', $_SERVER['SCRIPT_NAME']) : '';
+$scriptDir = $scriptName !== '' ? dirname($scriptName) : '/admin';
+if ($scriptDir === '\\' || $scriptDir === '/' || $scriptDir === '.') {
+    $scriptDir = '/admin';
+}
+header('Location: ' . rtrim($scriptDir, '/') . '/index.php');
 exit;
 

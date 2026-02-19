@@ -6,7 +6,12 @@ require_once '../config/config.php';
 
 if (!isset($_SESSION['totalIncome']) || !isset($_SESSION['todayIncome']) || !isset($_SESSION['todayOrders']) || !isset($_SESSION['orders']) || !isset($_SESSION['adminInfo'])) {
     // 如果会话变量不存在，重定向到groups.php以获取数据
-    header("Location: groups.php");
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? str_replace('\\', '/', $_SERVER['SCRIPT_NAME']) : '';
+    $scriptDir = $scriptName !== '' ? dirname($scriptName) : '/admin';
+    if ($scriptDir === '\\' || $scriptDir === '/' || $scriptDir === '.') {
+        $scriptDir = '/admin';
+    }
+    header('Location: ' . rtrim($scriptDir, '/') . '/groups.php');
     exit;
 }
 
