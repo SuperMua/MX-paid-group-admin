@@ -88,7 +88,7 @@ require_once 'login_check.php';
             gap: 8px;
             padding: 10px 12px;
             border: none;
-            border-radius: 12px;
+            border-radius: 999px;
             color: #fff;
             font-weight: 600;
             background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);

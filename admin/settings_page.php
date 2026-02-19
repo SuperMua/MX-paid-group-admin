@@ -67,7 +67,7 @@ require_once 'login_check.php';
                         <img id="group_avatar_preview" src="" alt="群头像" style="width:80px;height:80px;">
                         <div class="select-button">
                             <input type="file" name="group_avatar" id="group_avatar">
-                            <span>+</span>
+                            <span>上传图片</span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ require_once 'login_check.php';
                         <img id="customer_service_image_preview" src="" alt="客服二维码" style="width:80px;height:120px;">
                         <div class="select-button">
                             <input type="file" id="customer_service_image" name="customer_service_image">
-                            <span>+</span>
+                            <span>上传图片</span>
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ require_once 'login_check.php';
                         <img id="qr_code_preview" src="" alt="入群二维码" style="width:80px;height:120px;">
                         <div class="select-button">
                             <input type="file" id="qr_code" name="qr_code">
-                            <span>+</span>
+                            <span>上传图片</span>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@ require_once 'login_check.php';
                     <div class="image-list" id="group_images_list"></div>
                     <div class="select-button">
                         <input type="file" id="group_images_input" name="group_images[]" multiple>
-                        <span>+</span>
+                        <span>选择图片</span>
                     </div>
                 </div>
             </div>

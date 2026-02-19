@@ -38,8 +38,8 @@ require_once 'login_check.php';
        .switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 34px;
+            width: 92px;
+            height: 42px;
         }
 
        .switch input {
@@ -55,23 +55,37 @@ require_once 'login_check.php';
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            border-radius: 34px;
+            background: linear-gradient(135deg, #c8cfef 0%, #e4e7f7 100%);
+            transition: .28s ease;
+            border-radius: 999px;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            box-shadow: inset 0 2px 4px rgba(18, 34, 78, 0.12);
         }
 
        .slider:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
+            height: 32px;
+            width: 32px;
+            left: 5px;
             bottom: 4px;
             background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
+            transition: .28s ease;
             border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24);
+        }
+
+       .slider:after {
+            content: '关闭';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4f5675;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            transition: opacity 0.2s ease;
         }
 
         input:checked +.slider {
@@ -83,9 +97,13 @@ require_once 'login_check.php';
         }
 
         input:checked +.slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
+            transform: translateX(49px);
+        }
+
+        input:checked +.slider:after {
+            content: '开启';
+            color: #ffffff;
+            right: 14px;
         }
 
         #statusText {
@@ -201,6 +219,7 @@ require_once 'login_check.php';
     <div class="settings-pro-toast" id="auditToast">状态已更新</div>
     <script>
         const toggleSwitch = document.getElementById('toggleSwitch');
+        const toggleShell = document.querySelector('.switch');
         const statusText = document.getElementById('statusText');
         const auditToast = document.getElementById('auditToast');
         let isSaving = false;
@@ -227,6 +246,10 @@ require_once 'login_check.php';
                 return;
             }
             isSaving = true;
+            if (toggleShell) {
+                toggleShell.style.opacity = '0.65';
+                toggleShell.style.pointerEvents = 'none';
+            }
             const newStatus = toggleSwitch.checked? 1 : 0;
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'audit_status.php', true);
@@ -249,6 +272,10 @@ require_once 'login_check.php';
                         syncStatusClass(toggleSwitch.checked);
                         showToast(response.message || '更新失败，请稍后重试', true);
                     }
+                    if (toggleShell) {
+                        toggleShell.style.opacity = '1';
+                        toggleShell.style.pointerEvents = 'auto';
+                    }
                     isSaving = false;
                     return;
                 }
@@ -256,12 +283,20 @@ require_once 'login_check.php';
                 toggleSwitch.checked = !toggleSwitch.checked;
                 syncStatusClass(toggleSwitch.checked);
                 showToast('请求失败，请稍后重试', true);
+                if (toggleShell) {
+                    toggleShell.style.opacity = '1';
+                    toggleShell.style.pointerEvents = 'auto';
+                }
                 isSaving = false;
             };
             xhr.onerror = function () {
                 toggleSwitch.checked = !toggleSwitch.checked;
                 syncStatusClass(toggleSwitch.checked);
                 showToast('网络异常，请稍后重试', true);
+                if (toggleShell) {
+                    toggleShell.style.opacity = '1';
+                    toggleShell.style.pointerEvents = 'auto';
+                }
                 isSaving = false;
             };
             xhr.send('status=' + newStatus);

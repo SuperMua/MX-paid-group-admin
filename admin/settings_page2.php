@@ -529,56 +529,43 @@ $conn->close();
         }
 
         .avatar-upload {
-            width: 84px;
-            height: 84px;
-            border: 1px dashed rgba(83, 86, 251, 0.4);
-            border-radius: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            justify-items: center;
+            gap: 10px;
             margin: 0 auto 14px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: #f8f8ff;
         }
 
         .avatar-upload .avatar-label {
-            display: flex;
-            justify-content: center;
+            min-width: 122px;
+            height: 40px;
+            border-radius: 999px;
+            border: 1px solid rgba(83, 86, 251, 0.22);
+            background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+            color: #fff;
+            box-shadow: 0 10px 18px rgba(83, 86, 251, 0.24);
+            display: inline-flex;
             align-items: center;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            z-index: 1;
-            color: #8b91d2;
+            justify-content: center;
+            cursor: pointer;
         }
 
         .avatar-upload .avatar-label small {
-            font-size: 24px;
+            font-size: 13px;
+            font-weight: 700;
         }
 
         .avatar-upload img {
-            width: 100%;
-            height: 100%;
+            width: 92px;
+            height: 92px;
             border-radius: 14px;
             display: none;
             object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
+            border: 1px solid rgba(83, 86, 251, 0.24);
+            box-shadow: 0 10px 20px rgba(83, 86, 251, 0.16);
         }
 
         .avatar-upload input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 3;
+            display: none;
         }
 
         .button-group {
@@ -720,9 +707,9 @@ $conn->close();
            <div class="avatar-upload">
                <input type="file" name="avatar" id="avatar-upload" onchange="previewAvatar()" accept="image/*">
                <label for="avatar-upload" class="avatar-label">
-                   <small>+</small>
-                   <img id="avatar-preview" src="" alt="头像预览">
+                   <small>上传头像</small>
                </label>
+               <img id="avatar-preview" src="" alt="头像预览">
            </div>
 		   
             <div class="form-group">

@@ -53,7 +53,7 @@ require_once 'login_check.php';
                     <div class="settings-upload-preview">
                         <img id="avatar" src="#" alt="用户头像">
                     </div>
-                    <button id="upload-button" class="settings-upload-trigger" type="button">+</button>
+                    <button id="upload-button" class="settings-upload-trigger" type="button">上传头像</button>
                     <input type="file" id="avatar-input" accept="image/*">
                 </div>
                 <p class="settings-account-help">建议上传 1:1 比例头像，提升后台识别度。</p>

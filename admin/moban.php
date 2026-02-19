@@ -285,28 +285,27 @@ $conn->close();
         }
 
         .buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
             margin-top: 12px;
         }
 
-        .buttons > * {
-            flex: 1;
-        }
-
         .button {
             width: 100%;
-            min-height: 44px;
+            min-height: 46px;
             border: none;
             border-radius: 999px;
-            padding: 10px 12px;
-            font-size: 13px;
+            padding: 10px 14px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            white-space: nowrap;
+            writing-mode: horizontal-tb;
             transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
         }
 
@@ -327,11 +326,10 @@ $conn->close();
         }
 
         .button.edit {
-            color: #40498a;
+            color: #4a4fd7;
             background: #eef0ff;
-            border: 1px solid rgba(83, 86, 251, 0.2);
-            box-shadow: 0 10px 18px rgba(83, 86, 251, 0.16);
-            flex: 0 0 132px;
+            border: 1px solid rgba(83, 86, 251, 0.3);
+            box-shadow: 0 10px 18px rgba(83, 86, 251, 0.14);
         }
 
         .button.swap {
@@ -478,14 +476,6 @@ $conn->close();
         }
 
         @media (max-width: 768px) {
-            .buttons {
-                flex-direction: column;
-            }
-
-            .button.edit {
-                flex-basis: auto;
-            }
-
             .link-generator {
                 flex-direction: column;
                 padding-right: 14px;

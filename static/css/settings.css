@@ -246,27 +246,30 @@ body {
 
 .select-button {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border: 1px dashed rgba(83, 86, 251, 0.36);
-  border-radius: 12px;
+  min-width: 128px;
+  height: 40px;
+  border: 1px solid rgba(83, 86, 251, 0.26);
+  border-radius: 999px;
   margin-top: 5px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
-  background: #f8f7ff;
+  background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+  box-shadow: 0 10px 18px rgba(83, 86, 251, 0.2);
 }
 
 .select-button:hover {
-  border-color: #5356fb;
-  box-shadow: 0 0 0 4px rgba(83, 86, 251, 0.12);
+  box-shadow: 0 14px 22px rgba(83, 86, 251, 0.28);
 }
 
 .select-button span {
-  font-size: 24px;
-  color: #8e93d5;
+  font-size: 13px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .select-button input[type="file"] {
@@ -324,6 +327,6 @@ body {
   .save-button {
     width: 220px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 999px;
   }
 }
