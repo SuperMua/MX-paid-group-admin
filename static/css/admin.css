@@ -294,7 +294,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   border: 1px solid rgba(83, 86, 251, 0.2);
-  border-radius: 16px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 24px rgba(83, 86, 251, 0.14);
@@ -671,7 +671,7 @@ button[type="submit"]:hover {
   margin: 12px 0;
   padding: 16px;
   border: 1px dashed #d0d5dd;
-  border-radius: 10px;
+  border-radius: 16px;
   background: #f8fafc;
   color: #667085;
   text-align: center;
@@ -711,6 +711,7 @@ button[type="submit"]:hover {
 .admin-pill-btn {
   border: none;
   border-radius: 999px;
+  min-width: 112px;
   padding: 9px 16px;
   display: inline-flex;
   align-items: center;
@@ -999,9 +1000,9 @@ input[type="file"]::-webkit-file-upload-button {
 .admin-shell-link {
   display: flex;
   align-items: center;
-  height: 44px;
+  min-height: 44px;
   padding: 0 12px;
-  border-radius: 12px;
+  border-radius: 999px;
   color: #465077;
   font-size: 14px;
   font-weight: 600;
@@ -1034,7 +1035,7 @@ input[type="file"]::-webkit-file-upload-button {
 .admin-shell-sublink {
   display: block;
   padding: 7px 10px;
-  border-radius: 10px;
+  border-radius: 999px;
   color: #63709a;
   font-size: 13px;
   font-weight: 600;
@@ -1059,7 +1060,7 @@ input[type="file"]::-webkit-file-upload-button {
 .admin-shell-logout {
   width: 100%;
   border: none;
-  border-radius: 12px;
+  border-radius: 999px;
   padding: 11px 12px;
   color: #fff;
   font-weight: 700;
@@ -1076,7 +1077,7 @@ input[type="file"]::-webkit-file-upload-button {
     transform: none;
     width: calc(100% - 8px);
     height: 58px;
-    border-radius: 16px;
+    border-radius: 999px;
     box-shadow: 0 10px 24px rgba(83, 86, 251, 0.14);
   }
 
@@ -1173,7 +1174,7 @@ input[type="file"]::-webkit-file-upload-button {
     transform: translateX(-50%);
     width: min(var(--admin-max-width), calc(100% - 40px));
     height: 58px;
-    border-radius: 18px;
+    border-radius: 999px;
     box-shadow: 0 12px 24px rgba(83, 86, 251, 0.16);
   }
 
@@ -1264,7 +1265,7 @@ input[type="file"]::-webkit-file-upload-button {
     width: 220px;
     margin-left: auto;
     margin-right: 0;
-    border-radius: 12px;
+    border-radius: 999px;
     padding: 12px 18px;
   }
 
