@@ -75,19 +75,6 @@ require_once 'login_check.php';
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24);
         }
 
-       .slider:after {
-            content: '关闭';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #4f5675;
-            font-size: 12px;
-            font-weight: 700;
-            line-height: 1;
-            transition: opacity 0.2s ease;
-        }
-
         input:checked +.slider {
             background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
         }
@@ -98,12 +85,6 @@ require_once 'login_check.php';
 
         input:checked +.slider:before {
             transform: translateX(49px);
-        }
-
-        input:checked +.slider:after {
-            content: '开启';
-            color: #ffffff;
-            right: 14px;
         }
 
         #statusText {
