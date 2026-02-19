@@ -364,7 +364,7 @@ $conn->close();
             height: 100%;
             border-radius: 35px;
             overflow: hidden;
-            background: #0a0a0a;
+            background: #f5f7ff;
             border: 1px solid rgba(255, 255, 255, 0.09);
         }
 
@@ -374,7 +374,7 @@ $conn->close();
             object-fit: contain;
             object-position: center top;
             display: block;
-            background: #10131a;
+            background: transparent;
         }
 
         .iphone17-pro-island {
