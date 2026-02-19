@@ -1,4 +1,5 @@
 <?php
+require_once 'login_check.php';
 require_once '../config/config.php';
 
 // 处理获取设置数据的请求

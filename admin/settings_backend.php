@@ -1,4 +1,5 @@
 <?php
+require_once 'login_check.php';
 // 引入数据库配置文件
 require_once '../config/config.php';
 

@@ -1,6 +1,6 @@
 <?php
-require_once 'query-visitors.php'; 
 require_once 'login_check.php'; 
+require_once 'query-visitors.php'; 
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
