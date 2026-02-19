@@ -385,7 +385,7 @@ $conn->close();
             top: 11px;
             left: 50%;
             transform: translateX(-50%);
-            width: 74px;
+            width: 64px;
             height: 20px;
             border-radius: 999px;
             background: #020203;
