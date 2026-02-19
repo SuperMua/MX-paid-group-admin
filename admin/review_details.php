@@ -101,7 +101,7 @@ require_once 'review_db.php';
     </div>
 
     <script>
-        let isDeleteProcessing = false;
+        var isDeleteProcessing = false;
 
         function showPreview(img, ip, imageId) {
             const previewContainer = document.getElementById('imagePreviewContainer');  

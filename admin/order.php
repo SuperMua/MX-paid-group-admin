@@ -97,7 +97,7 @@ require_once 'login_check.php';
     </div>
 
     <script>
-            let isActionProcessing = false;
+            var isActionProcessing = false;
 
             // 显示确认弹窗
             function showConfirmModal(actionType, orderId, orderNumber) {

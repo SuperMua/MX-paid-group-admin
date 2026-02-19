@@ -77,7 +77,7 @@ require_once 'login_check.php';
 	        <?php endif; ?>
 	    </div>
 <script>
-        let isClearProcessing = false;
+        var isClearProcessing = false;
 
         // 显示确认弹窗
         function showConfirmModal() {

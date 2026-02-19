@@ -29,6 +29,23 @@
             return;
         }
 
+        if (sourceDoc === document) {
+            Array.prototype.forEach.call(document.head.children, function (node) {
+                var tag = (node.tagName || '').toLowerCase();
+                if (tag === 'style') {
+                    node.setAttribute(HEAD_MANAGED_ATTR, '1');
+                    return;
+                }
+                if (tag === 'link') {
+                    var rel = String(node.getAttribute('rel') || '').toLowerCase();
+                    if (rel.indexOf('stylesheet') !== -1) {
+                        node.setAttribute(HEAD_MANAGED_ATTR, '1');
+                    }
+                }
+            });
+            return;
+        }
+
         clearManagedHeadResources();
 
         Array.prototype.forEach.call(sourceDoc.head.children, function (node) {

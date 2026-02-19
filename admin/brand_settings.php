@@ -184,7 +184,13 @@ require_once 'login_check.php';
     </section>
 
     <script>
+        (function () {
         const form = document.getElementById('brandSettingsForm');
+        if (!form || form.dataset.boundBrandSettingsPage === '1') {
+            return;
+        }
+        form.dataset.boundBrandSettingsPage = '1';
+
         const brandNameInput = document.getElementById('brand_name');
         const logoFileInput = document.getElementById('logoFile');
         const faviconFileInput = document.getElementById('faviconFile');
@@ -290,6 +296,7 @@ require_once 'login_check.php';
         loadBrandSettings().catch((error) => {
             toast.textContent = error.message || '初始化失败';
         });
+        })();
     </script>
     <script src="../static/js/admin-shell.js"></script>
 </body>

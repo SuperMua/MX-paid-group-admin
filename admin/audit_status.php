@@ -218,6 +218,13 @@ require_once 'login_check.php';
     </main>
     <div class="settings-pro-toast" id="auditToast">状态已更新</div>
     <script>
+        (function () {
+        const pageRoot = document.querySelector('.settings-pro-shell');
+        if (!pageRoot || pageRoot.dataset.boundAuditStatusPage === '1') {
+            return;
+        }
+        pageRoot.dataset.boundAuditStatusPage = '1';
+
         const toggleSwitch = document.getElementById('toggleSwitch');
         const toggleShell = document.querySelector('.switch');
         const statusText = document.getElementById('statusText');
@@ -302,8 +309,11 @@ require_once 'login_check.php';
             xhr.send('status=' + newStatus);
         }
 
-        syncStatusClass(toggleSwitch.checked);
-        toggleSwitch.addEventListener('change', toggleAutoAudit);
+        if (toggleSwitch) {
+            syncStatusClass(toggleSwitch.checked);
+            toggleSwitch.addEventListener('change', toggleAutoAudit);
+        }
+        })();
     </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>

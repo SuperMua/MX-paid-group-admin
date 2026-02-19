@@ -74,7 +74,7 @@ require_once 'review_db.php';
 	</div>
 </div>
 <script>
-        let isClearProcessing = false;
+        var isClearProcessing = false;
 
         // 显示确认弹窗
         function showConfirmModal() {
