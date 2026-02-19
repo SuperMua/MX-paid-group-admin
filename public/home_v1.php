@@ -98,13 +98,13 @@ require_once 'image_upload.php';
 					<div class="zffss">支付方式</div>
 	                 <div class="radio-group">
 	                         <label>
-								 <input type="radio" id="payment_method" name="payment_method" value="wxpay" checked="">
+								 <input type="radio" id="wxpay" name="payment_method" value="wxpay" checked="">
 	                             <div class="radio-img">
 	                                 <img src="../result/images/wxpay.png" alt="微信支付" onclick="toggleRadio('wxpay')">
 	                             </div>
 	                         </label>
 	                         <label>
-	                             <label><input type="radio" id="payment_method" name="payment_method" value="alipay">
+	                             <input type="radio" id="alipay" name="payment_method" value="alipay">
 	                             <div class="radio-img">
 	                                 <img src="../result/images/alipay.png" alt="支付宝" onclick="toggleRadio('alipay')">
 	                             </div>

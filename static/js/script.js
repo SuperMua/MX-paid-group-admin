@@ -1,4 +1,11 @@
- function showVideo(item){
+ function setElementDisplayById(id, display) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.style.display = display;
+            }
+        }
+
+        function showVideo(item){
             // 隐藏所有视频和播放按钮
             var videoItems = document.querySelectorAll('.video-item');
             videoItems.forEach(function(videoItem){
@@ -27,14 +34,14 @@
             //点击视频弹窗
                 setTimeout(function(){
                     video.pause();
-                    document.getElementById('popupsp').style.display = 'block';
-                    document.getElementById('overlaysp').style.display = 'block';
+                    setElementDisplayById('popupsp', 'block');
+                    setElementDisplayById('overlaysp', 'block');
                 }, 10000);
             }
             //关闭弹窗
             function closePopupsp(){
-                document.getElementById('popupsp').style.display = 'none';
-                document.getElementById('overlaysp').style.display = 'none';
+                setElementDisplayById('popupsp', 'none');
+                setElementDisplayById('overlaysp', 'none');
             } 
            // 支付方式选择
            function toggleRadio(id) {
@@ -46,24 +53,24 @@
  (function() {
          //支付弹窗
           function openPopup() {
-              document.getElementById('popup').style.display = 'block';
-              document.getElementById('overlay').style.display = 'block';
+              setElementDisplayById('popup', 'block');
+              setElementDisplayById('overlay', 'block');
           }
           // 关闭弹窗
           function closePopup() {
-              document.getElementById('popup').style.display = 'none';
-              document.getElementById('overlay').style.display = 'none';
+              setElementDisplayById('popup', 'none');
+              setElementDisplayById('overlay', 'none');
           }
           
          //客服弹窗
          function openModal() {
-               document.getElementById('modal').style.display = 'block';
-               document.getElementById('modal-overlay').style.display = 'block';
+               setElementDisplayById('modal', 'block');
+               setElementDisplayById('modal-overlay', 'block');
                  }
          // 关闭弹窗
          function closeModal() {
-               document.getElementById('modal').style.display = 'none';
-               document.getElementById('modal-overlay').style.display = 'none';
+               setElementDisplayById('modal', 'none');
+               setElementDisplayById('modal-overlay', 'none');
            }
 		   // 将函数暴露到全局作用域
 		      window.openPopup = openPopup;
@@ -77,13 +84,20 @@
     let countdownTime = 28 * 52; // 30分钟倒计时，单位秒
     
           function updateCountdown() {
+              var hoursNode = document.getElementById('countdownHours');
+              var minutesNode = document.getElementById('countdownMinutes');
+              var secondsNode = document.getElementById('countdownSeconds');
+              if (!hoursNode || !minutesNode || !secondsNode) {
+                  return;
+              }
+
               const hours = Math.floor(countdownTime / 3600);
               const minutes = Math.floor((countdownTime % 3600) / 60);
               const seconds = countdownTime % 60;
     
-              document.getElementById('countdownHours').textContent = hours.toString().padStart(2, '0');
-              document.getElementById('countdownMinutes').textContent = minutes.toString().padStart(2, '0');
-              document.getElementById('countdownSeconds').textContent = seconds.toString().padStart(2, '0');
+              hoursNode.textContent = hours.toString().padStart(2, '0');
+              minutesNode.textContent = minutes.toString().padStart(2, '0');
+              secondsNode.textContent = seconds.toString().padStart(2, '0');
     
               countdownTime--;
           }
@@ -95,13 +109,25 @@
 // 加载完成弹窗功能
  (function() {
     function showPopup() {
-        document.querySelector('.masktx').style.display = 'block';
-        document.querySelector('.popuptx').style.display = 'block';
+        var mask = document.querySelector('.masktx');
+        var popup = document.querySelector('.popuptx');
+        if (mask) {
+            mask.style.display = 'block';
+        }
+        if (popup) {
+            popup.style.display = 'block';
+        }
     }
 
     function closePopup1() {
-        document.querySelector('.masktx').style.display = 'none';
-        document.querySelector('.popuptx').style.display = 'none';
+        var mask = document.querySelector('.masktx');
+        var popup = document.querySelector('.popuptx');
+        if (mask) {
+            mask.style.display = 'none';
+        }
+        if (popup) {
+            popup.style.display = 'none';
+        }
     }
 
     window.showPopup = showPopup;
@@ -131,6 +157,9 @@
     let currentIndex = 0;
 
     function showInfo() {
+        if (!infoContainer || !infos.length) {
+            return;
+        }
         infoContainer.textContent = infos[currentIndex];
         infoContainer.style.display = 'block';
         infoContainer.style.right = '9%';
