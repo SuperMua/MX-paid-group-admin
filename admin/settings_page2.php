@@ -1,9 +1,22 @@
 <?php
 require_once '../config/config.php';
 require_once 'login_check.php';
+
+$isAjaxRequest = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+
+function outputActionJson($success, $message) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(
+        array('success' => (bool)$success, 'message' => (string)$message),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
+    exit;
+}
+
 // 初始化变量
 $operationSuccess = false; // 用于标记操作是否成功
 $updateSuccess = false; // 用于标记更新操作是否成功
+$actionResult = array('success' => false, 'message' => '操作失败，请稍后重试');
 
 // 获取当前设置
 $amount = 0;
@@ -56,16 +69,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  // 使用 getimagesize 获取图片的 MIME 类型
                  $image_info = getimagesize($_FILES['avatar']['tmp_name']);
                  if ($image_info === false) {
+                     if ($isAjaxRequest) {
+                         outputActionJson(false, "上传的文件不是有效的图片");
+                     }
                      die("上传的文件不是有效的图片");
                  }
     
                  $mime_type = $image_info['mime'];
                  if (!in_array($mime_type, $allowed_types)) {
+                     if ($isAjaxRequest) {
+                         outputActionJson(false, "只允许上传JPEG、PNG或GIF图片");
+                     }
                      die("只允许上传JPEG、PNG或GIF图片");
                  }
     
                 // 限制文件大小 (例如2MB)
                 if ($_FILES['avatar']['size'] > 2 * 1024 * 1024) {
+                    if ($isAjaxRequest) {
+                        outputActionJson(false, "图片大小不能超过2MB");
+                    }
                     die("图片大小不能超过2MB");
                 }
     
@@ -78,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (move_uploaded_file($avatar_tmp_name, $avatar_path)) {
                     $group_avatar = $avatar_path;
                 } else {
+                    if ($isAjaxRequest) {
+                        outputActionJson(false, "头像上传失败");
+                    }
                     echo "头像上传失败";
                     exit;
                 }
@@ -90,11 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("sss", $nickname, $content, $group_avatar);
                 if ($stmt->execute()) {
                     $operationSuccess = true;
+                    $actionResult = array('success' => true, 'message' => '添加成功');
                 } else {
+                    $actionResult = array('success' => false, 'message' => '插入失败：' . $stmt->error);
                     echo "插入失败：" . $stmt->error;
                 }
                 $stmt->close();
             } else {
+                $actionResult = array('success' => false, 'message' => 'SQL 准备失败：' . $conn->error);
                 echo "SQL 准备失败：" . $conn->error;
             }
         } 
@@ -118,16 +146,25 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     // 使用 getimagesize 获取图片的 MIME 类型
     $image_info = getimagesize($_FILES['avatar']['tmp_name']);
     if ($image_info === false) {
+        if ($isAjaxRequest) {
+            outputActionJson(false, "上传的文件不是有效的图片");
+        }
         die("上传的文件不是有效的图片");
     }
 
     $mime_type = $image_info['mime'];
     if (!in_array($mime_type, $allowed_types)) {
+        if ($isAjaxRequest) {
+            outputActionJson(false, "只允许上传JPEG、PNG或GIF图片");
+        }
         die("只允许上传JPEG、PNG或GIF图片");
     }
 
     // 限制文件大小 (例如2MB)
     if ($_FILES['avatar']['size'] > 2 * 1024 * 1024) {
+        if ($isAjaxRequest) {
+            outputActionJson(false, "图片大小不能超过2MB");
+        }
         die("图片大小不能超过2MB");
     }
 
@@ -144,6 +181,9 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
         }
         $current_avatar = $avatar_path;
     } else {
+        if ($isAjaxRequest) {
+            outputActionJson(false, "头像上传失败");
+        }
         echo "头像上传失败";
         exit;
     }
@@ -156,11 +196,14 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
                 $stmt->bind_param("sssi", $nickname, $content, $current_avatar, $id);
                 if ($stmt->execute()) {
                     $operationSuccess = true;
+                    $actionResult = array('success' => true, 'message' => '编辑成功');
                 } else {
+                    $actionResult = array('success' => false, 'message' => '更新失败：' . $stmt->error);
                     echo "更新失败：" . $stmt->error;
                 }
                 $stmt->close();
             } else {
+                $actionResult = array('success' => false, 'message' => 'SQL 准备失败：' . $conn->error);
                 echo "SQL 准备失败：" . $conn->error;
             }
         } 
@@ -187,15 +230,22 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
                         @unlink($avatar_path);
                     }
                     $operationSuccess = true;
+                    $actionResult = array('success' => true, 'message' => '删除成功');
                 } else {
+                    $actionResult = array('success' => false, 'message' => '删除失败：' . $stmt->error);
                     echo "删除失败：" . $stmt->error;
                 }
                 $stmt->close();
             } else {
+                $actionResult = array('success' => false, 'message' => 'SQL 准备失败：' . $conn->error);
                 echo "SQL 准备失败：" . $conn->error;
             }
         }
     }
+}
+
+if ($isAjaxRequest && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    outputActionJson($actionResult['success'], $actionResult['message']);
 }
 
 // 获取所有群组数据
@@ -570,6 +620,10 @@ $conn->close();
             animation: fadeInOut 2s ease-in-out;
         }
 
+        .success-popup.is-error {
+            background: rgba(185, 28, 28, 0.9);
+        }
+
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate(-50%, -42%); }
             20% { opacity: 1; transform: translate(-50%, -50%); }
@@ -641,7 +695,7 @@ $conn->close();
     <div class="group-list-section">
         <div class="group-list-header">
             <h2>群聊列表</h2>
-            <button onclick="handleAddClick()">添加</button>
+            <button type="button" onclick="handleAddClick()">添加</button>
         </div>
         <?php foreach ($groups as $group): ?>
             <div class="group-item" data-id="<?php echo $group['id']; ?>">
@@ -651,8 +705,8 @@ $conn->close();
                     <div class="group-message"><?php echo htmlspecialchars($group['content']); ?></div>
                 </div>
                 <div class="group-actions">
-                    <button class="edit-button" onclick="handleEditClick(<?php echo $group['id']; ?>)">编辑</button>
-                    <button class="delete-button" onclick="handleDeleteClick(<?php echo $group['id']; ?>)">删除</button>
+                    <button type="button" class="edit-button" onclick="handleEditClick(<?php echo $group['id']; ?>)">编辑</button>
+                    <button type="button" class="delete-button" onclick="handleDeleteClick(<?php echo $group['id']; ?>)">删除</button>
                 </div>
             </div>
 		<?php endforeach; ?>
@@ -683,7 +737,7 @@ $conn->close();
                 <input type="hidden" name="id">
             </div>
             <div class="button-group">
-                <button class="confirm-btn" onclick="handleConfirm()">确认</button>
+                <button type="button" class="confirm-btn" onclick="handleConfirm()">确认</button>
             </div>
         </div>
     </div>
@@ -693,8 +747,8 @@ $conn->close();
         <div class="popup-content2">
             <div class="popup-header">确认删除吗？</div>
             <div class="button-group">
-                <button class="cancel-btn" onclick="hideDeleteConfirmPopup()">取消</button>
-                <button class="confirm-btn" onclick="handleDeleteConfirm()">确认</button>
+                <button type="button" class="cancel-btn" onclick="hideDeleteConfirmPopup()">取消</button>
+                <button type="button" class="confirm-btn" onclick="handleDeleteConfirm()">确认删除</button>
             </div>
         </div>
     </div>
@@ -703,189 +757,192 @@ $conn->close();
 	<div id="successPopup" class="success-popup">操作成功</div>
 
 	<script>
-	  // 头像预览功能
-	  function previewAvatar() {
+	  (function () {
+	      const root = document.querySelector('.group-list-section');
+	      if (!root || root.dataset.boundTemplate2Settings === '1') {
+	          return;
+	      }
+	      root.dataset.boundTemplate2Settings = '1';
+
+	      const commonPopup = document.getElementById('common-popup');
+	      const deletePopup = document.getElementById('delete-confirm-popup');
 	      const avatarInput = document.getElementById('avatar-upload');
 	      const avatarPreview = document.getElementById('avatar-preview');
 	      const plusSign = document.querySelector('.avatar-label small');
-	      
-	      if (avatarInput.files && avatarInput.files[0]) {
-	          const reader = new FileReader();
-	          reader.onload = function(e) {
-	              avatarPreview.src = e.target.result;
-	              avatarPreview.style.display = 'block';
-	              plusSign.style.display = 'none';
-	          };
-	          reader.readAsDataURL(avatarInput.files[0]);
-	      } else {
+
+	      function showSuccessPopup(message, isError) {
+	          const popup = document.getElementById('successPopup');
+	          if (!popup) {
+	              return;
+	          }
+	          popup.textContent = message || '操作成功';
+	          popup.classList.toggle('is-error', !!isError);
+	          popup.style.display = 'block';
+	          setTimeout(function () {
+	              popup.style.display = 'none';
+	              popup.classList.remove('is-error');
+	          }, 2200);
+	      }
+
+	      function previewAvatar() {
+	          if (!avatarInput || !avatarPreview || !plusSign) {
+	              return;
+	          }
+	          if (avatarInput.files && avatarInput.files[0]) {
+	              const reader = new FileReader();
+	              reader.onload = function (event) {
+	                  avatarPreview.src = event.target.result;
+	                  avatarPreview.style.display = 'block';
+	                  plusSign.style.display = 'none';
+	              };
+	              reader.readAsDataURL(avatarInput.files[0]);
+	              return;
+	          }
 	          avatarPreview.style.display = 'none';
 	          plusSign.style.display = 'block';
 	      }
-	  }
-	
-	
-	  // 显示通用弹窗（添加/编辑）
-	    function showCommonPopup(title, id = null) {
-	        const popup = document.getElementById('common-popup');
-            const avatarInput = document.getElementById('avatar-upload');
-            const avatarPreview = document.getElementById('avatar-preview');
-            const plusSign = document.querySelector('.avatar-label small');
-	        popup.querySelector('.popup-header').textContent = title;
-	        if (id) {
-	            popup.querySelector('input[name="id"]').value = id;
-            } else {
-                popup.querySelector('input[name="id"]').value = '';
-                popup.querySelector('input[name="nickname"]').value = '';
-                popup.querySelector('input[name="content"]').value = '';
-                avatarInput.value = '';
-                avatarPreview.src = '';
-                avatarPreview.style.display = 'none';
-                plusSign.style.display = 'block';
-	        }
-	        popup.style.display = 'flex';
-	    }
-	
-	    // 隐藏通用弹窗
-	    function hideCommonPopup() {
-	        document.getElementById('common-popup').style.display = 'none';
-	    }
-	
-	    // 显示删除确认弹窗
-	    function showDeleteConfirmPopup(id) {
-	        document.getElementById('delete-confirm-popup').style.display = 'flex';
-	        document.getElementById('delete-confirm-popup').setAttribute('data-id', id);
-	    }
-	
-	    // 隐藏删除确认弹窗
-	    function hideDeleteConfirmPopup() {
-	        document.getElementById('delete-confirm-popup').style.display = 'none';
-	    }
-	
-	    // 模拟编辑按钮点击事件处理
-	    function handleEditClick(id) {
-	        const popup = document.getElementById('common-popup');
-	        const nicknameInput = popup.querySelector('input[name="nickname"]');
-	        const contentInput = popup.querySelector('input[name="content"]');
-	        const avatarPreview = popup.querySelector('#avatar-preview');
-            const plusSign = document.querySelector('.avatar-label small');
-	
-	        // 获取当前群组信息
-	        const group = document.querySelector(`.group-item[data-id="${id}"]`);
-	        const nickname = group.querySelector('.group-name').textContent;
-	        const content = group.querySelector('.group-message').textContent;
-	        const avatar = group.querySelector('.group-avatar img').src;
-	
-	        // 填充表单
-	        nicknameInput.value = nickname;
-	        contentInput.value = content;
-	        avatarPreview.src = avatar;
-	        avatarPreview.style.display = 'block';
-            plusSign.style.display = 'none';
-	
-	        showCommonPopup('编辑群组', id);
-	    }
-	
-	    // 模拟删除按钮点击事件处理
-	    function handleDeleteClick(id) {
-	        showDeleteConfirmPopup(id);
-	    }
-	
-	    // 模拟添加按钮点击事件处理
-	    function handleAddClick() {
-	        showCommonPopup('添加群组');
-	    }
-	
-	    // 模拟确认操作
-	    function handleConfirm() {
-	        const popup = document.getElementById('common-popup');
-	        const nickname = popup.querySelector('input[name="nickname"]').value;
-	        const content = popup.querySelector('input[name="content"]').value;
-	        const avatar = popup.querySelector('input[name="avatar"]').files[0];
-	        const id = popup.querySelector('input[name="id"]').value;
 
-            if (!nickname.trim() || !content.trim()) {
-                alert('请先填写群昵称和群消息');
-                return;
-            }
-	
-	        const formData = new FormData();
-	        formData.append('nickname', nickname);
-	        formData.append('content', content);
-	        if (avatar) {
-	            formData.append('avatar', avatar);
-	        }
-	        formData.append('action', id ? 'edit' : 'add');
-	        if (id) {
-	            formData.append('id', id);
-	        }
-	
-	        fetch('settings_page2.php', {
-	            method: 'POST',
-	            body: formData
-	        }).then(response => response.text())
-	          .then(data => {
-	              console.log(data);
-	              if (data.includes('操作成功')) {
-	                  showSuccessPopup();
+	      function showCommonPopup(title, id) {
+	          commonPopup.querySelector('.popup-header').textContent = title;
+	          commonPopup.querySelector('input[name="id"]').value = id || '';
+	          if (!id) {
+	              commonPopup.querySelector('input[name="nickname"]').value = '';
+	              commonPopup.querySelector('input[name="content"]').value = '';
+	              avatarInput.value = '';
+	              avatarPreview.src = '';
+	              avatarPreview.style.display = 'none';
+	              plusSign.style.display = 'block';
+	          }
+	          commonPopup.style.display = 'flex';
+	      }
+
+	      function hideCommonPopup() {
+	          commonPopup.style.display = 'none';
+	      }
+
+	      function showDeleteConfirmPopup(id) {
+	          deletePopup.style.display = 'flex';
+	          deletePopup.setAttribute('data-id', id);
+	      }
+
+	      function hideDeleteConfirmPopup() {
+	          deletePopup.style.display = 'none';
+	      }
+
+	      function handleEditClick(id) {
+	          const group = document.querySelector('.group-item[data-id="' + id + '"]');
+	          if (!group) {
+	              return;
+	          }
+	          const nickname = group.querySelector('.group-name').textContent;
+	          const content = group.querySelector('.group-message').textContent;
+	          const avatar = group.querySelector('.group-avatar img').src;
+
+	          commonPopup.querySelector('input[name="nickname"]').value = nickname;
+	          commonPopup.querySelector('input[name="content"]').value = content;
+	          avatarPreview.src = avatar;
+	          avatarPreview.style.display = 'block';
+	          plusSign.style.display = 'none';
+	          showCommonPopup('编辑群组', id);
+	      }
+
+	      function postAction(formData) {
+	          return fetch('settings_page2.php', {
+	              method: 'POST',
+	              headers: {
+	                  'X-Requested-With': 'XMLHttpRequest',
+	                  'Accept': 'application/json'
+	              },
+	              body: formData
+	          }).then(function (response) {
+	              return response.json();
+	          });
+	      }
+
+	      function handleConfirm() {
+	          const nickname = commonPopup.querySelector('input[name="nickname"]').value.trim();
+	          const content = commonPopup.querySelector('input[name="content"]').value.trim();
+	          const avatar = commonPopup.querySelector('input[name="avatar"]').files[0];
+	          const id = commonPopup.querySelector('input[name="id"]').value;
+
+	          if (!nickname || !content) {
+	              showSuccessPopup('请先填写群昵称和群消息', true);
+	              return;
+	          }
+
+	          const formData = new FormData();
+	          formData.append('nickname', nickname);
+	          formData.append('content', content);
+	          if (avatar) {
+	              formData.append('avatar', avatar);
+	          }
+	          formData.append('action', id ? 'edit' : 'add');
+	          if (id) {
+	              formData.append('id', id);
+	          }
+
+	          postAction(formData)
+	              .then(function (payload) {
+	                  if (!payload || !payload.success) {
+	                      showSuccessPopup((payload && payload.message) || '操作失败', true);
+	                      return;
+	                  }
+	                  showSuccessPopup(payload.message || '操作成功', false);
 	                  hideCommonPopup();
-	                  location.reload(); // 刷新页面以更新群聊列表
-	              } else {
-	                  alert('操作失败');
-	              }
-	          }).catch(error => {
-	              console.error('Error:', error);
-	          });
-	    }
-	
-	    // 模拟删除确认操作
-	    function handleDeleteConfirm() {
-	        const popup = document.getElementById('delete-confirm-popup');
-	        const id = popup.getAttribute('data-id');
-	
-	        const formData = new FormData();
-	        formData.append('action', 'delete');
-	        formData.append('id', id);
-	
-	        fetch('settings_page2.php', {
-	            method: 'POST',
-	            body: formData
-	        }).then(response => response.text())
-	          .then(data => {
-	              console.log(data);
-	              if (data.includes('操作成功')) {
-	                  showSuccessPopup();
+	                  setTimeout(function () {
+	                      window.location.reload();
+	                  }, 450);
+	              })
+	              .catch(function (error) {
+	                  console.error('操作失败:', error);
+	                  showSuccessPopup('操作失败，请稍后重试', true);
+	              });
+	      }
+
+	      function handleDeleteConfirm() {
+	          const id = deletePopup.getAttribute('data-id');
+	          if (!id) {
+	              showSuccessPopup('删除目标缺失', true);
+	              return;
+	          }
+
+	          const formData = new FormData();
+	          formData.append('action', 'delete');
+	          formData.append('id', id);
+
+	          postAction(formData)
+	              .then(function (payload) {
+	                  if (!payload || !payload.success) {
+	                      showSuccessPopup((payload && payload.message) || '删除失败', true);
+	                      return;
+	                  }
+	                  showSuccessPopup(payload.message || '删除成功', false);
 	                  hideDeleteConfirmPopup();
-	                  location.reload(); // 刷新页面以更新群聊列表
-	              } else {
-	                  alert('删除失败');
-	              }
-	          }).catch(error => {
-	              console.error('Error:', error);
-	          });
-	    }
-	
-	    // 弹窗提示
-	    function showSuccessPopup() {
-	        const popup = document.getElementById('successPopup');
-	        if (popup) {
-	            popup.style.display = 'block';
-	            setTimeout(() => {
-	                popup.style.display = 'none';
-	            }, 2000);
-	        } else {
-	            console.error('Success popup element not found');
-	        }
-	    }
-	
-	    // 检查是否有操作成功的标志
-	    <?php if ((isset($operationSuccess) && $operationSuccess) || (isset($updateSuccess) && $updateSuccess)): ?>
-	        // 等待DOM加载完成
-	        if (document.readyState === 'loading') {
-	            document.addEventListener('DOMContentLoaded', showSuccessPopup);
-	        } else {
-	            showSuccessPopup();
-	        }
-	    <?php endif; ?>
+	                  setTimeout(function () {
+	                      window.location.reload();
+	                  }, 450);
+	              })
+	              .catch(function (error) {
+	                  console.error('删除失败:', error);
+	                  showSuccessPopup('删除失败，请稍后重试', true);
+	              });
+	      }
+
+	      window.previewAvatar = previewAvatar;
+	      window.showCommonPopup = showCommonPopup;
+	      window.hideCommonPopup = hideCommonPopup;
+	      window.showDeleteConfirmPopup = showDeleteConfirmPopup;
+	      window.hideDeleteConfirmPopup = hideDeleteConfirmPopup;
+	      window.handleEditClick = handleEditClick;
+	      window.handleDeleteClick = showDeleteConfirmPopup;
+	      window.handleAddClick = function () { showCommonPopup('添加群组'); };
+	      window.handleConfirm = handleConfirm;
+	      window.handleDeleteConfirm = handleDeleteConfirm;
+
+	      <?php if ((isset($operationSuccess) && $operationSuccess) || (isset($updateSuccess) && $updateSuccess)): ?>
+	          showSuccessPopup('操作成功', false);
+	      <?php endif; ?>
+	  })();
 	</script>
 <script src="../static/js/admin-shell.js"></script>
 </body>

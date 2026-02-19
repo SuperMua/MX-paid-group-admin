@@ -252,7 +252,7 @@ require_once 'login_check.php';
 
             .task-save-btn {
                 width: 220px;
-                border-radius: 12px;
+                border-radius: 999px;
             }
         }
     </style>
@@ -349,78 +349,104 @@ require_once 'login_check.php';
     </div>
 
     <script>
-        // 使用 AJAX 从后端获取现有任务设置数据并填充表单
-        window.onload = function () {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'settings_backend.php?action=get', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    document.getElementById('title').value = data.title;
-                    document.getElementById('intro').value = data.intro;
-                    document.getElementById('requirement').value = data.requirement;
-                    document.getElementById('review_time').value = data.review_time;
+        (function () {
+            const form = document.querySelector('.task-settings-form');
+            if (!form || form.dataset.boundTaskSettings === '1') {
+                return;
+            }
+            form.dataset.boundTaskSettings = '1';
 
-                    if (data.download_img) {
-                        var downloadImgPreview = document.getElementById('download_img_preview');
-                        downloadImgPreview.src = "../" + data.download_img;
-                        downloadImgPreview.style.display = 'inline-block';
-                    }
+            const submitButton = form.querySelector('.task-save-btn');
 
-                    if (data.example_img) {
-                        var exampleImgPreview = document.getElementById('example_img_preview');
-                        exampleImgPreview.src = "../" + data.example_img;
-                        exampleImgPreview.style.display = 'inline-block';
-                    }
-
-                    document.getElementById('prompt').value = data.prompt;
+            function openModal(message, isError) {
+                const modal = document.getElementById('custom-modal');
+                const content = modal ? modal.querySelector('.modal-content') : null;
+                document.getElementById('modal-message').textContent = message;
+                if (content) {
+                    content.style.backgroundColor = isError ? 'rgba(185, 28, 28, 0.9)' : 'rgba(32, 37, 65, 0.86)';
                 }
-            };
-            xhr.send();
-        };
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+                setTimeout(function () {
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
+                }, 2200);
+            }
 
-        function openModal(message) {
-            document.getElementById('modal-message').textContent = message;
-            var customModal = document.getElementById('custom-modal');
-            customModal.style.display = 'flex';
+            function fillTaskSettings(data) {
+                document.getElementById('title').value = data.title || '';
+                document.getElementById('intro').value = data.intro || '';
+                document.getElementById('requirement').value = data.requirement || '';
+                document.getElementById('review_time').value = data.review_time || '';
+                document.getElementById('prompt').value = data.prompt || '';
 
-            // 设置 3 秒后自动关闭弹窗
-            setTimeout(function () {
-                customModal.style.display = 'none';
-            }, 3000);
-        }
+                if (data.download_img) {
+                    const downloadImgPreview = document.getElementById('download_img_preview');
+                    downloadImgPreview.src = '../' + data.download_img;
+                    downloadImgPreview.style.display = 'inline-block';
+                }
 
-        // 图片预览函数
-        function previewImage(input, previewId) {
-            var preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
+                if (data.example_img) {
+                    const exampleImgPreview = document.getElementById('example_img_preview');
+                    exampleImgPreview.src = '../' + data.example_img;
+                    exampleImgPreview.style.display = 'inline-block';
+                }
+            }
+
+            function loadTaskSettings() {
+                fetch('settings_backend.php?action=get', { cache: 'no-store' })
+                    .then(function (response) { return response.json(); })
+                    .then(function (data) { fillTaskSettings(data || {}); })
+                    .catch(function (error) {
+                        console.error('加载任务设置失败:', error);
+                        openModal('读取任务设置失败，请刷新重试', true);
+                    });
+            }
+
+            window.previewImage = function (input, previewId) {
+                const preview = document.getElementById(previewId);
+                if (!preview || !input.files || !input.files[0]) {
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
                     preview.style.display = 'inline-block';
                 };
                 reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // 监听表单提交事件
-        document.querySelector('form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'settings_backend.php', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.status === 'success') {
-                        openModal(response.message);
-                    } else {
-                        openModal(response.message);
-                    }
-                }
             };
-            xhr.send(formData);
-        });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+
+                submitButton.disabled = true;
+                submitButton.value = '保存中...';
+
+                fetch('settings_backend.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(function (response) { return response.json(); })
+                    .then(function (payload) {
+                        const success = payload && payload.status === 'success';
+                        const message = payload && payload.message ? payload.message : (success ? '保存成功' : '保存失败');
+                        openModal(message, !success);
+                    })
+                    .catch(function (error) {
+                        console.error('保存任务设置失败:', error);
+                        openModal('保存失败，请稍后重试', true);
+                    })
+                    .finally(function () {
+                        submitButton.disabled = false;
+                        submitButton.value = '保存任务设置';
+                    });
+            });
+
+            loadTaskSettings();
+        })();
     </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>
