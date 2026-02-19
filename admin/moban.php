@@ -284,6 +284,22 @@ $conn->close();
             object-fit: cover;
         }
 
+        .image-placeholder-template {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: linear-gradient(165deg, #f0f4ff 0%, #e8f7ff 100%);
+        }
+
+        .image-placeholder-template img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center top;
+            filter: drop-shadow(0 8px 18px rgba(56, 79, 145, 0.2));
+        }
+
         .buttons {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -473,6 +489,10 @@ $conn->close();
             .image-placeholder {
                 height: 260px;
             }
+
+            .image-placeholder-template {
+                height: 320px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -500,7 +520,7 @@ $conn->close();
     <div class="row">
         <div class="template">
             <h3>模板一</h3>
-            <div class="image-placeholder"><img src="../result/images/mb1.png" alt="" /></div>
+            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb1.png" alt="模板一缩略图" /></div>
             <div class="buttons">
                 <a class="button edit" href="settings_page.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v1">预览效果</button>
@@ -508,7 +528,7 @@ $conn->close();
         </div>
         <div class="template">
             <h3>模板二</h3>
-            <div class="image-placeholder"><img src="../result/images/mb2.png" alt="" /></div>
+            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb2.png" alt="模板二缩略图" /></div>
             <div class="buttons">
                 <a class="button edit" href="settings_page2.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v2">预览效果</button>
