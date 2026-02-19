@@ -36,12 +36,17 @@
 
     var HEAD_MANAGED_ATTR = 'data-admin-shell-managed';
 
-    function clearManagedHeadResources() {
-        Array.prototype.forEach.call(document.head.querySelectorAll('[' + HEAD_MANAGED_ATTR + '="1"]'), function (node) {
-            if (node && node.parentNode) {
-                node.parentNode.removeChild(node);
-            }
-        });
+    function normalizeStylesheetHref(href, baseUrl) {
+        if (!href) {
+            return '';
+        }
+        try {
+            var resolved = new URL(href, baseUrl || window.location.href);
+            resolved.hash = '';
+            return resolved.toString();
+        } catch (e) {
+            return String(href);
+        }
     }
 
     function syncHeadResourcesFromDoc(sourceDoc, baseUrl) {
@@ -66,32 +71,71 @@
             return;
         }
 
-        clearManagedHeadResources();
+        var desiredLinks = [];
+        var desiredInlineStyles = [];
 
         Array.prototype.forEach.call(sourceDoc.head.children, function (node) {
             var tag = (node.tagName || '').toLowerCase();
-            if (tag !== 'style' && tag !== 'link') {
+            if (tag === 'style') {
+                desiredInlineStyles.push(node.textContent || '');
                 return;
             }
 
-            if (tag === 'link') {
-                var rel = String(node.getAttribute('rel') || '').toLowerCase();
-                if (rel.indexOf('stylesheet') === -1) {
-                    return;
-                }
+            if (tag !== 'link') {
+                return;
             }
 
-            var clone = node.cloneNode(true);
-            clone.setAttribute(HEAD_MANAGED_ATTR, '1');
-
-            if (tag === 'link') {
-                var href = node.getAttribute('href');
-                if (href) {
-                    clone.setAttribute('href', new URL(href, baseUrl || window.location.href).toString());
-                }
+            var rel = String(node.getAttribute('rel') || '').toLowerCase();
+            if (rel.indexOf('stylesheet') === -1) {
+                return;
             }
 
-            document.head.appendChild(clone);
+            var absoluteHref = normalizeStylesheetHref(node.getAttribute('href'), baseUrl);
+            if (!absoluteHref) {
+                return;
+            }
+            desiredLinks.push(absoluteHref);
+        });
+
+        var existingHeadLinks = {};
+        Array.prototype.forEach.call(document.head.querySelectorAll('link[rel*="stylesheet"]'), function (linkNode) {
+            var absoluteHref = normalizeStylesheetHref(linkNode.getAttribute('href'), window.location.href);
+            if (absoluteHref && !existingHeadLinks[absoluteHref]) {
+                existingHeadLinks[absoluteHref] = linkNode;
+            }
+        });
+
+        desiredLinks.forEach(function (href) {
+            if (existingHeadLinks[href]) {
+                existingHeadLinks[href].setAttribute(HEAD_MANAGED_ATTR, '1');
+                return;
+            }
+
+            var link = document.createElement('link');
+            link.setAttribute('rel', 'stylesheet');
+            link.setAttribute('href', href);
+            link.setAttribute(HEAD_MANAGED_ATTR, '1');
+            document.head.appendChild(link);
+        });
+
+        Array.prototype.forEach.call(document.head.querySelectorAll('link[' + HEAD_MANAGED_ATTR + '="1"][rel*="stylesheet"]'), function (managedLink) {
+            var href = normalizeStylesheetHref(managedLink.getAttribute('href'), window.location.href);
+            if (desiredLinks.indexOf(href) === -1 && managedLink.parentNode) {
+                managedLink.parentNode.removeChild(managedLink);
+            }
+        });
+
+        Array.prototype.forEach.call(document.head.querySelectorAll('style[' + HEAD_MANAGED_ATTR + '="1"]'), function (managedStyle) {
+            if (managedStyle && managedStyle.parentNode) {
+                managedStyle.parentNode.removeChild(managedStyle);
+            }
+        });
+
+        desiredInlineStyles.forEach(function (cssText) {
+            var style = document.createElement('style');
+            style.setAttribute(HEAD_MANAGED_ATTR, '1');
+            style.textContent = cssText;
+            document.head.appendChild(style);
         });
     }
 
