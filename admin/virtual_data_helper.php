@@ -101,24 +101,158 @@ function vd_pick($list) {
     return $list[mt_rand(0, count($list) - 1)];
 }
 
-function vd_generate_dataset($seed) {
-    mt_srand((int) $seed);
+function vd_clamp($value, $min, $max) {
+    return max($min, min($max, $value));
+}
 
-    $orderNames = array('付费订单', '会员订单', '进群订单', '推广订单', 'VIP入群', '活动订单', '渠道订单', '加急订单');
-    $locations = array('广东省 深圳市', '浙江省 杭州市', '江苏省 南京市', '四川省 成都市', '北京市 北京市', '上海市 上海市', '湖北省 武汉市', '福建省 厦门市', '陕西省 西安市', '河南省 郑州市');
-    $agents = array('iPhone Safari', 'Android Chrome', 'Windows Chrome', 'Mac Safari', 'HarmonyOS Browser', 'Xiaomi Browser', 'Edge 126');
-    $pages = array('/public/home_v1.php', '/public/home_v2.php', '/public/check.php', '/public/pay.php');
-    $orderAmounts = array(9.90, 19.90, 29.90, 39.90, 49.90, 59.90, 99.00);
+function vd_parse_text_list($text, $fallback) {
+    $raw = preg_split('/[\r\n,，;；]+/u', (string) $text);
+    $result = array();
+    if (is_array($raw)) {
+        foreach ($raw as $item) {
+            $item = trim((string) $item);
+            if ($item !== '') {
+                $result[] = $item;
+            }
+        }
+    }
+    return !empty($result) ? $result : $fallback;
+}
+
+function vd_parse_price_list($text, $fallback) {
+    $raw = vd_parse_text_list($text, array());
+    $numbers = array();
+    foreach ($raw as $item) {
+        $val = (float) $item;
+        if ($val > 0) {
+            $numbers[] = $val;
+        }
+    }
+    return !empty($numbers) ? $numbers : $fallback;
+}
+
+function vd_default_generator_options() {
+    return array(
+        'order_count' => 96,
+        'visitor_count' => 260,
+        'review_group_count' => 22,
+        'review_images_min' => 2,
+        'review_images_max' => 6,
+        'paid_ratio' => 78,
+        'pending_ratio' => 40,
+        'approved_ratio' => 42,
+        'rejected_ratio' => 18,
+        'order_days_range' => 14,
+        'visitor_days_range' => 8,
+        'review_days_range' => 12,
+        'today_order_ratio' => 16,
+        'payment_method_wx_ratio' => 55,
+        'order_names' => '付费订单,会员订单,进群订单,推广订单,VIP入群,活动订单,渠道订单,加急订单',
+        'locations' => '广东省 深圳市,浙江省 杭州市,江苏省 南京市,四川省 成都市,北京市 北京市,上海市 上海市,湖北省 武汉市,福建省 厦门市,陕西省 西安市,河南省 郑州市',
+        'user_agents' => 'iPhone Safari,Android Chrome,Windows Chrome,Mac Safari,HarmonyOS Browser,Xiaomi Browser,Edge 126',
+        'pages' => '/public/home_v1.php,/public/home_v2.php,/public/check.php,/public/pay.php',
+        'price_list' => '9.9,19.9,29.9,39.9,49.9,59.9,99',
+        'reviewer_names' => '管理员,系统审核员,运营专员'
+    );
+}
+
+function vd_get_generator_preset_options($preset) {
+    $base = vd_default_generator_options();
+    $preset = trim((string) $preset);
+    if ($preset === 'high_conversion') {
+        $base['order_count'] = 120;
+        $base['visitor_count'] = 220;
+        $base['paid_ratio'] = 90;
+        $base['today_order_ratio'] = 22;
+        $base['pending_ratio'] = 28;
+        $base['approved_ratio'] = 58;
+        $base['rejected_ratio'] = 14;
+    } elseif ($preset === 'traffic_burst') {
+        $base['order_count'] = 80;
+        $base['visitor_count'] = 420;
+        $base['paid_ratio'] = 52;
+        $base['today_order_ratio'] = 12;
+        $base['review_group_count'] = 34;
+        $base['pending_ratio'] = 45;
+        $base['approved_ratio'] = 35;
+        $base['rejected_ratio'] = 20;
+    } elseif ($preset === 'strict_audit') {
+        $base['order_count'] = 92;
+        $base['visitor_count'] = 260;
+        $base['paid_ratio'] = 72;
+        $base['review_group_count'] = 28;
+        $base['pending_ratio'] = 48;
+        $base['approved_ratio'] = 30;
+        $base['rejected_ratio'] = 22;
+    } elseif ($preset === 'cold_start') {
+        $base['order_count'] = 36;
+        $base['visitor_count'] = 86;
+        $base['review_group_count'] = 10;
+        $base['review_images_min'] = 1;
+        $base['review_images_max'] = 3;
+        $base['paid_ratio'] = 62;
+        $base['today_order_ratio'] = 26;
+    }
+    return $base;
+}
+
+function vd_merge_generator_options($preset, $overrides) {
+    $base = vd_get_generator_preset_options($preset);
+    if (!is_array($overrides)) {
+        return $base;
+    }
+    foreach ($overrides as $key => $value) {
+        if ($value === '' || $value === null) {
+            continue;
+        }
+        $base[$key] = $value;
+    }
+    return $base;
+}
+
+function vd_generate_dataset($seed, $options = array()) {
+    mt_srand((int) $seed);
+    $opts = vd_merge_generator_options($options['preset'] ?? 'balanced', $options);
+
+    $orderNames = vd_parse_text_list($opts['order_names'] ?? '', array('付费订单', '会员订单', '进群订单'));
+    $locations = vd_parse_text_list($opts['locations'] ?? '', array('广东省 深圳市', '浙江省 杭州市', '江苏省 南京市'));
+    $agents = vd_parse_text_list($opts['user_agents'] ?? '', array('iPhone Safari', 'Android Chrome', 'Windows Chrome'));
+    $pages = vd_parse_text_list($opts['pages'] ?? '', array('/public/home_v1.php', '/public/home_v2.php', '/public/check.php', '/public/pay.php'));
+    $orderAmounts = vd_parse_price_list($opts['price_list'] ?? '', array(9.90, 19.90, 29.90, 39.90));
+    $reviewerNames = vd_parse_text_list($opts['reviewer_names'] ?? '', array('管理员'));
     $uploadNames = vd_pick_upload_filenames();
 
+    $orderCount = vd_clamp((int) ($opts['order_count'] ?? 96), 1, 2000);
+    $visitorCount = vd_clamp((int) ($opts['visitor_count'] ?? 260), 1, 5000);
+    $reviewGroupCount = vd_clamp((int) ($opts['review_group_count'] ?? 22), 1, 500);
+    $reviewImagesMin = vd_clamp((int) ($opts['review_images_min'] ?? 2), 1, 20);
+    $reviewImagesMax = vd_clamp((int) ($opts['review_images_max'] ?? 6), $reviewImagesMin, 40);
+    $paidRatio = vd_clamp((int) ($opts['paid_ratio'] ?? 78), 0, 100);
+    $wxRatio = vd_clamp((int) ($opts['payment_method_wx_ratio'] ?? 55), 0, 100);
+    $todayOrderRatio = vd_clamp((int) ($opts['today_order_ratio'] ?? 16), 0, 100);
+    $orderDaysRange = vd_clamp((int) ($opts['order_days_range'] ?? 14), 1, 90);
+    $visitorDaysRange = vd_clamp((int) ($opts['visitor_days_range'] ?? 8), 1, 90);
+    $reviewDaysRange = vd_clamp((int) ($opts['review_days_range'] ?? 12), 1, 90);
+
+    $pendingRatio = max(0, (int) ($opts['pending_ratio'] ?? 40));
+    $approvedRatio = max(0, (int) ($opts['approved_ratio'] ?? 42));
+    $rejectedRatio = max(0, (int) ($opts['rejected_ratio'] ?? 18));
+    $statusSum = $pendingRatio + $approvedRatio + $rejectedRatio;
+    if ($statusSum <= 0) {
+        $pendingRatio = 40;
+        $approvedRatio = 42;
+        $rejectedRatio = 18;
+        $statusSum = 100;
+    }
+
     $orders = array();
-    $orderCount = mt_rand(72, 138);
     for ($i = 1; $i <= $orderCount; $i++) {
-        $daysAgo = mt_rand(0, 14);
+        $isToday = mt_rand(1, 100) <= $todayOrderRatio;
+        $daysAgo = $isToday ? 0 : mt_rand(1, $orderDaysRange);
         $timestamp = strtotime('-' . $daysAgo . ' day');
         $timestamp = strtotime(date('Y-m-d', $timestamp) . ' ' . mt_rand(0, 23) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT));
-        $paymentStatus = mt_rand(1, 100) <= 78 ? '已支付' : '未支付';
-        $paymentMethod = mt_rand(0, 1) === 0 ? 'wxpay' : 'alipay';
+        $paymentStatus = mt_rand(1, 100) <= $paidRatio ? '已支付' : '未支付';
+        $paymentMethod = mt_rand(1, 100) <= $wxRatio ? 'wxpay' : 'alipay';
         $money = $orderAmounts[mt_rand(0, count($orderAmounts) - 1)];
 
         $orders[] = array(
@@ -133,15 +267,13 @@ function vd_generate_dataset($seed) {
             'payment_status' => $paymentStatus
         );
     }
-
     usort($orders, function ($a, $b) {
         return strcmp($b['payment_time'], $a['payment_time']);
     });
 
     $visitors = array();
-    $visitorCount = mt_rand(180, 320);
     for ($i = 1; $i <= $visitorCount; $i++) {
-        $daysAgo = mt_rand(0, 8);
+        $daysAgo = mt_rand(0, $visitorDaysRange);
         $timestamp = strtotime('-' . $daysAgo . ' day');
         $timestamp = strtotime(date('Y-m-d', $timestamp) . ' ' . mt_rand(0, 23) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT));
         $visitors[] = array(
@@ -153,25 +285,24 @@ function vd_generate_dataset($seed) {
             'page_url' => vd_pick($pages)
         );
     }
-
     usort($visitors, function ($a, $b) {
         return strcmp($b['visit_time'], $a['visit_time']);
     });
 
     $reviewRows = array();
     $reviewId = 1;
-    $reviewGroupCount = mt_rand(14, 28);
     for ($g = 1; $g <= $reviewGroupCount; $g++) {
         $ip = vd_make_ip();
-        $imgCount = mt_rand(2, 6);
+        $imgCount = mt_rand($reviewImagesMin, $reviewImagesMax);
         for ($j = 0; $j < $imgCount; $j++) {
-            $daysAgo = mt_rand(0, 12);
+            $daysAgo = mt_rand(0, $reviewDaysRange);
             $timestamp = strtotime('-' . $daysAgo . ' day');
             $timestamp = strtotime(date('Y-m-d', $timestamp) . ' ' . mt_rand(0, 23) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(mt_rand(0, 59), 2, '0', STR_PAD_LEFT));
-            $randStatus = mt_rand(1, 100);
-            if ($randStatus <= 40) {
+
+            $randStatus = mt_rand(1, $statusSum);
+            if ($randStatus <= $pendingRatio) {
                 $status = 'pending';
-            } elseif ($randStatus <= 82) {
+            } elseif ($randStatus <= ($pendingRatio + $approvedRatio)) {
                 $status = 'approved';
             } else {
                 $status = 'rejected';
@@ -184,14 +315,13 @@ function vd_generate_dataset($seed) {
                 'upload_time' => date('Y-m-d H:i:s', $timestamp),
                 'ip_address' => $ip,
                 'file_path' => '../upload/' . $filename,
-                'reviewer' => '管理员',
+                'reviewer' => vd_pick($reviewerNames),
                 'status' => $status,
                 'ip_location' => vd_pick($locations)
             );
             $reviewId++;
         }
     }
-
     usort($reviewRows, function ($a, $b) {
         return strcmp($b['upload_time'], $a['upload_time']);
     });
@@ -203,11 +333,11 @@ function vd_generate_dataset($seed) {
     );
 }
 
-function vd_regenerate_dataset() {
+function vd_regenerate_dataset($options = array()) {
     vd_boot_session();
     $seed = vd_random_seed();
     $_SESSION['virtual_data']['seed'] = $seed;
-    $_SESSION['virtual_data']['dataset'] = vd_generate_dataset($seed);
+    $_SESSION['virtual_data']['dataset'] = vd_generate_dataset($seed, $options);
     $_SESSION['virtual_data']['generated_at'] = vd_now_string();
     $_SESSION['virtual_data']['updated_at'] = vd_now_string();
 }
