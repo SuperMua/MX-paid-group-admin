@@ -256,10 +256,10 @@ $conn->close();
         .qr-code {
             flex: 1 1 280px;
             min-width: 0;
-            border: 1px solid rgba(83, 86, 251, 0.14);
+            border: 1px solid rgba(20, 28, 48, 0.12);
             border-radius: 14px;
             padding: 12px;
-            background: #fafaff;
+            background: #f9fafe;
         }
 
         .template h3,
@@ -273,8 +273,8 @@ $conn->close();
             width: 100%;
             height: 220px;
             border-radius: 12px;
-            background: #fff;
-            border: 1px solid rgba(83, 86, 251, 0.22);
+            background: transparent;
+            border: 1px solid rgba(20, 28, 48, 0.14);
             overflow: hidden;
         }
 
@@ -292,23 +292,135 @@ $conn->close();
             background: transparent;
         }
 
-        .image-placeholder-template img {
+        .template .image-placeholder {
+            height: 326px;
+        }
+
+        .qr-code .image-placeholder {
+            height: 326px;
+        }
+
+        .iphone17-pro {
+            position: relative;
+            width: min(206px, 90%);
+            aspect-ratio: 9 / 19.5;
+            border-radius: 42px;
+            padding: 6px;
+            background: linear-gradient(145deg, #a2a8b1 0%, #696f79 28%, #9da3ad 58%, #5e646e 100%);
+            box-shadow:
+                0 24px 36px rgba(18, 24, 41, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.32),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.34);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .iphone17-pro::before {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border-radius: 38px;
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            pointer-events: none;
+        }
+
+        .iphone17-pro::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: 146px;
+            width: 3px;
+            height: 86px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #aeb4be 0%, #5f6670 100%);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .iphone17-pro-btn {
+            position: absolute;
+            left: -2px;
+            width: 3px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #afb5bf 0%, #66707b 100%);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .iphone17-pro-btn-action {
+            top: 104px;
+            height: 28px;
+        }
+
+        .iphone17-pro-btn-volume-up {
+            top: 144px;
+            height: 58px;
+        }
+
+        .iphone17-pro-btn-volume-down {
+            top: 214px;
+            height: 58px;
+        }
+
+        .iphone17-pro-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 35px;
+            overflow: hidden;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .iphone17-pro-screen img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             object-position: center top;
-            filter: none;
+            display: block;
+            background: #10131a;
+        }
+
+        .iphone17-pro-island {
+            position: absolute;
+            top: 13px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 108px;
+            height: 28px;
+            border-radius: 999px;
+            background: #020203;
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 3px 8px rgba(0, 0, 0, 0.34);
+            pointer-events: none;
+        }
+
+        .iphone17-pro-indicator {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.52);
+            pointer-events: none;
         }
 
         .image-placeholder-qr {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
             background: #fff;
         }
 
         .image-placeholder-qr img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain !important;
+            object-position: center !important;
+            display: block;
+            background: transparent;
         }
 
         .buttons {
@@ -497,12 +609,16 @@ $conn->close();
                 margin-top: 78px;
             }
 
-            .image-placeholder {
-                height: 260px;
+            .template .image-placeholder {
+                height: 372px;
             }
 
-            .image-placeholder-template {
-                height: 320px;
+            .qr-code .image-placeholder {
+                height: 350px;
+            }
+
+            .iphone17-pro {
+                width: min(232px, 86%);
             }
         }
 
@@ -531,7 +647,18 @@ $conn->close();
     <div class="row">
         <div class="template">
             <h3>模板一</h3>
-            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb1_clean.png" alt="模板一缩略图" /></div>
+            <div class="image-placeholder image-placeholder-template">
+                <div class="iphone17-pro">
+                    <span class="iphone17-pro-btn iphone17-pro-btn-action"></span>
+                    <span class="iphone17-pro-btn iphone17-pro-btn-volume-up"></span>
+                    <span class="iphone17-pro-btn iphone17-pro-btn-volume-down"></span>
+                    <span class="iphone17-pro-island"></span>
+                    <div class="iphone17-pro-screen">
+                        <img src="../result/images/mb1_screen.png" alt="模板一缩略图">
+                    </div>
+                    <span class="iphone17-pro-indicator"></span>
+                </div>
+            </div>
             <div class="buttons">
                 <a class="button edit" href="settings_page.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v1">预览效果</button>
@@ -539,7 +666,18 @@ $conn->close();
         </div>
         <div class="template">
             <h3>模板二</h3>
-            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb2_clean.png" alt="模板二缩略图" /></div>
+            <div class="image-placeholder image-placeholder-template">
+                <div class="iphone17-pro">
+                    <span class="iphone17-pro-btn iphone17-pro-btn-action"></span>
+                    <span class="iphone17-pro-btn iphone17-pro-btn-volume-up"></span>
+                    <span class="iphone17-pro-btn iphone17-pro-btn-volume-down"></span>
+                    <span class="iphone17-pro-island"></span>
+                    <div class="iphone17-pro-screen">
+                        <img src="../result/images/mb2_screen.png" alt="模板二缩略图">
+                    </div>
+                    <span class="iphone17-pro-indicator"></span>
+                </div>
+            </div>
             <div class="buttons">
                 <a class="button edit" href="settings_page2.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v2">预览效果</button>
