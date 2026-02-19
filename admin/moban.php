@@ -300,6 +300,17 @@ $conn->close();
             filter: none;
         }
 
+        .image-placeholder-qr {
+            background: #fff;
+        }
+
+        .image-placeholder-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
         .buttons {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -520,7 +531,7 @@ $conn->close();
     <div class="row">
         <div class="template">
             <h3>模板一</h3>
-            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb1.png" alt="模板一缩略图" /></div>
+            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb1_clean.png" alt="模板一缩略图" /></div>
             <div class="buttons">
                 <a class="button edit" href="settings_page.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v1">预览效果</button>
@@ -528,7 +539,7 @@ $conn->close();
         </div>
         <div class="template">
             <h3>模板二</h3>
-            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb2.png" alt="模板二缩略图" /></div>
+            <div class="image-placeholder image-placeholder-template"><img src="../result/images/mb2_clean.png" alt="模板二缩略图" /></div>
             <div class="buttons">
                 <a class="button edit" href="settings_page2.php">编辑模板</a>
                 <button type="button" class="button preview" id="preview-v2">预览效果</button>
@@ -538,7 +549,7 @@ $conn->close();
     <div class="row">
         <div class="qr-code">
             <h3>入群二维码</h3>
-            <div class="image-placeholder">
+            <div class="image-placeholder image-placeholder-qr">
 			    <img src="<?= htmlspecialchars($current['qr_code']) ?>" alt="入群二维码">
 			</div>
            <form class="upload-form" enctype="multipart/form-data">
@@ -549,7 +560,7 @@ $conn->close();
         </div>
         <div class="qr-code">
             <h3>客服二维码</h3>
-            <div class="image-placeholder">
+            <div class="image-placeholder image-placeholder-qr">
                   <img src="<?= htmlspecialchars($current['customer_service_image']) ?>" alt="客服二维码">
 			</div>
             <form class="upload-form" enctype="multipart/form-data">
