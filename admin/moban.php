@@ -290,31 +290,48 @@ $conn->close();
             margin-top: 12px;
         }
 
-        .buttons a {
+        .buttons > * {
             flex: 1;
         }
 
         .button {
             width: 100%;
+            min-height: 44px;
             border: none;
             border-radius: 999px;
             padding: 10px 12px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        a.button {
+            text-decoration: none;
         }
 
         .button:hover {
             transform: translateY(-1px);
+            filter: saturate(1.05);
         }
 
-        .button.edit,
         .button.preview,
         .button.swap {
             color: #fff;
             background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
             box-shadow: 0 12px 22px rgba(83, 86, 251, 0.24);
+        }
+
+        .button.edit {
+            color: #40498a;
+            background: #eef0ff;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            box-shadow: 0 10px 18px rgba(83, 86, 251, 0.16);
+            flex: 0 0 132px;
         }
 
         .button.swap {
@@ -465,6 +482,10 @@ $conn->close();
                 flex-direction: column;
             }
 
+            .button.edit {
+                flex-basis: auto;
+            }
+
             .link-generator {
                 flex-direction: column;
                 padding-right: 14px;
@@ -491,16 +512,16 @@ $conn->close();
             <h3>模板一</h3>
             <div class="image-placeholder"><img src="../result/images/mb1.png" alt="" /></div>
             <div class="buttons">
-                <a href="settings_page.php"><button class="button edit">编辑</button></a>
-                <button class="button preview" id="preview-v1">预览</button>
+                <a class="button edit" href="settings_page.php">编辑模板</a>
+                <button type="button" class="button preview" id="preview-v1">预览效果</button>
             </div>
         </div>
         <div class="template">
             <h3>模板二</h3>
             <div class="image-placeholder"><img src="../result/images/mb2.png" alt="" /></div>
             <div class="buttons">
-                <a href="settings_page2.php"><button class="button edit">编辑</button></a>
-                <button class="button preview" id="preview-v2">预览</button>
+                <a class="button edit" href="settings_page2.php">编辑模板</a>
+                <button type="button" class="button preview" id="preview-v2">预览效果</button>
             </div>
         </div>
     </div>

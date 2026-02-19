@@ -23,7 +23,7 @@ require_once 'login_check.php';
             margin: 68px auto 24px;
             background: #fff;
             border: 1px solid rgba(83, 86, 251, 0.16);
-            border-radius: 20px;
+            border-radius: 22px;
             box-shadow: 0 20px 38px rgba(83, 86, 251, 0.12);
             padding: 20px 18px;
             box-sizing: border-box;
@@ -47,6 +47,25 @@ require_once 'login_check.php';
             color: #667085;
         }
 
+        .task-meta-badges {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .task-meta-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(83, 86, 251, 0.18);
+            background: #f5f6ff;
+            color: #47527a;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         .settings-block {
             margin-top: 14px;
             border: 1px solid rgba(83, 86, 251, 0.16);
@@ -58,7 +77,7 @@ require_once 'login_check.php';
         .settings-block-head {
             margin: 0;
             padding: 12px 14px;
-            background: #f2f4ff;
+            background: linear-gradient(135deg, #eef1ff 0%, #f7f2ff 100%);
             border-bottom: 1px solid rgba(83, 86, 251, 0.15);
             color: #313d68;
             font-size: 15px;
@@ -71,11 +90,15 @@ require_once 'login_check.php';
             gap: 12px;
         }
 
+        .task-copy-grid {
+            grid-template-columns: 1fr;
+        }
+
         .setting-field {
             border: 1px solid rgba(83, 86, 251, 0.12);
-            border-radius: 14px;
+            border-radius: 16px;
             background: #fff;
-            padding: 12px;
+            padding: 14px;
         }
 
         .setting-label {
@@ -99,6 +122,11 @@ require_once 'login_check.php';
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
+        .setting-field textarea {
+            resize: vertical;
+            line-height: 1.65;
+        }
+
         .setting-field input[type="text"]:focus,
         .setting-field textarea:focus {
             border-color: #5356fb;
@@ -116,6 +144,10 @@ require_once 'login_check.php';
         .field-grid {
             display: grid;
             gap: 12px;
+        }
+
+        .assets-grid {
+            grid-template-columns: 1fr;
         }
 
         .image-upload-container {
@@ -240,6 +272,18 @@ require_once 'login_check.php';
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .assets-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .task-copy-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .task-copy-grid .full-width {
+                grid-column: 1 / -1;
+            }
+
             .task-save-bar {
                 position: sticky;
                 left: auto;
@@ -267,24 +311,29 @@ require_once 'login_check.php';
         <div class="form-head">
             <h2>任务流程配置</h2>
             <p class="form-intro">配置前台任务文案、审核时效和示例图片。建议先保存基础文案，再上传示例图。</p>
+            <div class="task-meta-badges">
+                <span class="task-meta-badge">支持手机端与 PC 端自适应</span>
+                <span class="task-meta-badge">保存后前台实时生效</span>
+                <span class="task-meta-badge">建议先文案后图片</span>
+            </div>
         </div>
 
         <section class="settings-block">
             <h3 class="settings-block-head">任务文案</h3>
-            <div class="settings-block-body">
+            <div class="settings-block-body task-copy-grid">
                 <div class="setting-field">
                     <label class="setting-label" for="title">任务标题</label>
                     <input type="text" id="title" name="title" placeholder="填写任务标题">
                 </div>
                 <div class="setting-field">
-                    <label class="setting-label" for="intro">任务介绍</label>
-                    <textarea class="renwu" id="intro" name="intro" placeholder="填写任务介绍"></textarea>
-                </div>
-                <div class="setting-field">
                     <label class="setting-label" for="requirement">任务要求</label>
                     <textarea class="renwu_mdj" id="requirement" name="requirement" placeholder="填写任务要求"></textarea>
                 </div>
-                <div class="field-grid two-col">
+                <div class="setting-field full-width">
+                    <label class="setting-label" for="intro">任务介绍</label>
+                    <textarea class="renwu" id="intro" name="intro" placeholder="填写任务介绍"></textarea>
+                </div>
+                <div class="field-grid two-col full-width">
                     <div class="setting-field">
                         <label class="setting-label" for="review_time">审核时间</label>
                         <textarea class="renwu_times" id="review_time" name="review_time" placeholder="填写任务审核时间"></textarea>
@@ -301,7 +350,7 @@ require_once 'login_check.php';
 
         <section class="settings-block">
             <h3 class="settings-block-head">示例素材</h3>
-            <div class="settings-block-body">
+            <div class="settings-block-body assets-grid">
                 <div class="setting-field">
                     <label class="setting-label" for="download_img_input">下载图片</label>
                     <div class="image-upload-container">

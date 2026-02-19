@@ -15,16 +15,24 @@ require_once 'login_check.php';
             align-items: center;
             justify-content: space-between;
             gap: 14px;
-            padding: 12px 14px;
+            padding: 14px 16px;
             border: 1px solid rgba(83, 86, 251, 0.2);
-            border-radius: 14px;
-            background: linear-gradient(135deg, #f7f8ff 0%, #f3f5ff 100%);
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f7f8ff 0%, #f2f5ff 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
 
        .switch-text {
             font-size: 14px;
             color: #344054;
             font-weight: 600;
+        }
+
+       .switch-hint {
+            margin-top: 6px;
+            color: #98a2b3;
+            font-size: 12px;
+            line-height: 1.6;
         }
 
        .switch {
@@ -83,9 +91,10 @@ require_once 'login_check.php';
         #statusText {
             margin-top: 14px;
             display: inline-block;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 999px;
             font-size: 13px;
+            font-weight: 700;
             border: 1px solid #d0d5dd;
             background: #f2f4f7;
             color: #475467;
@@ -105,9 +114,9 @@ require_once 'login_check.php';
 
         .status-card {
             border: 1px solid rgba(83, 86, 251, 0.16);
-            border-radius: 14px;
+            border-radius: 18px;
             background: #fafaff;
-            padding: 12px;
+            padding: 14px;
         }
 
         .status-card h4 {
@@ -118,9 +127,28 @@ require_once 'login_check.php';
 
         .status-card p {
             margin: 0;
-            font-size: 12px;
+            font-size: 13px;
             color: #98a2b3;
             line-height: 1.6;
+        }
+
+       .audit-state-strip {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+       .audit-state-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(83, 86, 251, 0.2);
+            background: #eef1ff;
+            color: #4f5b88;
+            font-size: 12px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -134,12 +162,19 @@ require_once 'login_check.php';
         <header class="settings-pro-header">
             <h2 class="settings-pro-title">审核流程开关</h2>
             <p class="settings-pro-subtitle">开启后系统将自动审核提交内容，请谨慎评估业务风险并定期抽检结果。</p>
+            <div class="audit-state-strip">
+                <span class="audit-state-pill">高风险场景建议人工复核</span>
+                <span class="audit-state-pill">开关切换后即时生效</span>
+            </div>
         </header>
 
         <section class="settings-pro-card">
             <h3>自动审核状态</h3>
             <div class="audit-switch-row">
-                <span class="switch-text">自动审核开关</span>
+                <div>
+                    <span class="switch-text">自动审核开关</span>
+                    <p class="switch-hint">开启后系统将自动处理审核结果，建议每日抽检日志。</p>
+                </div>
                 <label class="switch">
                     <input type="checkbox" id="toggleSwitch" <?php echo $isAutoAuditEnabled? 'checked' : ''; ?>>
                     <span class="slider"></span>
@@ -163,9 +198,24 @@ require_once 'login_check.php';
             </div>
         </div>
     </main>
+    <div class="settings-pro-toast" id="auditToast">状态已更新</div>
     <script>
         const toggleSwitch = document.getElementById('toggleSwitch');
         const statusText = document.getElementById('statusText');
+        const auditToast = document.getElementById('auditToast');
+        let isSaving = false;
+
+        function showToast(message, isError) {
+            if (!auditToast) {
+                return;
+            }
+            auditToast.textContent = message;
+            auditToast.style.background = isError ? 'rgba(185,28,28,0.9)' : 'rgba(38,44,75,0.88)';
+            auditToast.style.display = 'block';
+            setTimeout(() => {
+                auditToast.style.display = 'none';
+            }, 2000);
+        }
 
         function syncStatusClass(isEnabled) {
             statusText.classList.toggle('status-on', isEnabled);
@@ -173,23 +223,46 @@ require_once 'login_check.php';
         }
 
         function toggleAutoAudit() {
+            if (isSaving) {
+                return;
+            }
+            isSaving = true;
             const newStatus = toggleSwitch.checked? 1 : 0;
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'audit_status.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
+                if (xhr.readyState !== 4) {
+                    return;
+                }
+
+                if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         statusText.textContent = newStatus? '自动审核已开启': '自动审核已关闭';
                         syncStatusClass(newStatus === 1);
+                        showToast('自动审核状态已更新', false);
                     } else {
                         console.error('更新状态失败:', response.message);
                         // 恢复开关状态
                         toggleSwitch.checked =!toggleSwitch.checked;
                         syncStatusClass(toggleSwitch.checked);
+                        showToast(response.message || '更新失败，请稍后重试', true);
                     }
+                    isSaving = false;
+                    return;
                 }
+
+                toggleSwitch.checked = !toggleSwitch.checked;
+                syncStatusClass(toggleSwitch.checked);
+                showToast('请求失败，请稍后重试', true);
+                isSaving = false;
+            };
+            xhr.onerror = function () {
+                toggleSwitch.checked = !toggleSwitch.checked;
+                syncStatusClass(toggleSwitch.checked);
+                showToast('网络异常，请稍后重试', true);
+                isSaving = false;
             };
             xhr.send('status=' + newStatus);
         }
