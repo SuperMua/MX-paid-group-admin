@@ -302,7 +302,10 @@ $conn->close();
 
         .iphone17-pro {
             position: relative;
-            width: min(206px, 90%);
+            height: calc(100% - 10px);
+            width: auto;
+            max-width: 100%;
+            max-height: 100%;
             aspect-ratio: 9 / 19.5;
             border-radius: 42px;
             padding: 6px;
@@ -615,10 +618,6 @@ $conn->close();
 
             .qr-code .image-placeholder {
                 height: 350px;
-            }
-
-            .iphone17-pro {
-                width: min(232px, 86%);
             }
         }
 
