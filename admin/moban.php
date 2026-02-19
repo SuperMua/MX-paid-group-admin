@@ -288,8 +288,8 @@ $conn->close();
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            background: linear-gradient(165deg, #f0f4ff 0%, #e8f7ff 100%);
+            padding: 0;
+            background: transparent;
         }
 
         .image-placeholder-template img {
@@ -297,7 +297,7 @@ $conn->close();
             height: 100%;
             object-fit: contain;
             object-position: center top;
-            filter: drop-shadow(0 8px 18px rgba(56, 79, 145, 0.2));
+            filter: none;
         }
 
         .buttons {
