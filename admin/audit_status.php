@@ -267,7 +267,27 @@ require_once 'login_check.php';
                 }
 
                 if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
+                    const responseUrl = (xhr.responseURL || '').toLowerCase();
+                    if (responseUrl.indexOf('/admin/login.php') !== -1) {
+                        window.location.href = '/admin/login.php';
+                        return;
+                    }
+
+                    let response;
+                    try {
+                        response = JSON.parse(xhr.responseText);
+                    } catch (error) {
+                        showToast('响应解析失败，请刷新后重试', true);
+                        toggleSwitch.checked = !toggleSwitch.checked;
+                        syncStatusClass(toggleSwitch.checked);
+                        if (toggleShell) {
+                            toggleShell.style.opacity = '1';
+                            toggleShell.style.pointerEvents = 'auto';
+                        }
+                        isSaving = false;
+                        return;
+                    }
+
                     if (response.success) {
                         statusText.textContent = newStatus? '自动审核已开启': '自动审核已关闭';
                         syncStatusClass(newStatus === 1);

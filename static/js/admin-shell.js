@@ -10,8 +10,28 @@
     }
 
     var shouldEnableDesktopShell = window.matchMedia('(min-width: 992px)').matches;
+    patchFetchWithAuthGuard();
     if (!shouldEnableDesktopShell) {
         return;
+    }
+
+    function patchFetchWithAuthGuard() {
+        if (typeof window.fetch !== 'function' || window.__ADMIN_FETCH_GUARD_PATCHED__) {
+            return;
+        }
+
+        var rawFetch = window.fetch.bind(window);
+        window.fetch = function () {
+            return rawFetch.apply(null, arguments).then(function (response) {
+                var responseUrl = (response && response.url ? String(response.url) : '').toLowerCase();
+                if (responseUrl.indexOf('/admin/login.php') !== -1) {
+                    window.location.href = '/admin/login.php';
+                    throw new Error('登录状态已失效');
+                }
+                return response;
+            });
+        };
+        window.__ADMIN_FETCH_GUARD_PATCHED__ = true;
     }
 
     var HEAD_MANAGED_ATTR = 'data-admin-shell-managed';
@@ -453,6 +473,7 @@
     }
 
     function initShell() {
+        patchFetchWithAuthGuard();
         syncHeadResourcesFromDoc(document, window.location.href);
 
         fetch('brand_settings_api.php', { credentials: 'same-origin' })

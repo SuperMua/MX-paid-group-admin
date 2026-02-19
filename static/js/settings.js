@@ -191,6 +191,12 @@ function loadSettings() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "settings_crud.php?action=getSettings&id=1", true);
     xhr.onload = function () {
+        var responseUrl = (xhr.responseURL || "").toLowerCase();
+        if (responseUrl.indexOf("/admin/login.php") !== -1) {
+            window.location.href = "/admin/login.php";
+            return;
+        }
+
         if (xhr.status !== 200) {
             console.error("加载设置数据失败");
             return;
