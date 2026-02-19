@@ -89,8 +89,7 @@ require_once 'login_check.php';
 		</div>
 	</div>
     <script>
-        // 页面加载完成后获取图片信息
-        window.onload = function() {
+        function loadCacheInfo() {
             fetch("upload_avatar.php", {
                 method: "POST",
                 headers: {
@@ -100,14 +99,26 @@ require_once 'login_check.php';
             })
            .then(response => response.json())
            .then(data => {
-                document.getElementById("imageCount").textContent = data.count;
-                document.getElementById("imageSize").textContent = data.size;
+                var countNode = document.getElementById("imageCount");
+                var sizeNode = document.getElementById("imageSize");
+                if (!countNode || !sizeNode) {
+                    return;
+                }
+                countNode.textContent = data.count;
+                sizeNode.textContent = data.size;
             })
            .catch(error => {
                 console.error("Error:", error);
-                alert("加载缓存信息失败，请稍后重试");
+                var countNode = document.getElementById("imageCount");
+                var sizeNode = document.getElementById("imageSize");
+                if (countNode) {
+                    countNode.textContent = "--";
+                }
+                if (sizeNode) {
+                    sizeNode.textContent = "加载失败";
+                }
             });
-        };
+        }
 
         // 显示确认弹窗
         function showConfirmModal() {
@@ -155,6 +166,15 @@ require_once 'login_check.php';
         function closeSuccessModal() {
             document.getElementById("successModal").style.display = "none";
         }
+
+        (function initUploadCachePage() {
+            var pageRoot = document.getElementById('imageInfo');
+            if (!pageRoot || pageRoot.dataset.boundUploadCachePage === '1') {
+                return;
+            }
+            pageRoot.dataset.boundUploadCachePage = '1';
+            loadCacheInfo();
+        })();
     </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>

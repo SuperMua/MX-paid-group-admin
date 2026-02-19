@@ -129,8 +129,7 @@ require_once 'review_db.php';
             floatingButtons.style.display = 'none'; // 同时隐藏按钮
         }
     
-        // 显示操作成功提示信息，并在 3 秒后消失
-        window.onload = function() {
+        function showActionFeedback() {
             const successMessage = document.getElementById('successMessage');  
             const errorMessage = document.getElementById('errorMessage');  
             if (successMessage) {
@@ -155,8 +154,7 @@ require_once 'review_db.php';
             document.getElementById("confirmModal").style.alignItems = "center";
         }
     
-        // 初始化事件绑定（在DOM加载完成后调用）
-        document.addEventListener("DOMContentLoaded", function() {
+        function bindReviewDetailsEvents() {
             // 绑定所有删除按钮点击事件 
             document.querySelectorAll('.info-conuiejk').forEach(button => {
                 button.addEventListener('click', function(e) {
@@ -166,12 +164,16 @@ require_once 'review_db.php';
             });
     
             // 绑定模态框确认按钮事件 
-            document.querySelector('#confirmModal .confirm').addEventListener('click', function() {
+            const confirmButton = document.querySelector('#confirmModal .confirm');
+            if (!confirmButton) {
+                return;
+            }
+            confirmButton.addEventListener('click', function() {
                 const id = document.getElementById("confirmModal").dataset.currentId; 
                 closeConfirmModal();
                 if(id) deleteSingleRecord(id);
             });
-        });
+        }
     
         // 执行删除操作
         function deleteSingleRecord(id) {
@@ -221,7 +223,17 @@ require_once 'review_db.php';
         // 关闭弹窗函数 
         function closeConfirmModal() {
             document.getElementById("confirmModal").style.display = "none";
-        }	
+        }
+
+        (function initReviewDetailsPage() {
+            const pageRoot = document.querySelector('.main');
+            if (!pageRoot || pageRoot.dataset.boundReviewDetailsPage === '1') {
+                return;
+            }
+            pageRoot.dataset.boundReviewDetailsPage = '1';
+            showActionFeedback();
+            bindReviewDetailsEvents();
+        })();
     </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>

@@ -420,15 +420,22 @@ require_once 'query-visitors.php'; //加载数据
             });
     }
 
-    // 页面加载完成后延迟2秒开始滚动
-    window.onload = function() {
+    function initDashboardPage() {
+        var dashboardRoot = document.querySelector('.dashboard-content') || document.body;
+        if (!dashboardRoot || dashboardRoot.dataset.boundDashboardPage === '1') {
+            return;
+        }
+        dashboardRoot.dataset.boundDashboardPage = '1';
         applyBrandSettings();
         startScroll();
-    };
+    }
 
     function startScroll() {
         var scrollText = document.getElementById('scrollText');
         var container = document.querySelector('.scroll-container');
+        if (!scrollText || !container) {
+            return;
+        }
         var scrollWidth = scrollText.scrollWidth; // 获取文本的总宽度
         var containerWidth = container.offsetWidth; // 获取容器的宽度
 
@@ -449,6 +456,8 @@ require_once 'query-visitors.php'; //加载数据
             }, 2000); // 初始延迟2秒
         }
     }
+
+    initDashboardPage();
 </script>
 <script src="../static/js/admin-shell.js"></script>
 </body>
