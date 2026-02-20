@@ -38,7 +38,7 @@ try {
             $result = new VirtualArrayResult(vd_get_review_details($ip_address));
         }
     } elseif ($useVirtualData) {
-        $recordsPerPage = 15;
+        $recordsPerPage = 12;
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $mockPayload = vd_get_review_list_payload($page, $recordsPerPage);
         $totalRecords = $mockPayload['totalRecords'];
@@ -103,7 +103,7 @@ try {
     } else {
         // 处理列表页逻辑 
         // 分页相关参数 
-        $recordsPerPage = 15; // 每页显示的记录数 
+        $recordsPerPage = 12; // 每页显示的记录数（桌面端按 3 列布局可完整铺满） 
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1; // 当前页数，默认为第一页 
         $offset = ($page - 1) * $recordsPerPage; // 计算偏移量 
  

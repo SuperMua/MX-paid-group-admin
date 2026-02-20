@@ -376,35 +376,35 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
                     </select>
                 </div>
                 <div class="generator-field">
-                    <label for="orderCount">订单总量（order_count）</label>
+                    <label for="orderCount">订单总量</label>
                     <input id="orderCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_count']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="visitorCount">访客总量（visitor_count）</label>
+                    <label for="visitorCount">访客总量</label>
                     <input id="visitorCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_count']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="reviewGroupCount">审核IP组数（review_group_count）</label>
+                    <label for="reviewGroupCount">审核IP组数</label>
                     <input id="reviewGroupCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_group_count']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="paidRatio">已支付比例(%)（paid_ratio）</label>
+                    <label for="paidRatio">已支付比例(%)</label>
                     <input id="paidRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['paid_ratio']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="todayOrderRatio">今日订单占比(%)（today_order_ratio）</label>
+                    <label for="todayOrderRatio">今日订单占比(%)</label>
                     <input id="todayOrderRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['today_order_ratio']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="pendingRatio">待审核比例(%)（pending_ratio）</label>
+                    <label for="pendingRatio">待审核比例(%)</label>
                     <input id="pendingRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['pending_ratio']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="approvedRatio">已通过比例(%)（approved_ratio）</label>
+                    <label for="approvedRatio">已通过比例(%)</label>
                     <input id="approvedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['approved_ratio']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="rejectedRatio">不通过比例(%)（rejected_ratio）</label>
+                    <label for="rejectedRatio">不通过比例(%)</label>
                     <input id="rejectedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['rejected_ratio']; ?>">
                 </div>
             </div>
@@ -418,51 +418,51 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
             <h4>方案B：手动填写参数（数组输入）</h4>
             <div class="generator-grid">
                 <div class="generator-field">
-                    <label for="orderNames">订单名称数组（order_names，逗号分隔）</label>
+                    <label for="orderNames">订单名称数组（逗号分隔）</label>
                     <textarea id="orderNames"><?php echo htmlspecialchars($defaultOptions['order_names']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="priceList">金额数组（price_list，逗号分隔）</label>
+                    <label for="priceList">金额数组（逗号分隔）</label>
                     <textarea id="priceList"><?php echo htmlspecialchars($defaultOptions['price_list']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="locations">地区数组（locations，逗号分隔）</label>
+                    <label for="locations">地区数组（逗号分隔）</label>
                     <textarea id="locations"><?php echo htmlspecialchars($defaultOptions['locations']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="userAgents">设备数组（user_agents，逗号分隔）</label>
+                    <label for="userAgents">设备数组（逗号分隔）</label>
                     <textarea id="userAgents"><?php echo htmlspecialchars($defaultOptions['user_agents']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="pages">访问页面数组（pages，逗号分隔）</label>
+                    <label for="pages">访问页面数组（逗号分隔）</label>
                     <textarea id="pages"><?php echo htmlspecialchars($defaultOptions['pages']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="reviewerNames">审核员数组（reviewer_names，逗号分隔）</label>
+                    <label for="reviewerNames">审核员数组（逗号分隔）</label>
                     <textarea id="reviewerNames"><?php echo htmlspecialchars($defaultOptions['reviewer_names']); ?></textarea>
                 </div>
                 <div class="generator-field">
-                    <label for="reviewImagesMin">每组最少图片数（review_images_min）</label>
+                    <label for="reviewImagesMin">每组最少图片数</label>
                     <input id="reviewImagesMin" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_min']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="reviewImagesMax">每组最多图片数（review_images_max）</label>
+                    <label for="reviewImagesMax">每组最多图片数</label>
                     <input id="reviewImagesMax" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_max']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="wxRatio">微信支付占比(%)（payment_method_wx_ratio）</label>
+                    <label for="wxRatio">微信支付占比(%)</label>
                     <input id="wxRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['payment_method_wx_ratio']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="orderDaysRange">订单回溯天数（order_days_range）</label>
+                    <label for="orderDaysRange">订单回溯天数</label>
                     <input id="orderDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_days_range']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="visitorDaysRange">访客回溯天数（visitor_days_range）</label>
+                    <label for="visitorDaysRange">访客回溯天数</label>
                     <input id="visitorDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_days_range']; ?>">
                 </div>
                 <div class="generator-field">
-                    <label for="reviewDaysRange">审核回溯天数（review_days_range）</label>
+                    <label for="reviewDaysRange">审核回溯天数</label>
                     <input id="reviewDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_days_range']; ?>">
                 </div>
             </div>
@@ -484,27 +484,27 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
                     </select>
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotTotalIncome">总收入（total_income）</label>
+                    <label for="snapshotTotalIncome">总收入</label>
                     <input id="snapshotTotalIncome" type="number" min="0" step="0.01" value="4508.40">
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotTodayIncome">今日收入（today_income）</label>
+                    <label for="snapshotTodayIncome">今日收入</label>
                     <input id="snapshotTodayIncome" type="number" min="0" step="0.01" value="906.80">
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotTodayOrders">今日订单（today_orders）</label>
+                    <label for="snapshotTodayOrders">今日订单</label>
                     <input id="snapshotTodayOrders" type="number" min="0" step="1" value="23">
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotYesterdayVisitors">昨日访客（yesterday_visitors）</label>
+                    <label for="snapshotYesterdayVisitors">昨日访客</label>
                     <input id="snapshotYesterdayVisitors" type="number" min="0" step="1" value="22">
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotTodayVisitors">今日访客（today_visitors）</label>
+                    <label for="snapshotTodayVisitors">今日访客</label>
                     <input id="snapshotTodayVisitors" type="number" min="0" step="1" value="24">
                 </div>
                 <div class="generator-field">
-                    <label for="snapshotPending">待审核IP（unreviewed_count）</label>
+                    <label for="snapshotPending">待审核IP</label>
                     <input id="snapshotPending" type="number" min="0" step="1" value="14">
                 </div>
             </div>

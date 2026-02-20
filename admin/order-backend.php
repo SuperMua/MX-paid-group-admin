@@ -10,8 +10,8 @@ $paymentMethodMap = [
     'alipay' => '支付宝'
 ];
 
-// 每页显示的订单数量
-$perPage = 10;
+// 每页显示的订单数量（桌面端按 3 列布局可完整铺满）
+$perPage = 12;
 // 获取当前页码，默认为第一页
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 // 计算偏移量

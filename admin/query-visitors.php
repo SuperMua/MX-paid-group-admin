@@ -68,8 +68,8 @@ function getTotalRecords($conn) {
 
 // 获取当前页码
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-// 每页显示的记录数
-$limit = 10;
+// 每页显示的记录数（桌面端按 3 列布局可完整铺满）
+$limit = 12;
 
 if (vd_is_enabled()) {
     if (isset($_POST['clear_all'])) {
