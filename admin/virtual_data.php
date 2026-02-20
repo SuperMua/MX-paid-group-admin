@@ -315,6 +315,15 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
             margin-top: 8px;
         }
 
+        .unified-mode-panel {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .unified-mode-panel.is-active {
+            display: block;
+        }
+
         @media (max-width: 991px) {
             .virtual-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -363,155 +372,159 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
         <p class="virtual-note">说明：开启后仅影响后台展示数据，不修改真实业务表。你可在演示结束后点击“清空并关闭”恢复默认真实数据模式。</p>
 
         <div class="generator-wrap">
-            <h4>方案A：预设一键生成（可调参数）</h4>
+            <h4>统一虚拟方案</h4>
+            <p class="virtual-note">将原方案 A/B/C 合并为一套：先选模式，再统一应用。</p>
             <div class="generator-grid">
                 <div class="generator-field">
-                    <label for="presetSelect">预设模板</label>
-                    <select id="presetSelect">
-                        <option value="balanced">平衡运营模板（默认）</option>
-                        <option value="high_conversion">高转化模板</option>
-                        <option value="traffic_burst">高流量模板</option>
-                        <option value="strict_audit">严格审核模板</option>
-                        <option value="cold_start">冷启动模板</option>
+                    <label for="dataModeSelect">数据模式</label>
+                    <select id="dataModeSelect">
+                        <option value="full" selected>全量演示模式（订单/访客/审核）</option>
+                        <option value="snapshot">核心快照模式（仅6项）</option>
                     </select>
                 </div>
-                <div class="generator-field">
-                    <label for="orderCount">订单总量</label>
-                    <input id="orderCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_count']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="visitorCount">访客总量</label>
-                    <input id="visitorCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_count']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="reviewGroupCount">审核IP组数</label>
-                    <input id="reviewGroupCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_group_count']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="paidRatio">已支付比例(%)</label>
-                    <input id="paidRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['paid_ratio']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="todayOrderRatio">今日订单占比(%)</label>
-                    <input id="todayOrderRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['today_order_ratio']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="pendingRatio">待审核比例(%)</label>
-                    <input id="pendingRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['pending_ratio']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="approvedRatio">已通过比例(%)</label>
-                    <input id="approvedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['approved_ratio']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="rejectedRatio">不通过比例(%)</label>
-                    <input id="rejectedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['rejected_ratio']; ?>">
-                </div>
             </div>
-            <div class="generator-actions">
-                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="applyPresetBtn">应用预设参数</button>
-                <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generatePresetBtn">按当前参数一键生成</button>
-            </div>
-        </div>
 
-        <div class="generator-wrap">
-            <h4>方案B：手动填写参数（数组输入）</h4>
-            <div class="generator-grid">
-                <div class="generator-field">
-                    <label for="orderNames">订单名称数组（逗号分隔）</label>
-                    <textarea id="orderNames"><?php echo htmlspecialchars($defaultOptions['order_names']); ?></textarea>
+            <div id="fullModePanel" class="unified-mode-panel">
+                <div class="generator-grid">
+                    <div class="generator-field">
+                        <label for="presetSelect">预设模板</label>
+                        <select id="presetSelect">
+                            <option value="balanced">平衡运营模板（默认）</option>
+                            <option value="high_conversion">高转化模板</option>
+                            <option value="traffic_burst">高流量模板</option>
+                            <option value="strict_audit">严格审核模板</option>
+                            <option value="cold_start">冷启动模板</option>
+                        </select>
+                    </div>
+                    <div class="generator-field">
+                        <label for="orderCount">订单总量</label>
+                        <input id="orderCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_count']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="visitorCount">访客总量</label>
+                        <input id="visitorCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_count']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="reviewGroupCount">审核IP组数</label>
+                        <input id="reviewGroupCount" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_group_count']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="paidRatio">已支付比例(%)</label>
+                        <input id="paidRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['paid_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="todayOrderRatio">今日订单占比(%)</label>
+                        <input id="todayOrderRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['today_order_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="pendingRatio">待审核比例(%)</label>
+                        <input id="pendingRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['pending_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="approvedRatio">已通过比例(%)</label>
+                        <input id="approvedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['approved_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="rejectedRatio">不通过比例(%)</label>
+                        <input id="rejectedRatio" type="number" min="0" step="1" value="<?php echo (int) $defaultOptions['rejected_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="orderNames">订单名称数组（逗号分隔）</label>
+                        <textarea id="orderNames"><?php echo htmlspecialchars($defaultOptions['order_names']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="priceList">金额数组（逗号分隔）</label>
+                        <textarea id="priceList"><?php echo htmlspecialchars($defaultOptions['price_list']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="locations">地区数组（逗号分隔）</label>
+                        <textarea id="locations"><?php echo htmlspecialchars($defaultOptions['locations']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="userAgents">设备数组（逗号分隔）</label>
+                        <textarea id="userAgents"><?php echo htmlspecialchars($defaultOptions['user_agents']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="pages">访问页面数组（逗号分隔）</label>
+                        <textarea id="pages"><?php echo htmlspecialchars($defaultOptions['pages']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="reviewerNames">审核员数组（逗号分隔）</label>
+                        <textarea id="reviewerNames"><?php echo htmlspecialchars($defaultOptions['reviewer_names']); ?></textarea>
+                    </div>
+                    <div class="generator-field">
+                        <label for="reviewImagesMin">每组最少图片数</label>
+                        <input id="reviewImagesMin" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_min']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="reviewImagesMax">每组最多图片数</label>
+                        <input id="reviewImagesMax" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_max']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="wxRatio">微信支付占比(%)</label>
+                        <input id="wxRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['payment_method_wx_ratio']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="orderDaysRange">订单回溯天数</label>
+                        <input id="orderDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_days_range']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="visitorDaysRange">访客回溯天数</label>
+                        <input id="visitorDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_days_range']; ?>">
+                    </div>
+                    <div class="generator-field">
+                        <label for="reviewDaysRange">审核回溯天数</label>
+                        <input id="reviewDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_days_range']; ?>">
+                    </div>
                 </div>
-                <div class="generator-field">
-                    <label for="priceList">金额数组（逗号分隔）</label>
-                    <textarea id="priceList"><?php echo htmlspecialchars($defaultOptions['price_list']); ?></textarea>
-                </div>
-                <div class="generator-field">
-                    <label for="locations">地区数组（逗号分隔）</label>
-                    <textarea id="locations"><?php echo htmlspecialchars($defaultOptions['locations']); ?></textarea>
-                </div>
-                <div class="generator-field">
-                    <label for="userAgents">设备数组（逗号分隔）</label>
-                    <textarea id="userAgents"><?php echo htmlspecialchars($defaultOptions['user_agents']); ?></textarea>
-                </div>
-                <div class="generator-field">
-                    <label for="pages">访问页面数组（逗号分隔）</label>
-                    <textarea id="pages"><?php echo htmlspecialchars($defaultOptions['pages']); ?></textarea>
-                </div>
-                <div class="generator-field">
-                    <label for="reviewerNames">审核员数组（逗号分隔）</label>
-                    <textarea id="reviewerNames"><?php echo htmlspecialchars($defaultOptions['reviewer_names']); ?></textarea>
-                </div>
-                <div class="generator-field">
-                    <label for="reviewImagesMin">每组最少图片数</label>
-                    <input id="reviewImagesMin" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_min']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="reviewImagesMax">每组最多图片数</label>
-                    <input id="reviewImagesMax" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_images_max']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="wxRatio">微信支付占比(%)</label>
-                    <input id="wxRatio" type="number" min="0" max="100" step="1" value="<?php echo (int) $defaultOptions['payment_method_wx_ratio']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="orderDaysRange">订单回溯天数</label>
-                    <input id="orderDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['order_days_range']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="visitorDaysRange">访客回溯天数</label>
-                    <input id="visitorDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['visitor_days_range']; ?>">
-                </div>
-                <div class="generator-field">
-                    <label for="reviewDaysRange">审核回溯天数</label>
-                    <input id="reviewDaysRange" type="number" min="1" step="1" value="<?php echo (int) $defaultOptions['review_days_range']; ?>">
+                <div class="generator-actions">
+                    <button class="admin-pill-btn admin-pill-btn-light" type="button" id="applyPresetBtn">应用全量预设</button>
                 </div>
             </div>
-            <div class="generator-actions">
-                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="resetManualBtn">恢复默认参数</button>
-                <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateManualBtn">按手动参数生成</button>
-            </div>
-        </div>
 
-        <div class="generator-wrap">
-            <h4>方案C：仅虚拟核心快照（总览6项）</h4>
-            <div class="generator-grid">
-                <div class="generator-field">
-                    <label for="snapshotPresetSelect">快照预设档位</label>
-                    <select id="snapshotPresetSelect">
-                        <option value="steady">稳态运营</option>
-                        <option value="campaign" selected>活动冲刺（示例）</option>
-                        <option value="peak">高峰爆发</option>
-                    </select>
+            <div id="snapshotModePanel" class="unified-mode-panel">
+                <div class="generator-grid">
+                    <div class="generator-field">
+                        <label for="snapshotPresetSelect">快照预设档位</label>
+                        <select id="snapshotPresetSelect">
+                            <option value="steady">稳态运营</option>
+                            <option value="campaign" selected>活动冲刺（示例）</option>
+                            <option value="peak">高峰爆发</option>
+                        </select>
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotTotalIncome">总收入</label>
+                        <input id="snapshotTotalIncome" type="number" min="0" step="0.01" value="4508.40">
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotTodayIncome">今日收入</label>
+                        <input id="snapshotTodayIncome" type="number" min="0" step="0.01" value="906.80">
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotTodayOrders">今日订单</label>
+                        <input id="snapshotTodayOrders" type="number" min="0" step="1" value="23">
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotYesterdayVisitors">昨日访客</label>
+                        <input id="snapshotYesterdayVisitors" type="number" min="0" step="1" value="22">
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotTodayVisitors">今日访客</label>
+                        <input id="snapshotTodayVisitors" type="number" min="0" step="1" value="24">
+                    </div>
+                    <div class="generator-field">
+                        <label for="snapshotPending">待审核IP</label>
+                        <input id="snapshotPending" type="number" min="0" step="1" value="14">
+                    </div>
                 </div>
-                <div class="generator-field">
-                    <label for="snapshotTotalIncome">总收入</label>
-                    <input id="snapshotTotalIncome" type="number" min="0" step="0.01" value="4508.40">
-                </div>
-                <div class="generator-field">
-                    <label for="snapshotTodayIncome">今日收入</label>
-                    <input id="snapshotTodayIncome" type="number" min="0" step="0.01" value="906.80">
-                </div>
-                <div class="generator-field">
-                    <label for="snapshotTodayOrders">今日订单</label>
-                    <input id="snapshotTodayOrders" type="number" min="0" step="1" value="23">
-                </div>
-                <div class="generator-field">
-                    <label for="snapshotYesterdayVisitors">昨日访客</label>
-                    <input id="snapshotYesterdayVisitors" type="number" min="0" step="1" value="22">
-                </div>
-                <div class="generator-field">
-                    <label for="snapshotTodayVisitors">今日访客</label>
-                    <input id="snapshotTodayVisitors" type="number" min="0" step="1" value="24">
-                </div>
-                <div class="generator-field">
-                    <label for="snapshotPending">待审核IP</label>
-                    <input id="snapshotPending" type="number" min="0" step="1" value="14">
+                <div class="generator-actions">
+                    <button class="admin-pill-btn admin-pill-btn-light" type="button" id="applySnapshotPresetBtn">应用快照预设</button>
                 </div>
             </div>
+
             <div class="generator-actions">
-                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="applySnapshotPresetBtn">应用快照预设</button>
-                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="resetSnapshotBtn">恢复示例值</button>
-                <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateSnapshotBtn">仅应用这6项数据</button>
+                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="resetUnifiedBtn">恢复当前模式默认值</button>
+                <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateUnifiedBtn">应用统一方案</button>
             </div>
         </div>
     </section>
@@ -530,15 +543,15 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
     const toggleBtn = document.getElementById('toggleBtn');
     const regenerateBtn = document.getElementById('regenerateBtn');
     const clearBtn = document.getElementById('clearBtn');
+    const dataModeSelect = document.getElementById('dataModeSelect');
+    const fullModePanel = document.getElementById('fullModePanel');
+    const snapshotModePanel = document.getElementById('snapshotModePanel');
     const presetSelect = document.getElementById('presetSelect');
     const applyPresetBtn = document.getElementById('applyPresetBtn');
-    const generatePresetBtn = document.getElementById('generatePresetBtn');
-    const resetManualBtn = document.getElementById('resetManualBtn');
-    const generateManualBtn = document.getElementById('generateManualBtn');
     const snapshotPresetSelect = document.getElementById('snapshotPresetSelect');
     const applySnapshotPresetBtn = document.getElementById('applySnapshotPresetBtn');
-    const resetSnapshotBtn = document.getElementById('resetSnapshotBtn');
-    const generateSnapshotBtn = document.getElementById('generateSnapshotBtn');
+    const resetUnifiedBtn = document.getElementById('resetUnifiedBtn');
+    const generateUnifiedBtn = document.getElementById('generateUnifiedBtn');
     const toast = document.getElementById('vdToast');
     const defaultOptions = <?php echo json_encode($defaultOptions, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
     const snapshotDefaults = {
@@ -684,6 +697,21 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
         };
     }
 
+    function getCurrentMode() {
+        return dataModeSelect ? String(dataModeSelect.value || 'full') : 'full';
+    }
+
+    function syncModePanel() {
+        const mode = getCurrentMode();
+        const isSnapshot = mode === 'snapshot';
+        if (fullModePanel) {
+            fullModePanel.classList.toggle('is-active', !isSnapshot);
+        }
+        if (snapshotModePanel) {
+            snapshotModePanel.classList.toggle('is-active', isSnapshot);
+        }
+    }
+
     function loadSnapshotPreset(presetKey, silent) {
         const preset = presetKey || 'campaign';
         postAction('get_snapshot_preset', { preset: preset })
@@ -789,46 +817,6 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
             });
     });
 
-    generatePresetBtn.addEventListener('click', function () {
-        const params = collectParams();
-        postAction('generate_with_params', params)
-            .then(function (resp) {
-                if (!resp.success) {
-                    showToast(resp.message || '生成失败', true);
-                    return;
-                }
-                updateState(resp.state || {});
-                showToast(resp.message || '已生成虚拟数据', false);
-            })
-            .catch(function () {
-                showToast('请求失败，请稍后重试', true);
-            });
-    });
-
-    resetManualBtn.addEventListener('click', function () {
-        if (presetSelect) {
-            presetSelect.value = 'balanced';
-        }
-        setFieldValues(defaultOptions);
-        showToast('已恢复默认参数', false);
-    });
-
-    generateManualBtn.addEventListener('click', function () {
-        const params = collectParams();
-        postAction('generate_with_params', params)
-            .then(function (resp) {
-                if (!resp.success) {
-                    showToast(resp.message || '生成失败', true);
-                    return;
-                }
-                updateState(resp.state || {});
-                showToast(resp.message || '手动参数已生成', false);
-            })
-            .catch(function () {
-                showToast('请求失败，请稍后重试', true);
-            });
-    });
-
     applySnapshotPresetBtn.addEventListener('click', function () {
         const preset = snapshotPresetSelect ? snapshotPresetSelect.value : 'campaign';
         loadSnapshotPreset(preset, false);
@@ -840,24 +828,42 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
         });
     }
 
-    resetSnapshotBtn.addEventListener('click', function () {
-        if (snapshotPresetSelect) {
-            snapshotPresetSelect.value = 'campaign';
+    if (dataModeSelect) {
+        dataModeSelect.addEventListener('change', function () {
+            syncModePanel();
+        });
+    }
+
+    resetUnifiedBtn.addEventListener('click', function () {
+        const mode = getCurrentMode();
+        if (mode === 'snapshot') {
+            if (snapshotPresetSelect) {
+                snapshotPresetSelect.value = 'campaign';
+            }
+            setSnapshotFields(snapshotDefaults);
+            showToast('已恢复核心快照默认值', false);
+            return;
         }
-        setSnapshotFields(snapshotDefaults);
-        showToast('已恢复快照示例值', false);
+        if (presetSelect) {
+            presetSelect.value = 'balanced';
+        }
+        setFieldValues(defaultOptions);
+        showToast('已恢复全量模式默认值', false);
     });
 
-    generateSnapshotBtn.addEventListener('click', function () {
-        const params = collectSnapshotParams();
-        postAction('apply_snapshot_only', params)
+    generateUnifiedBtn.addEventListener('click', function () {
+        const mode = getCurrentMode();
+        const action = mode === 'snapshot' ? 'apply_snapshot_only' : 'generate_with_params';
+        const payload = mode === 'snapshot' ? collectSnapshotParams() : collectParams();
+
+        postAction(action, payload)
             .then(function (resp) {
                 if (!resp.success) {
                     showToast(resp.message || '应用失败', true);
                     return;
                 }
                 updateState(resp.state || {});
-                showToast(resp.message || '已应用核心快照', false);
+                showToast(mode === 'snapshot' ? '已应用核心快照模式' : '已应用全量演示模式', false);
             })
             .catch(function () {
                 showToast('请求失败，请稍后重试', true);
@@ -882,8 +888,12 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
     if (presetSelect && !presetSelect.value) {
         presetSelect.value = 'balanced';
     }
+    if (dataModeSelect && !dataModeSelect.value) {
+        dataModeSelect.value = 'full';
+    }
     setFieldValues(defaultOptions);
     setSnapshotFields(snapshotDefaults);
+    syncModePanel();
     if (snapshotPresetSelect && !snapshotPresetSelect.value) {
         snapshotPresetSelect.value = 'campaign';
     }
