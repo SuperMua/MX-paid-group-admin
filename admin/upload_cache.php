@@ -46,12 +46,6 @@ require_once 'login_check.php';
             font-size: 12px;
         }
 
-        .other-tools-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
     </style>
 </head>
 <body>
@@ -78,12 +72,9 @@ require_once 'login_check.php';
 
     <div class="main" style="margin-top: 50px;">
 		<div id="imageInfo" class="imageInfo">
-		    <p class="qctx">缓存清理会永久删除待审核图片，请在确认业务已完成后再执行。</p>
+            <p class="qctx">缓存清理会永久删除待审核图片，请在确认业务已完成后再执行。</p>
             <span class="cache-path">目标目录：../upload</span>
             <p class="cache-intro">建议先完成审核与归档，再执行清理操作，避免误删后无法恢复。</p>
-            <div class="other-tools-links">
-                <a class="admin-pill-btn admin-pill-btn-light" href="virtual_data.php">虚拟数据工具</a>
-            </div>
 		    <div class="cache-stat">
                 <span>当前图片数量</span>
                 <strong><span id="imageCount">加载中...</span> 张</strong>

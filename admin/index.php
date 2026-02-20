@@ -267,7 +267,13 @@ require_once 'query-visitors.php'; //加载数据
                 </div>
                 <div class="menu-item">
                     <a href="upload_cache.php">
-                        <span class="menu-item-icon icon_5"></span>其他
+                        <span class="menu-item-icon icon_5"></span>缓存清理
+                    </a>
+                    <span class="menu-arrow"></span>
+                </div>
+                <div class="menu-item">
+                    <a href="virtual_data.php">
+                        <span class="menu-item-icon icon_5"></span>虚拟数据
                     </a>
                     <span class="menu-arrow"></span>
                 </div>
@@ -359,7 +365,13 @@ require_once 'query-visitors.php'; //加载数据
                     </div>
                     <div class="menu-item">
                         <a href="upload_cache.php">
-                            <span class="menu-item-icon icon_5"></span>其他
+                            <span class="menu-item-icon icon_5"></span>缓存清理
+                        </a>
+                        <span class="menu-arrow"></span>
+                    </div>
+                    <div class="menu-item">
+                        <a href="virtual_data.php">
+                            <span class="menu-item-icon icon_5"></span>虚拟数据
                         </a>
                         <span class="menu-arrow"></span>
                     </div>
