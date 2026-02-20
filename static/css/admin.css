@@ -24,9 +24,11 @@
 .settings-pro-body {
   margin: 0;
   background:
-    radial-gradient(1200px 460px at 0% 0%, rgba(83, 86, 251, 0.16), transparent 55%),
-    radial-gradient(920px 420px at 100% 0%, rgba(245, 57, 248, 0.12), transparent 50%),
+    linear-gradient(180deg, #f1ecff 0%, #e8e4fc 52%, #deddf8 100%),
     #f5f7ff;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100dvh;
 }
 
 .settings-pro-shell {
@@ -268,9 +270,11 @@ body {
   font-family: var(--admin-font);
   color: var(--admin-text);
   background:
-    radial-gradient(circle at 12% 10%, rgba(245, 57, 248, 0.18) 0%, rgba(245, 57, 248, 0) 30%),
-    radial-gradient(circle at 88% 8%, rgba(83, 86, 251, 0.22) 0%, rgba(83, 86, 251, 0) 34%),
+    linear-gradient(180deg, #f1ecff 0%, #e7e4fb 48%, #deddf8 100%),
     var(--admin-bg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100dvh;
 }
 
 /* 后台统一隐藏滚动条轨道：保留鼠标滚轮/触控滚动能力 */

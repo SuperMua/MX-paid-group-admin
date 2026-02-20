@@ -46,6 +46,32 @@ require_once 'login_check.php';
             font-size: 12px;
         }
 
+        .cache-page-main {
+            margin-top: 64px;
+            padding-bottom: 18px;
+        }
+
+        .cache-page-main .imageInfo {
+            margin-top: 0;
+        }
+
+        @media (max-width: 991px) {
+            .cache-page-main {
+                width: calc(100% - 16px);
+                margin-top: 60px;
+                padding-bottom: 12px;
+            }
+
+            .cache-page-main .imageInfo {
+                padding: 14px 10px;
+                border-radius: 18px;
+            }
+
+            .cache-intro {
+                margin-bottom: 10px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -70,7 +96,7 @@ require_once 'login_check.php';
         </div>
     </div>
 
-    <div class="main" style="margin-top: 50px;">
+    <div class="main cache-page-main">
 		<div id="imageInfo" class="imageInfo">
             <p class="qctx">缓存清理会永久删除待审核图片，请在确认业务已完成后再执行。</p>
             <span class="cache-path">目标目录：../upload</span>

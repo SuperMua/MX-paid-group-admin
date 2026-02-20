@@ -40,6 +40,8 @@ require_once 'login_check.php';
             display: inline-block;
             width: 92px;
             height: 42px;
+            min-width: 92px;
+            flex: 0 0 92px;
         }
 
        .switch input {
@@ -68,11 +70,12 @@ require_once 'login_check.php';
             height: 32px;
             width: 32px;
             left: 5px;
-            bottom: 4px;
+            top: 50%;
             background-color: white;
             transition: .28s ease;
             border-radius: 50%;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.24);
+            transform: translateY(-50%);
         }
 
         input:checked +.slider {
@@ -84,7 +87,7 @@ require_once 'login_check.php';
         }
 
         input:checked +.slider:before {
-            transform: translateX(49px);
+            transform: translate(49px, -50%);
         }
 
         #statusText {
@@ -148,6 +151,36 @@ require_once 'login_check.php';
             color: #4f5b88;
             font-size: 12px;
             font-weight: 600;
+        }
+
+        @media (max-width: 520px) {
+            .audit-switch-row {
+                align-items: center;
+                gap: 10px;
+                padding: 12px;
+            }
+
+            .audit-switch-row > div {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .switch {
+                width: 84px;
+                height: 38px;
+                min-width: 84px;
+                flex: 0 0 84px;
+            }
+
+            .slider:before {
+                width: 30px;
+                height: 30px;
+                left: 4px;
+            }
+
+            input:checked + .slider:before {
+                transform: translate(44px, -50%);
+            }
         }
     </style>
 </head>
