@@ -93,6 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'get_snapshot_preset') {
+        $preset = isset($_POST['preset']) ? trim((string) $_POST['preset']) : 'campaign';
+        echo json_encode(array(
+            'success' => true,
+            'message' => '快照预设已加载',
+            'snapshot' => vd_get_snapshot_preset($preset)
+        ), JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     if ($action === 'clear') {
         vd_boot_session();
         $_SESSION['virtual_data']['enabled'] = false;
@@ -466,6 +476,14 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
             <h4>方案C：仅虚拟核心快照（总览6项）</h4>
             <div class="generator-grid">
                 <div class="generator-field">
+                    <label for="snapshotPresetSelect">快照预设档位</label>
+                    <select id="snapshotPresetSelect">
+                        <option value="steady">稳态运营</option>
+                        <option value="campaign" selected>活动冲刺（示例）</option>
+                        <option value="peak">高峰爆发</option>
+                    </select>
+                </div>
+                <div class="generator-field">
                     <label for="snapshotTotalIncome">总收入（total_income）</label>
                     <input id="snapshotTotalIncome" type="number" min="0" step="0.01" value="4508.40">
                 </div>
@@ -491,6 +509,7 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
                 </div>
             </div>
             <div class="generator-actions">
+                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="applySnapshotPresetBtn">应用快照预设</button>
                 <button class="admin-pill-btn admin-pill-btn-light" type="button" id="resetSnapshotBtn">恢复示例值</button>
                 <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateSnapshotBtn">仅应用这6项数据</button>
             </div>
@@ -516,6 +535,8 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
     const generatePresetBtn = document.getElementById('generatePresetBtn');
     const resetManualBtn = document.getElementById('resetManualBtn');
     const generateManualBtn = document.getElementById('generateManualBtn');
+    const snapshotPresetSelect = document.getElementById('snapshotPresetSelect');
+    const applySnapshotPresetBtn = document.getElementById('applySnapshotPresetBtn');
     const resetSnapshotBtn = document.getElementById('resetSnapshotBtn');
     const generateSnapshotBtn = document.getElementById('generateSnapshotBtn');
     const toast = document.getElementById('vdToast');
@@ -663,6 +684,28 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
         };
     }
 
+    function loadSnapshotPreset(presetKey, silent) {
+        const preset = presetKey || 'campaign';
+        postAction('get_snapshot_preset', { preset: preset })
+            .then(function (resp) {
+                if (!resp.success) {
+                    if (!silent) {
+                        showToast(resp.message || '快照预设加载失败', true);
+                    }
+                    return;
+                }
+                setSnapshotFields(resp.snapshot || snapshotDefaults);
+                if (!silent) {
+                    showToast(resp.message || '快照预设已加载', false);
+                }
+            })
+            .catch(function () {
+                if (!silent) {
+                    showToast('请求失败，请稍后重试', true);
+                }
+            });
+    }
+
     function postAction(action, extra) {
         const params = new URLSearchParams();
         params.set('action', action);
@@ -786,7 +829,21 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
             });
     });
 
+    applySnapshotPresetBtn.addEventListener('click', function () {
+        const preset = snapshotPresetSelect ? snapshotPresetSelect.value : 'campaign';
+        loadSnapshotPreset(preset, false);
+    });
+
+    if (snapshotPresetSelect) {
+        snapshotPresetSelect.addEventListener('change', function () {
+            loadSnapshotPreset(snapshotPresetSelect.value, true);
+        });
+    }
+
     resetSnapshotBtn.addEventListener('click', function () {
+        if (snapshotPresetSelect) {
+            snapshotPresetSelect.value = 'campaign';
+        }
         setSnapshotFields(snapshotDefaults);
         showToast('已恢复快照示例值', false);
     });
@@ -827,6 +884,12 @@ $modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（�
     }
     setFieldValues(defaultOptions);
     setSnapshotFields(snapshotDefaults);
+    if (snapshotPresetSelect && !snapshotPresetSelect.value) {
+        snapshotPresetSelect.value = 'campaign';
+    }
+    if (snapshotPresetSelect) {
+        loadSnapshotPreset(snapshotPresetSelect.value || 'campaign', true);
+    }
     if (presetSelect) {
         postAction('get_preset_options', { preset: presetSelect.value || 'balanced' })
             .then(function (resp) {

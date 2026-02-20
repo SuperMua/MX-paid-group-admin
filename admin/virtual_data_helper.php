@@ -216,6 +216,44 @@ function vd_default_generator_options() {
     );
 }
 
+function vd_get_snapshot_preset_map() {
+    return array(
+        'steady' => array(
+            'total_income' => 2380.50,
+            'today_income' => 386.20,
+            'today_orders' => 11,
+            'yesterday_visitors' => 18,
+            'today_visitors' => 19,
+            'unreviewed_count' => 6
+        ),
+        'campaign' => array(
+            'total_income' => 4508.40,
+            'today_income' => 906.80,
+            'today_orders' => 23,
+            'yesterday_visitors' => 22,
+            'today_visitors' => 24,
+            'unreviewed_count' => 14
+        ),
+        'peak' => array(
+            'total_income' => 9688.20,
+            'today_income' => 2486.60,
+            'today_orders' => 49,
+            'yesterday_visitors' => 37,
+            'today_visitors' => 51,
+            'unreviewed_count' => 28
+        )
+    );
+}
+
+function vd_get_snapshot_preset($preset) {
+    $map = vd_get_snapshot_preset_map();
+    $key = trim((string) $preset);
+    if (!isset($map[$key])) {
+        $key = 'campaign';
+    }
+    return vd_normalize_snapshot_override($map[$key]);
+}
+
 function vd_get_generator_preset_options($preset) {
     $base = vd_default_generator_options();
     $preset = trim((string) $preset);
