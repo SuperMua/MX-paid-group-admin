@@ -62,6 +62,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'apply_snapshot_only') {
+        $snapshot = array(
+            'total_income' => $_POST['total_income'] ?? '',
+            'today_income' => $_POST['today_income'] ?? '',
+            'today_orders' => $_POST['today_orders'] ?? '',
+            'yesterday_visitors' => $_POST['yesterday_visitors'] ?? '',
+            'today_visitors' => $_POST['today_visitors'] ?? '',
+            'unreviewed_count' => $_POST['unreviewed_count'] ?? ''
+        );
+        vd_set_snapshot_override($snapshot);
+        vd_boot_session();
+        $_SESSION['virtual_data']['enabled'] = true;
+        $_SESSION['virtual_data']['updated_at'] = vd_now_string();
+        echo json_encode(array(
+            'success' => true,
+            'message' => '已应用核心快照虚拟数据',
+            'state' => vd_get_state_payload()
+        ), JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     if ($action === 'get_preset_options') {
         $preset = isset($_POST['preset']) ? trim((string) $_POST['preset']) : 'balanced';
         echo json_encode(array(
@@ -78,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['virtual_data']['dataset'] = null;
         $_SESSION['virtual_data']['seed'] = null;
         $_SESSION['virtual_data']['generated_at'] = null;
+        $_SESSION['virtual_data']['snapshot_override'] = null;
         $_SESSION['virtual_data']['updated_at'] = vd_now_string();
         echo json_encode(array(
             'success' => true,
@@ -133,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $state = vd_get_state_payload();
 $snapshot = $state['snapshot'];
 $defaultOptions = vd_default_generator_options();
+$modeText = !empty($state['snapshot_override_active']) ? '核心快照模式（仅6项）' : '全量演示模式';
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -321,6 +344,7 @@ $defaultOptions = vd_default_generator_options();
         </div>
 
         <div class="virtual-meta" id="metaText">
+            数据模式：<?php echo htmlspecialchars($modeText); ?><br>
             数据种子：<?php echo $state['seed'] ? htmlspecialchars((string)$state['seed']) : '--'; ?><br>
             生成时间：<?php echo $state['generated_at'] ? htmlspecialchars($state['generated_at']) : '--'; ?><br>
             更新时间：<?php echo $state['updated_at'] ? htmlspecialchars($state['updated_at']) : '--'; ?>
@@ -437,6 +461,40 @@ $defaultOptions = vd_default_generator_options();
                 <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateManualBtn">按手动参数生成</button>
             </div>
         </div>
+
+        <div class="generator-wrap">
+            <h4>方案C：仅虚拟核心快照（总览6项）</h4>
+            <div class="generator-grid">
+                <div class="generator-field">
+                    <label for="snapshotTotalIncome">总收入（total_income）</label>
+                    <input id="snapshotTotalIncome" type="number" min="0" step="0.01" value="4508.40">
+                </div>
+                <div class="generator-field">
+                    <label for="snapshotTodayIncome">今日收入（today_income）</label>
+                    <input id="snapshotTodayIncome" type="number" min="0" step="0.01" value="906.80">
+                </div>
+                <div class="generator-field">
+                    <label for="snapshotTodayOrders">今日订单（today_orders）</label>
+                    <input id="snapshotTodayOrders" type="number" min="0" step="1" value="23">
+                </div>
+                <div class="generator-field">
+                    <label for="snapshotYesterdayVisitors">昨日访客（yesterday_visitors）</label>
+                    <input id="snapshotYesterdayVisitors" type="number" min="0" step="1" value="22">
+                </div>
+                <div class="generator-field">
+                    <label for="snapshotTodayVisitors">今日访客（today_visitors）</label>
+                    <input id="snapshotTodayVisitors" type="number" min="0" step="1" value="24">
+                </div>
+                <div class="generator-field">
+                    <label for="snapshotPending">待审核IP（unreviewed_count）</label>
+                    <input id="snapshotPending" type="number" min="0" step="1" value="14">
+                </div>
+            </div>
+            <div class="generator-actions">
+                <button class="admin-pill-btn admin-pill-btn-light" type="button" id="resetSnapshotBtn">恢复示例值</button>
+                <button class="admin-pill-btn admin-pill-btn-primary" type="button" id="generateSnapshotBtn">仅应用这6项数据</button>
+            </div>
+        </div>
     </section>
 </main>
 <div class="settings-pro-toast" id="vdToast">操作成功</div>
@@ -458,8 +516,18 @@ $defaultOptions = vd_default_generator_options();
     const generatePresetBtn = document.getElementById('generatePresetBtn');
     const resetManualBtn = document.getElementById('resetManualBtn');
     const generateManualBtn = document.getElementById('generateManualBtn');
+    const resetSnapshotBtn = document.getElementById('resetSnapshotBtn');
+    const generateSnapshotBtn = document.getElementById('generateSnapshotBtn');
     const toast = document.getElementById('vdToast');
     const defaultOptions = <?php echo json_encode($defaultOptions, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+    const snapshotDefaults = {
+        total_income: '4508.40',
+        today_income: '906.80',
+        today_orders: '23',
+        yesterday_visitors: '22',
+        today_visitors: '24',
+        unreviewed_count: '14'
+    };
 
     const fieldMap = {
         orderCount: 'order_count',
@@ -515,7 +583,8 @@ $defaultOptions = vd_default_generator_options();
         const seedText = state.seed ? String(state.seed) : '--';
         const generatedAt = state.generated_at || '--';
         const updatedAt = state.updated_at || '--';
-        metaText.innerHTML = '数据种子：' + seedText + '<br>生成时间：' + generatedAt + '<br>更新时间：' + updatedAt;
+        const modeText = state.snapshot_override_active ? '核心快照模式（仅6项）' : '全量演示模式';
+        metaText.innerHTML = '数据模式：' + modeText + '<br>数据种子：' + seedText + '<br>生成时间：' + generatedAt + '<br>更新时间：' + updatedAt;
     }
 
     function setFieldValues(options) {
@@ -545,6 +614,53 @@ $defaultOptions = vd_default_generator_options();
             payload[optionKey] = String(el.value || '').trim();
         });
         return payload;
+    }
+
+    function setSnapshotFields(values) {
+        const data = values || snapshotDefaults;
+        const totalIncomeInput = document.getElementById('snapshotTotalIncome');
+        const todayIncomeInput = document.getElementById('snapshotTodayIncome');
+        const todayOrdersInput = document.getElementById('snapshotTodayOrders');
+        const yesterdayVisitorsInput = document.getElementById('snapshotYesterdayVisitors');
+        const todayVisitorsInput = document.getElementById('snapshotTodayVisitors');
+        const pendingInput = document.getElementById('snapshotPending');
+
+        if (totalIncomeInput) {
+            totalIncomeInput.value = String(data.total_income || '0.00');
+        }
+        if (todayIncomeInput) {
+            todayIncomeInput.value = String(data.today_income || '0.00');
+        }
+        if (todayOrdersInput) {
+            todayOrdersInput.value = String(data.today_orders || '0');
+        }
+        if (yesterdayVisitorsInput) {
+            yesterdayVisitorsInput.value = String(data.yesterday_visitors || '0');
+        }
+        if (todayVisitorsInput) {
+            todayVisitorsInput.value = String(data.today_visitors || '0');
+        }
+        if (pendingInput) {
+            pendingInput.value = String(data.unreviewed_count || '0');
+        }
+    }
+
+    function collectSnapshotParams() {
+        const totalIncomeInput = document.getElementById('snapshotTotalIncome');
+        const todayIncomeInput = document.getElementById('snapshotTodayIncome');
+        const todayOrdersInput = document.getElementById('snapshotTodayOrders');
+        const yesterdayVisitorsInput = document.getElementById('snapshotYesterdayVisitors');
+        const todayVisitorsInput = document.getElementById('snapshotTodayVisitors');
+        const pendingInput = document.getElementById('snapshotPending');
+
+        return {
+            total_income: totalIncomeInput ? String(totalIncomeInput.value || '').trim() : '0',
+            today_income: todayIncomeInput ? String(todayIncomeInput.value || '').trim() : '0',
+            today_orders: todayOrdersInput ? String(todayOrdersInput.value || '').trim() : '0',
+            yesterday_visitors: yesterdayVisitorsInput ? String(yesterdayVisitorsInput.value || '').trim() : '0',
+            today_visitors: todayVisitorsInput ? String(todayVisitorsInput.value || '').trim() : '0',
+            unreviewed_count: pendingInput ? String(pendingInput.value || '').trim() : '0'
+        };
     }
 
     function postAction(action, extra) {
@@ -670,6 +786,27 @@ $defaultOptions = vd_default_generator_options();
             });
     });
 
+    resetSnapshotBtn.addEventListener('click', function () {
+        setSnapshotFields(snapshotDefaults);
+        showToast('已恢复快照示例值', false);
+    });
+
+    generateSnapshotBtn.addEventListener('click', function () {
+        const params = collectSnapshotParams();
+        postAction('apply_snapshot_only', params)
+            .then(function (resp) {
+                if (!resp.success) {
+                    showToast(resp.message || '应用失败', true);
+                    return;
+                }
+                updateState(resp.state || {});
+                showToast(resp.message || '已应用核心快照', false);
+            })
+            .catch(function () {
+                showToast('请求失败，请稍后重试', true);
+            });
+    });
+
     if (presetSelect) {
         presetSelect.addEventListener('change', function () {
             postAction('get_preset_options', { preset: presetSelect.value })
@@ -689,6 +826,7 @@ $defaultOptions = vd_default_generator_options();
         presetSelect.value = 'balanced';
     }
     setFieldValues(defaultOptions);
+    setSnapshotFields(snapshotDefaults);
     if (presetSelect) {
         postAction('get_preset_options', { preset: presetSelect.value || 'balanced' })
             .then(function (resp) {

@@ -41,7 +41,8 @@ function vd_boot_session() {
             'seed' => null,
             'generated_at' => null,
             'updated_at' => null,
-            'dataset' => null
+            'dataset' => null,
+            'snapshot_override' => null
         );
     }
 }
@@ -52,6 +53,65 @@ function vd_now_string() {
 
 function vd_random_seed() {
     return (int) (microtime(true) * 1000) + mt_rand(1000, 9999);
+}
+
+function vd_parse_float($value, $default) {
+    if ($value === '' || $value === null) {
+        return (float) $default;
+    }
+    if (!is_numeric($value)) {
+        return (float) $default;
+    }
+    return (float) $value;
+}
+
+function vd_parse_int($value, $default) {
+    if ($value === '' || $value === null) {
+        return (int) $default;
+    }
+    if (!is_numeric($value)) {
+        return (int) $default;
+    }
+    return (int) $value;
+}
+
+function vd_normalize_snapshot_override($incoming) {
+    $data = is_array($incoming) ? $incoming : array();
+    $totalIncome = max(0, vd_parse_float($data['total_income'] ?? null, 0));
+    $todayIncome = max(0, vd_parse_float($data['today_income'] ?? null, 0));
+    $todayOrders = max(0, vd_parse_int($data['today_orders'] ?? null, 0));
+    $yesterdayVisitors = max(0, vd_parse_int($data['yesterday_visitors'] ?? null, 0));
+    $todayVisitors = max(0, vd_parse_int($data['today_visitors'] ?? null, 0));
+    $unreviewedCount = max(0, vd_parse_int($data['unreviewed_count'] ?? null, 0));
+
+    return array(
+        'total_income' => number_format($totalIncome, 2, '.', ''),
+        'today_income' => number_format($todayIncome, 2, '.', ''),
+        'today_orders' => $todayOrders,
+        'yesterday_visitors' => $yesterdayVisitors,
+        'today_visitors' => $todayVisitors,
+        'unreviewed_count' => $unreviewedCount
+    );
+}
+
+function vd_set_snapshot_override($snapshot) {
+    vd_boot_session();
+    $_SESSION['virtual_data']['snapshot_override'] = vd_normalize_snapshot_override($snapshot);
+    $_SESSION['virtual_data']['updated_at'] = vd_now_string();
+}
+
+function vd_clear_snapshot_override() {
+    vd_boot_session();
+    $_SESSION['virtual_data']['snapshot_override'] = null;
+    $_SESSION['virtual_data']['updated_at'] = vd_now_string();
+}
+
+function vd_get_snapshot_override() {
+    vd_boot_session();
+    if (empty($_SESSION['virtual_data']['snapshot_override']) || !is_array($_SESSION['virtual_data']['snapshot_override'])) {
+        return null;
+    }
+    return $_SESSION['virtual_data']['snapshot_override'];
 }
 
 function vd_set_enabled($enabled) {
@@ -338,6 +398,7 @@ function vd_regenerate_dataset($options = array()) {
     $seed = vd_random_seed();
     $_SESSION['virtual_data']['seed'] = $seed;
     $_SESSION['virtual_data']['dataset'] = vd_generate_dataset($seed, $options);
+    $_SESSION['virtual_data']['snapshot_override'] = null;
     $_SESSION['virtual_data']['generated_at'] = vd_now_string();
     $_SESSION['virtual_data']['updated_at'] = vd_now_string();
 }
@@ -403,6 +464,11 @@ function vd_get_orders_all() {
 }
 
 function vd_get_dashboard_snapshot() {
+    $snapshotOverride = vd_get_snapshot_override();
+    if (is_array($snapshotOverride)) {
+        return $snapshotOverride;
+    }
+
     $dataset = vd_get_dataset();
     $orders = isset($dataset['orders']) ? $dataset['orders'] : array();
     $reviews = isset($dataset['reviews']) ? $dataset['reviews'] : array();
@@ -622,10 +688,11 @@ function vd_clear_visitors() {
 
 function vd_get_state_payload() {
     vd_boot_session();
+    $snapshotOverride = vd_get_snapshot_override();
     if (!empty($_SESSION['virtual_data']['dataset']) && is_array($_SESSION['virtual_data']['dataset'])) {
         $snapshot = vd_get_dashboard_snapshot();
     } else {
-        $snapshot = array(
+        $snapshot = is_array($snapshotOverride) ? $snapshotOverride : array(
             'total_income' => '0.00',
             'today_income' => '0.00',
             'today_orders' => 0,
@@ -640,6 +707,7 @@ function vd_get_state_payload() {
         'seed' => $_SESSION['virtual_data']['seed'],
         'generated_at' => $_SESSION['virtual_data']['generated_at'],
         'updated_at' => $_SESSION['virtual_data']['updated_at'],
+        'snapshot_override_active' => is_array($snapshotOverride),
         'snapshot' => $snapshot
     );
 }
@@ -813,6 +881,7 @@ function vd_set_custom_dataset($dataset, $enable = true) {
     vd_boot_session();
     $normalized = vd_normalize_dataset($dataset);
     $_SESSION['virtual_data']['dataset'] = $normalized;
+    $_SESSION['virtual_data']['snapshot_override'] = null;
     $_SESSION['virtual_data']['seed'] = 'custom-' . substr(md5(vd_now_string() . mt_rand(1000, 9999)), 0, 10);
     $_SESSION['virtual_data']['generated_at'] = vd_now_string();
     $_SESSION['virtual_data']['updated_at'] = vd_now_string();
