@@ -9,7 +9,7 @@ require_once 'image_upload.php';
     <meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>加入<?php echo $city;?>群聊</title>
-	<link rel="icon" href="../result/images/logo.ico">
+	<link rel="icon" href="../favicon.ico">
 	<link rel="stylesheet" href="../static/css/style.css">
 	<script>
 	   fetch('../admin/brand_settings_api.php')
@@ -112,7 +112,7 @@ require_once 'image_upload.php';
 	                     </div>
 					<input type="hidden" id="payment_time" name="payment_time" value="<?php echo $currentTime; ?>" readonly>
 	        <div class="popup-footer">
-	            <button onclick="submitPayment()">确认支付</button>
+	            <button type="submit">确认支付</button>
 	        </div>
 		    </form>
 		     <a href="upload.php"><div class="countdown-label">不想打赏？做任务免费进群></div></a>

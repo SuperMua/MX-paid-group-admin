@@ -40,7 +40,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="../result/images/logo.ico">
+    <link rel="icon" href="../favicon.ico">
     <link rel="stylesheet" href="../static/css/style2.css">
     <title>加入<?php echo $city;?>群聊</title>
     <script>

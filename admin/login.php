@@ -18,7 +18,7 @@ if (!empty($error)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
-    <link rel="icon" href="../result/images/logo.ico">
+    <link rel="icon" href="../favicon.ico">
     <style>
         :root {
             --login-primary: #5356fb;
