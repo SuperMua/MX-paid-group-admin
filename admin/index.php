@@ -160,11 +160,15 @@ $warmWords = $tips[array_rand($tips)];
                         <?php if (empty($dashTopLocs)): ?>
                             <div class="dash-empty">暂无数据</div>
                         <?php else: ?>
-                            <?php $locMax = reset($dashTopLocs); ?>
-                            <?php foreach ($dashTopLocs as $locName => $locCount): ?>
+                            <?php $locMax = reset($dashTopLocs); $totalLocOrders = array_sum($dashTopLocs); $rankIdx = 0; ?>
+                            <?php foreach ($dashTopLocs as $locName => $locCount): $rankIdx++; ?>
                             <div class="dash-loc-row">
+                                <span class="dash-loc-rank r<?php echo $rankIdx; ?>"><?php echo $rankIdx; ?></span>
                                 <span class="dash-loc-name"><?php echo htmlspecialchars($locName); ?></span>
-                                <div class="dash-loc-bar-bg"><div class="dash-loc-bar-fg" style="width:<?php echo $locMax > 0 ? round($locCount / $locMax * 100) : 0; ?>%"></div></div>
+                                <div class="dash-loc-bar-wrap">
+                                    <div class="dash-loc-bar-bg"><div class="dash-loc-bar-fg" style="width:<?php echo $locMax > 0 ? round($locCount / $locMax * 100) : 0; ?>%"></div></div>
+                                    <span class="dash-loc-pct"><?php echo $totalLocOrders > 0 ? round($locCount / $totalLocOrders * 100) : 0; ?>%</span>
+                                </div>
                                 <span class="dash-loc-val"><?php echo $locCount; ?>单</span>
                             </div>
                             <?php endforeach; ?>
