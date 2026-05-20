@@ -1063,6 +1063,10 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .admin-shell-enabled {
+  display: block;
+  justify-content: initial;
+  align-items: initial;
+  flex-direction: initial;
   background:
     radial-gradient(circle at 10% 10%, rgba(245, 57, 248, 0.16) 0%, rgba(245, 57, 248, 0) 32%),
     radial-gradient(circle at 90% 6%, rgba(83, 86, 251, 0.2) 0%, rgba(83, 86, 251, 0) 30%),
@@ -1213,7 +1217,7 @@ input[type="file"]::-webkit-file-upload-button {
     grid-template-columns: 232px minmax(0, 1fr);
     gap: 12px;
     width: min(1720px, calc(100% - 8px));
-    margin: 6px 4px 6px 4px;
+    margin: 8px 16px;
     align-items: start;
   }
 
