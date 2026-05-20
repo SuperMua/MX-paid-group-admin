@@ -14,9 +14,9 @@ require_once 'dashboard_data.php';
        .scroll-container{width:220px;height:20px;overflow:hidden;white-space:nowrap;position:relative}
        .scroll-text{display:inline-block;font-size:14px;font-family:Arial,sans-serif;white-space:nowrap}
        @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-       .dashboard-page{visibility:hidden}
-       .dashboard-page.admin-shell-enabled,
-       .dashboard-page.shell-ready{visibility:visible}
+       .dashboard-page{/*visibility:hidden*/}
+       /*.dashboard-page.admin-shell-enabled,
+       .dashboard-page.shell-ready{visibility:visible}*/
        .dashboard-layout{width:100%}
        .dashboard-aside{display:none}
        .dashboard-brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
@@ -172,8 +172,12 @@ require_once 'dashboard_data.php';
         </div>
     </div>
 
-<script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="../static/js/chart.umd.min.js"></script>
 <script>
+// Debug: log when Chart.js is ready
+console.log('[MX] Chart.js available:', typeof Chart !== 'undefined');
+console.log('[MX] Canvas #chartTrend:', document.getElementById('chartTrend'));
+
 (function(){
 var charts={};
 function dk(k){if(charts[k]){charts[k].destroy();delete charts[k]}}
@@ -225,7 +229,16 @@ function initCharts(){
 function _chartsSafe(fn){
     requestAnimationFrame(function(){
         requestAnimationFrame(function(){
-            if(typeof Chart==='undefined')return;
+            var c=document.getElementById('chartTrend');
+            console.log('[charts] Chart loaded:',typeof Chart!=='undefined','canvas found:',!!c,'canvas size:',c?c.offsetWidth+'x'+c.offsetHeight:'N/A');
+            if(typeof Chart==='undefined'){
+                document.getElementById('noPayData')&&(document.getElementById('noPayData').style.display='block',document.getElementById('noPayData').textContent='Chart.js 未加载');
+                return;
+            }
+            if(!c){
+                console.error('[charts] canvas #chartTrend not found');
+                return;
+            }
             fn();
         });
     });
@@ -237,10 +250,10 @@ function _bootCharts(){
 // Delay chart init to let admin-shell finish DOM move (desktop) or just layout settle (mobile).
 // The body is visibility:hidden until admin-shell-enabled (added by admin-shell.js) or shell-ready
 // (added here) becomes visible — eliminating the sidebar flash.
-setTimeout(_bootCharts,250);
+setTimeout(_bootCharts,100);
 // Re-render charts after SPA page navigation
 window.addEventListener('admin-shell:page-loaded',function(){
-    setTimeout(_bootCharts,100);
+    setTimeout(_bootCharts,150);
 });
 })();
 
@@ -263,6 +276,6 @@ function startScroll(){
 }
 initDashboardPage();
 </script>
-<script src="../static/js/admin-shell.js"></script>
+<!-- <script src="../static/js/admin-shell.js"></script> -->
 </body>
 </html>
