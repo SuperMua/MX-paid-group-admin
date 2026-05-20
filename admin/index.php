@@ -221,34 +221,27 @@ function initCharts(){
     chartHourly(dashData);
 }
 
-// Use double rAF to guarantee the browser has performed layout before
-// Chart.js reads canvas dimensions (especially critical after visibility:hidden removal).
+// Double rAF guarantees layout is complete before Chart.js reads canvas dimensions.
 function _chartsSafe(fn){
     requestAnimationFrame(function(){
         requestAnimationFrame(function(){
-            if(typeof Chart==='undefined'){console.error('Chart.js CDN missing');return}
+            if(typeof Chart==='undefined')return;
             fn();
         });
     });
 }
-// Wait for admin-shell to finish building on desktop before rendering charts.
-// On mobile, admin-shell exits early so we render immediately.
-var _chartsDone=false;
-function _tryCharts(){
-    if(_chartsDone)return;
-    var isDesktop=window.matchMedia('(min-width: 992px)').matches;
-    if(isDesktop && !document.body.classList.contains('admin-shell-enabled')){
-        setTimeout(_tryCharts,80);return;
-    }
-    _chartsDone=true;
+function _bootCharts(){
     document.body.classList.add('shell-ready');
     _chartsSafe(initCharts);
 }
-setTimeout(_tryCharts,80);
-// Fallback: if shell never loads, show page + charts after 2.5s
-setTimeout(function(){
-    if(!_chartsDone){_chartsDone=true;document.body.classList.add('shell-ready');_chartsSafe(initCharts)}
-},2500);
+// Delay chart init to let admin-shell finish DOM move (desktop) or just layout settle (mobile).
+// The body is visibility:hidden until admin-shell-enabled (added by admin-shell.js) or shell-ready
+// (added here) becomes visible — eliminating the sidebar flash.
+setTimeout(_bootCharts,250);
+// Re-render charts after SPA page navigation
+window.addEventListener('admin-shell:page-loaded',function(){
+    setTimeout(_bootCharts,100);
+});
 })();
 
 function applyBrandSettings(){
