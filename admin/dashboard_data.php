@@ -1,19 +1,37 @@
 <?php
 // dashboard_data.php – 计算控制台所有数据，供 index.php 服务端渲染使用
 // 独立创建数据库连接（因为 users.php 已经关闭了之前的连接）
+require_once __DIR__ . '/virtual_data_helper.php';
+
 $dashConn = new mysqli('127.0.0.1', 'qun555', '2D7W64zBm5e3j1AA', 'qun555');
 if (!$dashConn->connect_error) {
     $dashConn->set_charset("utf8mb4");
 }
 
-// Always use real DB data for the dashboard — Virtual Data is a separate demo feature
-$r = $dashConn->query("SELECT * FROM orders ORDER BY payment_time DESC");
-$dashOrders = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
+// Respect Virtual Data toggle: if enabled AND dataset has meaningful data, use it.
+// Otherwise fall through to real database.
+$dashOrders = array();
+$dashVisitors = array();
+$useVD = false;
+if (vd_is_enabled()) {
+    $dataset = vd_get_dataset();
+    $vdOrders = isset($dataset['orders']) ? $dataset['orders'] : array();
+    $vdVisitors = isset($dataset['visitors']) ? $dataset['visitors'] : array();
+    if (!empty($vdOrders) && !empty($vdVisitors)) {
+        $dashOrders = $vdOrders;
+        $dashVisitors = $vdVisitors;
+        $useVD = true;
+    }
+}
+if (!$useVD) {
+    $r = $dashConn->query("SELECT * FROM orders ORDER BY payment_time DESC");
+    $dashOrders = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
 
-$r = $dashConn->query("SELECT * FROM visitors ORDER BY visit_time DESC");
-$dashVisitors = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
+    $r = $dashConn->query("SELECT * FROM visitors ORDER BY visit_time DESC");
+    $dashVisitors = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
 
-$dashConn->close();
+    $dashConn->close();
+}
 
 // ---- Summary ----
 $dashTotalIncome = 0; $dashTodayIncome = 0; $dashTodayOrders = 0;
