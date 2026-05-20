@@ -601,112 +601,175 @@ button[type="submit"]:hover {
   padding: 0;
 }
 
+/* ========== 卡片通用样式 ========== */
 .order-item,
-.order_kls {
-  border: 1px solid var(--admin-border);
+.order_kls,
+.task {
+  border: 1px solid #f1f5f9;
   border-radius: 16px;
   background: #fff;
   margin-top: 10px;
-  box-shadow: 0 10px 22px rgba(83, 86, 251, 0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.order_kls:hover,
+.order-item:hover,
+.task:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(83, 86, 251, 0.10);
+  border-color: rgba(83, 86, 251, 0.18);
 }
 
 .order-item {
-  padding: 10px 12px;
+  padding: 14px 16px;
   line-height: 1.6;
 }
 
-.order-details,
-.order-info {
-  color: #667085;
-  font-size: 13px;
-}
-
+/* ========== 订单卡片头部（订单号行） ========== */
 .order-hrsk {
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--admin-border);
-  color: #667085;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #fafbff;
+  border-radius: 16px 16px 0 0;
+}
+.info-conpih {
+  font-family: 'SF Mono', 'Consolas', 'Menlo', monospace;
+  font-size: 12px;
+  color: #64748b;
+  letter-spacing: 0.3px;
+  font-weight: 500;
 }
 
-.order-item_yup {
-  padding: 10px 12px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.info-name {
-  margin-bottom: 2px;
-}
-
-.info-content {
-  color: #1f2937;
-}
-
-.info-conuie {
-  color: var(--admin-success);
+/* ========== 订单卡片内容区 ========== */
+.order-details,
+.order-info {
+  color: #64748b;
   font-size: 13px;
 }
-
-.info-conuie img {
-  width: 14px;
-  height: 14px;
-  margin-top: 3px;
+.order-item_yup {
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+.info-name {
+  margin-bottom: 3px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.info-name::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+.info-content {
+  color: #1e293b;
+  font-weight: 500;
 }
 
-.opiu {
-  color: #98a2b3 !important;
+/* ========== 支付状态徽标 ========== */
+.info-conuie {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #ecfdf5;
+  color: #059669;
+}
+.info-conuie.opiu {
+  background: #fef3c7;
+  color: #d97706 !important;
 }
 
+/* ========== 金额展示 ========== */
 .amount {
-  color: var(--admin-danger);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   text-align: right;
+  color: #10b981;
 }
-
+.amount.opiu {
+  color: #94a3b8 !important;
+}
 .amount_yzf,
 .opiuyr {
-  color: #667085;
-  font-size: 13px;
+  color: #64748b;
+  font-size: 12px;
   text-align: right;
+  margin-top: 2px;
 }
 
+/* ========== 支付方式标签 ========== */
+.amount-payment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.amount-payment .info-conuie {
+  font-weight: 500;
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+/* ========== 分页导航 ========== */
 .pagination {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 18px;
+  padding: 8px 0;
 }
-
 .pagination a {
-  padding: 7px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--admin-border);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
   background: #fff;
-  color: #475467;
+  color: #475569;
   font-size: 13px;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
-
 .pagination a:hover {
-  background: var(--admin-primary-soft);
-  color: #3f43d4;
-  border-color: rgba(83, 86, 251, 0.36);
+  background: #eef2ff;
+  color: #4f46e5;
+  border-color: rgba(83, 86, 251, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(83, 86, 251, 0.12);
 }
 
-.no-data {
-  margin: 12px 0;
-  padding: 16px;
-  border: 1px dashed #d0d5dd;
-  border-radius: 16px;
-  background: #f8fafc;
-  color: #667085;
+/* ========== 空状态 ========== */
+.no-data,
+.shuju {
+  margin: 20px auto;
+  padding: 40px 20px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 20px;
+  background: #fafbfc;
+  color: #94a3b8;
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
+  max-width: 420px;
+}
+.no-data::before,
+.shuju::before {
+  content: '📋';
+  display: block;
+  font-size: 36px;
+  margin-bottom: 10px;
+  opacity: 0.6;
 }
 
 .more-button {
@@ -1296,25 +1359,40 @@ input[type="file"]::-webkit-file-upload-button {
   .admin-shell-enabled .statistics1 {
     background: #fff;
     border-radius: 16px;
-    padding: 16px 22px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    padding: 18px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     display: flex;
-    gap: 24px;
+    gap: 28px;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .admin-shell-enabled .statistics p,
   .admin-shell-enabled .statistics1 p {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .admin-shell-enabled .statistics .order-dingdan,
   .admin-shell-enabled .statistics1 .order-dingdan {
     font-weight: 700;
     color: #1e293b;
-    font-size: 16px;
+    font-size: 18px;
+    min-width: 28px;
+    text-align: center;
+  }
+  /* 统计项分隔 */
+  .admin-shell-enabled .statistics p:not(:last-child)::after,
+  .admin-shell-enabled .statistics1 p:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 28px;
+    background: #e2e8f0;
+    margin-left: 8px;
   }
 
   .admin-shell-enabled .admin-action-bar {
@@ -1334,35 +1412,183 @@ input[type="file"]::-webkit-file-upload-button {
   .admin-shell-enabled .page-intro {
     background: #fff;
     border-radius: 16px;
-    padding: 20px 22px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    padding: 22px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
 
-  /* ---- 列表卡片动画 ---- */
+  /* ---- 设置子页表单容器 ---- */
+  .admin-shell-enabled .settings-container {
+    max-width: 900px;
+  }
+  .admin-shell-enabled .settings-container h2,
+  .admin-shell-enabled .settings-container h3 {
+    margin: 0 0 16px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .admin-shell-enabled .settings-container label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+  .admin-shell-enabled .settings-container input[type="text"],
+  .admin-shell-enabled .settings-container input[type="url"],
+  .admin-shell-enabled .settings-container input[type="number"],
+  .admin-shell-enabled .settings-container input[type="password"],
+  .admin-shell-enabled .settings-container textarea,
+  .admin-shell-enabled .settings-container select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #fafbfc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+  .admin-shell-enabled .settings-container input:focus,
+  .admin-shell-enabled .settings-container textarea:focus,
+  .admin-shell-enabled .settings-container select:focus {
+    outline: none;
+    border-color: #5356fb;
+    box-shadow: 0 0 0 3px rgba(83, 86, 251, 0.1);
+  }
+  .admin-shell-enabled .settings-container .form-group {
+    margin-bottom: 16px;
+  }
+
+  /* ---- 列表卡片（订单/审核/访客）---- */
   .admin-shell-enabled .order_kls,
   .admin-shell-enabled .order-item,
   .admin-shell-enabled .task {
     background: #fff;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
+    border-radius: 14px;
+    padding: 0;
+    margin-bottom: 10px;
     border: 1px solid #f1f5f9;
+    overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
   .admin-shell-enabled .order_kls:hover,
   .admin-shell-enabled .order-item:hover,
   .admin-shell-enabled .task:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(83, 86, 251, 0.08);
+    box-shadow: 0 12px 28px rgba(83, 86, 251, 0.10);
     border-color: rgba(83, 86, 251, 0.2);
   }
 
-  .admin-shell-enabled .admin-pill-btn {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  /* ---- 订单卡片内部优化 ---- */
+  .admin-shell-enabled .order-hrsk {
+    background: linear-gradient(135deg, #fafbff 0%, #f8f7ff 100%);
+    border-bottom: 1px solid #f1f5f9;
+    padding: 12px 18px;
   }
-  .admin-shell-enabled .admin-pill-btn:hover {
+  .admin-shell-enabled .order-item_yup {
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+  }
+  .admin-shell-enabled .order-info .info-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .admin-shell-enabled .amount {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .admin-shell-enabled .amount:not(.opiu) {
+    color: #10b981;
+  }
+  .admin-shell-enabled .info-conuie:not(.opiu) {
+    background: #ecfdf5;
+    color: #059669;
+  }
+  .admin-shell-enabled .info-conuie.opiu {
+    background: #fef3c7;
+    color: #d97706;
+  }
+
+  /* ---- 审核任务卡片 ---- */
+  .admin-shell-enabled .task {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 18px;
+  }
+  .admin-shell-enabled .task-left {
+    min-width: 0;
+  }
+  .admin-shell-enabled .task-left .order-dingdan {
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .admin-shell-enabled .task-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .admin-shell-enabled .task-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .admin-shell-enabled .task-status:not(.approved) {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  .admin-shell-enabled .task-status.approved {
+    background: #ecfdf5;
+    color: #059669;
+  }
+  .admin-shell-enabled .task-count {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    text-align: center;
+    line-height: 1;
+  }
+  .admin-shell-enabled .task-count::after {
+    content: ' 张';
+    font-size: 12px;
+    font-weight: 400;
+    color: #94a3b8;
+  }
+  .admin-shell-enabled .view-details {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #5356fb, #6f75ff);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 6px 14px rgba(83, 86, 251, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+  .admin-shell-enabled .view-details:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 10px 22px rgba(83, 86, 251, 0.28);
+    color: #fff;
+  }
+  .admin-shell-enabled .view-details::after {
+    content: '→';
+    font-size: 14px;
   }
 
   /* ---- 访客记录卡片网格 ---- */
@@ -1375,6 +1601,51 @@ input[type="file"]::-webkit-file-upload-button {
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+  .admin-shell-enabled .visitor-list-grid .order-item {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .admin-shell-enabled .visitor-list-grid .order-details p {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 3px 0;
+    font-size: 13px;
+  }
+  .admin-shell-enabled .visitor-list-grid .order-dingdan {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 13px;
+  }
+
+  /* ---- 按钮动效 ---- */
+  .admin-shell-enabled .admin-pill-btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .admin-shell-enabled .admin-pill-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+
+  /* ---- 订单卡片中的删除按钮 ---- */
+  .admin-shell-enabled .order-hrsk .admin-pill-btn-light {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .admin-shell-enabled .order-hrsk .admin-pill-btn-light:hover {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #f87171;
+    transform: scale(1.04);
   }
 
   .admin-shell-enabled .dashboard-aside {
