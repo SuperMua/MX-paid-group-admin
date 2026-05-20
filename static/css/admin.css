@@ -1106,6 +1106,11 @@ input[type="file"]::-webkit-file-upload-button {
   font-weight: 700;
   color: #fff;
   background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
+  animation: brandPulse 3s ease-in-out infinite;
+}
+@keyframes brandPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(83, 86, 251, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(83, 86, 251, 0); }
 }
 
 .admin-shell-brand-text {
@@ -1131,13 +1136,13 @@ input[type="file"]::-webkit-file-upload-button {
 .admin-shell-link {
   display: flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: 46px;
+  padding: 0 14px;
   border-radius: 999px;
   color: #465077;
   font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-shell-link:hover {
@@ -1150,6 +1155,7 @@ input[type="file"]::-webkit-file-upload-button {
   color: #fff;
   background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
   box-shadow: 0 10px 20px rgba(83, 86, 251, 0.25);
+  transform: scale(1.02);
 }
 
 .admin-shell-subnav {
@@ -1165,13 +1171,16 @@ input[type="file"]::-webkit-file-upload-button {
 
 .admin-shell-sublink {
   display: block;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border-radius: 999px;
   color: #63709a;
   font-size: 13px;
   font-weight: 600;
   margin: 4px 0;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.admin-shell-sublink:hover {
+  transform: translateX(3px);
 }
 
 .admin-shell-sublink:hover {
@@ -1192,12 +1201,18 @@ input[type="file"]::-webkit-file-upload-button {
   width: 100%;
   border: none;
   border-radius: 999px;
-  padding: 11px 12px;
+  padding: 12px 18px;
   color: #fff;
   font-weight: 700;
+  font-size: 14px;
   cursor: pointer;
   background: linear-gradient(135deg, #5356fb 0%, #f539f8 100%);
   box-shadow: 0 10px 20px rgba(83, 86, 251, 0.26);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-shell-logout:hover {
+  transform: scale(1.02);
+  box-shadow: 0 14px 26px rgba(83, 86, 251, 0.34);
 }
 
 @media (min-width: 992px) {
@@ -1206,18 +1221,22 @@ input[type="file"]::-webkit-file-upload-button {
     top: 8px;
     left: auto;
     transform: none;
-    width: calc(100% - 8px);
-    height: 58px;
+    width: 100%;
+    height: 56px;
     border-radius: 999px;
-    box-shadow: 0 10px 24px rgba(83, 86, 251, 0.14);
+    box-shadow: 0 8px 20px rgba(83, 86, 251, 0.10);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    margin-bottom: 6px;
+    z-index: 100;
   }
 
   .admin-shell {
     display: grid;
-    grid-template-columns: 232px minmax(0, 1fr);
-    gap: 12px;
-    width: min(1720px, calc(100% - 8px));
-    margin: 8px 16px;
+    grid-template-columns: 252px minmax(0, 1fr);
+    gap: 14px;
+    width: min(1680px, calc(100% - 40px));
+    margin: 10px auto;
     align-items: start;
   }
 
@@ -1229,7 +1248,7 @@ input[type="file"]::-webkit-file-upload-button {
     top: 12px;
     border: 1px solid rgba(83, 86, 251, 0.18);
     border-radius: 18px;
-    padding: 16px 12px;
+    padding: 20px 16px;
     background: #fff;
     box-shadow: 0 16px 30px rgba(83, 86, 251, 0.11);
     overflow: auto;
@@ -1237,6 +1256,11 @@ input[type="file"]::-webkit-file-upload-button {
 
   .admin-shell-content {
     min-width: 0;
+    animation: shellFadeIn 0.28s ease;
+  }
+  @keyframes shellFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .admin-shell-enabled .body-ui,
@@ -1267,6 +1291,92 @@ input[type="file"]::-webkit-file-upload-button {
     margin-top: 12px;
   }
 
+  /* ---- 非控制台页面统一样式 ---- */
+  .admin-shell-enabled .statistics,
+  .admin-shell-enabled .statistics1 {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .admin-shell-enabled .statistics p,
+  .admin-shell-enabled .statistics1 p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+  .admin-shell-enabled .statistics .order-dingdan,
+  .admin-shell-enabled .statistics1 .order-dingdan {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 16px;
+  }
+
+  .admin-shell-enabled .admin-action-bar {
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .admin-shell-enabled .content-container,
+  .admin-shell-enabled .review-list-container,
+  .admin-shell-enabled .settings-container,
+  .admin-shell-enabled .container,
+  .admin-shell-enabled .imageInfo,
+  .admin-shell-enabled .form-section,
+  .admin-shell-enabled .group-list-section,
+  .admin-shell-enabled .page-intro {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  /* ---- 列表卡片动画 ---- */
+  .admin-shell-enabled .order_kls,
+  .admin-shell-enabled .order-item,
+  .admin-shell-enabled .task {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .admin-shell-enabled .order_kls:hover,
+  .admin-shell-enabled .order-item:hover,
+  .admin-shell-enabled .task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(83, 86, 251, 0.08);
+    border-color: rgba(83, 86, 251, 0.2);
+  }
+
+  .admin-shell-enabled .admin-pill-btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .admin-shell-enabled .admin-pill-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+
+  /* ---- 访客记录卡片网格 ---- */
+  .admin-shell-enabled .visitor-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .admin-shell-enabled .visitor-list-grid .order-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   .admin-shell-enabled .dashboard-aside {
     display: none !important;
   }
@@ -1286,9 +1396,67 @@ input[type="file"]::-webkit-file-upload-button {
   }
 
   .admin-shell-routing .admin-shell-content {
-    opacity: 1;
-    transition: none;
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
     pointer-events: none;
+  }
+
+  /* ---- 系统设置卡片网格 ---- */
+  .admin-shell-enabled .settings-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  .admin-shell-enabled .settings-sidebar .menu-item {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid rgba(83, 86, 251, 0.12);
+    box-shadow: 0 4px 16px rgba(83, 86, 251, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    min-height: auto;
+    margin-bottom: 0;
+  }
+  .admin-shell-enabled .settings-sidebar .menu-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(83, 86, 251, 0.14);
+    border-color: rgba(83, 86, 251, 0.3);
+  }
+  .admin-shell-enabled .settings-sidebar .menu-item a {
+    min-height: 96px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .admin-shell-enabled .settings-sidebar .menu-item .menu-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .admin-shell-enabled .settings-sidebar .menu-item .menu-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+  .admin-shell-enabled .settings-sidebar .menu-arrow {
+    display: none;
+  }
+
+  /* ---- 页面引导语 ---- */
+  .admin-shell-enabled .settings-headline,
+  .admin-shell-enabled .page-intro {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+    color: #64748b;
+    font-size: 14px;
   }
 
   .admin-shell-enabled .sidebar {
