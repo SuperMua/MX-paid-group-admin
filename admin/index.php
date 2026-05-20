@@ -67,8 +67,8 @@ $warmWords = $tips[array_rand($tips)];
            .dashboard-aside .menu-arrow{margin-left:8px}
            .dashboard-aside .logout-button{width:100%;margin-top:auto}
            .dashboard-content{min-width:0}
-           .body-ui{width:100%!important;margin-top:0}
-           .header{text-align:left;padding:0 0 18px 10px}
+           .body-ui{width:100%!important;margin-top:0;padding:14px 16px 16px}
+           .header{text-align:left;padding:0 0 10px 6px}
            .dashboard-chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;font-size:13px;border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(4px)}
            .scroll-container{width:360px}
            .user-avatar{width:64px;height:64px}

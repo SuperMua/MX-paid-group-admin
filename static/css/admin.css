@@ -1210,10 +1210,10 @@ input[type="file"]::-webkit-file-upload-button {
 
   .admin-shell {
     display: grid;
-    grid-template-columns: 268px minmax(0, 1fr);
-    gap: 18px;
-    width: min(1500px, calc(100% - 24px));
-    margin: 12px auto;
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 12px;
+    width: min(1720px, calc(100% - 8px));
+    margin: 6px 4px 6px 4px;
     align-items: start;
   }
 
@@ -1246,7 +1246,7 @@ input[type="file"]::-webkit-file-upload-button {
   .admin-shell-enabled .form-section,
   .admin-shell-enabled .group-list-section,
   .admin-shell-enabled .page-intro {
-    width: min(1260px, 100%);
+    width: 100%;
   }
 
   .admin-shell-enabled .body-ui,
