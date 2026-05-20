@@ -221,6 +221,16 @@ function initCharts(){
     chartHourly(dashData);
 }
 
+// Use double rAF to guarantee the browser has performed layout before
+// Chart.js reads canvas dimensions (especially critical after visibility:hidden removal).
+function _chartsSafe(fn){
+    requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+            if(typeof Chart==='undefined'){console.error('Chart.js CDN missing');return}
+            fn();
+        });
+    });
+}
 // Wait for admin-shell to finish building on desktop before rendering charts.
 // On mobile, admin-shell exits early so we render immediately.
 var _chartsDone=false;
@@ -228,17 +238,17 @@ function _tryCharts(){
     if(_chartsDone)return;
     var isDesktop=window.matchMedia('(min-width: 992px)').matches;
     if(isDesktop && !document.body.classList.contains('admin-shell-enabled')){
-        setTimeout(_tryCharts,50);return;
+        setTimeout(_tryCharts,80);return;
     }
     _chartsDone=true;
     document.body.classList.add('shell-ready');
-    initCharts();
+    _chartsSafe(initCharts);
 }
-setTimeout(_tryCharts,50);
-// Fallback: if shell never loads, show page + charts after 2s
+setTimeout(_tryCharts,80);
+// Fallback: if shell never loads, show page + charts after 2.5s
 setTimeout(function(){
-    if(!_chartsDone){_chartsDone=true;document.body.classList.add('shell-ready');initCharts()}
-},2000);
+    if(!_chartsDone){_chartsDone=true;document.body.classList.add('shell-ready');_chartsSafe(initCharts)}
+},2500);
 })();
 
 function applyBrandSettings(){

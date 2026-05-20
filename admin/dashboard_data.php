@@ -6,19 +6,14 @@ if (!$dashConn->connect_error) {
     $dashConn->set_charset("utf8mb4");
 }
 
-if (vd_is_enabled()) {
-    $dataset = vd_get_dataset();
-    $dashOrders = isset($dataset['orders']) ? $dataset['orders'] : array();
-    $dashVisitors = isset($dataset['visitors']) ? $dataset['visitors'] : array();
-} else {
-    $r = $dashConn->query("SELECT * FROM orders ORDER BY payment_time DESC");
-    $dashOrders = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
+// Always use real DB data for the dashboard — Virtual Data is a separate demo feature
+$r = $dashConn->query("SELECT * FROM orders ORDER BY payment_time DESC");
+$dashOrders = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
 
-    $r = $dashConn->query("SELECT * FROM visitors ORDER BY visit_time DESC");
-    $dashVisitors = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
+$r = $dashConn->query("SELECT * FROM visitors ORDER BY visit_time DESC");
+$dashVisitors = $r ? $r->fetch_all(MYSQLI_ASSOC) : array();
 
-    $dashConn->close();
-}
+$dashConn->close();
 
 // ---- Summary ----
 $dashTotalIncome = 0; $dashTodayIncome = 0; $dashTodayOrders = 0;
