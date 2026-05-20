@@ -79,9 +79,13 @@ $ordersStmt = $conn->prepare($ordersSql);
 $ordersStmt->execute();
 $ordersResult = $ordersStmt->get_result();
 
-// 检查数据是否获取成功
-if ($totalIncome === null || $todayIncome === null || $todayOrders === null || $ordersResult->num_rows === 0) {
-    die("数据获取失败");
+// 检查数据是否获取成功 — 允许空数据，不阻断页面渲染
+$hasData = !($totalIncome === null || $todayIncome === null || $todayOrders === null);
+if (!$hasData) {
+    $totalIncome = 0;
+    $todayIncome = 0;
+    $todayOrders = 0;
+    $translatedOrders = array();
 }
 
 // 存储数据到会话
