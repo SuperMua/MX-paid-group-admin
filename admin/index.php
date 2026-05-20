@@ -1,8 +1,37 @@
 <?php
 require_once 'login_check.php';
-require_once 'users.php';
-require_once 'query-visitors.php';
 require_once 'dashboard_data.php';
+
+// 获取管理员信息
+$adminConn = new mysqli('127.0.0.1', 'qun555', '2D7W64zBm5e3j1AA', 'qun555');
+if (!$adminConn->connect_error) {
+    $adminConn->set_charset("utf8mb4");
+    $r = $adminConn->query("SELECT * FROM admin LIMIT 1");
+    $adminInfo = ($r && $r->num_rows > 0) ? $r->fetch_assoc() : array('avatar' => '', 'name' => '管理员');
+    $adminConn->close();
+} else {
+    $adminInfo = array('avatar' => '', 'name' => '管理员');
+}
+
+// 问候语
+date_default_timezone_set('Asia/Shanghai');
+$hour = (int) date('H');
+if ($hour >= 6 && $hour < 12) {
+    $greeting = '早上好';
+} elseif ($hour >= 12 && $hour < 18) {
+    $greeting = '下午好';
+} elseif ($hour >= 18 && $hour < 23) {
+    $greeting = '晚上好';
+} else {
+    $greeting = '夜深了';
+}
+$tips = array(
+    '建议先处理待审核任务，再巡检支付与模板配置。',
+    '今日重点：关注新增访客与支付转化率变化。',
+    '保持配置与素材一致，可减少用户进群阻塞。',
+    '建议每晚备份一次数据库，确保运营数据安全。'
+);
+$warmWords = $tips[array_rand($tips)];
 ?><!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -14,9 +43,9 @@ require_once 'dashboard_data.php';
        .scroll-container{width:220px;height:20px;overflow:hidden;white-space:nowrap;position:relative}
        .scroll-text{display:inline-block;font-size:14px;font-family:Arial,sans-serif;white-space:nowrap}
        @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-       .dashboard-page{/*visibility:hidden*/}
-       /*.dashboard-page.admin-shell-enabled,
-       .dashboard-page.shell-ready{visibility:visible}*/
+       .dashboard-page{visibility:hidden}
+       .dashboard-page.admin-shell-enabled,
+       .dashboard-page.shell-ready{visibility:visible}
        .dashboard-layout{width:100%}
        .dashboard-aside{display:none}
        .dashboard-brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
@@ -174,15 +203,9 @@ require_once 'dashboard_data.php';
 
 <script src="../static/js/chart.umd.min.js"></script>
 <script>
-// Debug: log when Chart.js is ready
-console.log('[MX] Chart.js available:', typeof Chart !== 'undefined');
-console.log('[MX] Canvas #chartTrend:', document.getElementById('chartTrend'));
-
 (function(){
 var charts={};
-function dk(k){if(charts[k]){charts[k].destroy();delete charts[k]}}
 
-// Data from PHP
 var dashData = {
     trend: <?php echo json_encode($dashTrend, JSON_UNESCAPED_UNICODE); ?>,
     payment_methods: [
@@ -196,64 +219,120 @@ var dashData = {
     hourly: <?php echo json_encode($dashHourly); ?>
 };
 
-function chartTrend(d){
-    dk('trend');var c=document.getElementById('chartTrend');if(!c)return;
-    charts.trend=new Chart(c,{type:'line',data:{labels:d.trend.map(function(t){return t.date}),datasets:[
-        {label:'收入 (¥)',data:d.trend.map(function(t){return t.income}),borderColor:'#5356fb',backgroundColor:'rgba(83,86,251,0.06)',fill:true,tension:0.4,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#5356fb'},
-        {label:'访客',data:d.trend.map(function(t){return t.visitors}),borderColor:'#f539f8',backgroundColor:'rgba(245,57,248,0.04)',fill:true,tension:0.4,yAxisID:'y1',pointRadius:4,pointBackgroundColor:'#f539f8'}
-    ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20}}},scales:{y:{type:'linear',position:'left',title:{display:true,text:'收入'},grid:{color:'#f1f5f9'}},y1:{type:'linear',position:'right',title:{display:true,text:'访客'},grid:{display:false}},x:{grid:{display:false}}}});
-}
-function chartPie(d,key,canvasId,colors){
-    dk(key);var c=document.getElementById(canvasId);if(!c)return;
-    var labels=key==='payMethod'?d.payment_methods.map(function(p){return p.name}):d.payment_status.map(function(p){return p.name});
-    var vals=key==='payMethod'?d.payment_methods.map(function(p){return p.value}):d.payment_status.map(function(p){return p.value});
-    var total=vals.reduce(function(a,b){return a+b},0);
-    if(total===0){c.parentElement.style.display='none';return}
-    c.parentElement.style.display='';
-    charts[key]=new Chart(c,{type:'doughnut',data:{labels:labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}}}});
-}
-function chartHourly(d){
-    dk('hourly');var c=document.getElementById('chartHourly');if(!c)return;
-    var labels=[];for(var i=0;i<24;i++)labels.push(i+':00');
-    charts.hourly=new Chart(c,{type:'bar',data:{labels:labels,datasets:[{label:'订单',data:d.hourly,backgroundColor:'#5356fb',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'},ticks:{stepSize:1}},x:{grid:{display:false},ticks:{maxTicksLimit:8}}}});
-}
-
-function initCharts(){
-    chartTrend(dashData);
-    chartPie(dashData,'payMethod','chartPaymentMethod',['#5356fb','#f539f8']);
-    chartPie(dashData,'payStatus','chartPayStatus',['#10b981','#f59e0b']);
-    chartHourly(dashData);
-}
-
-// Double rAF guarantees layout is complete before Chart.js reads canvas dimensions.
-function _chartsSafe(fn){
-    requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-            var c=document.getElementById('chartTrend');
-            console.log('[charts] Chart loaded:',typeof Chart!=='undefined','canvas found:',!!c,'canvas size:',c?c.offsetWidth+'x'+c.offsetHeight:'N/A');
-            if(typeof Chart==='undefined'){
-                document.getElementById('noPayData')&&(document.getElementById('noPayData').style.display='block',document.getElementById('noPayData').textContent='Chart.js 未加载');
-                return;
-            }
-            if(!c){
-                console.error('[charts] canvas #chartTrend not found');
-                return;
-            }
-            fn();
-        });
+function destroyAll() {
+    Object.keys(charts).forEach(function(k) {
+        if (charts[k]) { charts[k].destroy(); delete charts[k]; }
     });
 }
-function _bootCharts(){
-    document.body.classList.add('shell-ready');
-    _chartsSafe(initCharts);
+
+function chartTrend(){
+    var c = document.getElementById('chartTrend');
+    if (!c) return;
+    if (charts.trend) charts.trend.destroy();
+    charts.trend = new Chart(c, {
+        type: 'line',
+        data: {
+            labels: dashData.trend.map(function(t) { return t.date; }),
+            datasets: [
+                {
+                    label: '收入 (¥)',
+                    data: dashData.trend.map(function(t) { return t.income; }),
+                    borderColor: '#5356fb',
+                    backgroundColor: 'rgba(83,86,251,0.06)',
+                    fill: true, tension: 0.4, yAxisID: 'y',
+                    pointRadius: 4, pointBackgroundColor: '#5356fb'
+                },
+                {
+                    label: '访客',
+                    data: dashData.trend.map(function(t) { return t.visitors; }),
+                    borderColor: '#f539f8',
+                    backgroundColor: 'rgba(245,57,248,0.04)',
+                    fill: true, tension: 0.4, yAxisID: 'y1',
+                    pointRadius: 4, pointBackgroundColor: '#f539f8'
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } },
+            scales: {
+                y: { type: 'linear', position: 'left', title: { display: true, text: '收入 (¥)' }, grid: { color: '#f1f5f9' } },
+                y1: { type: 'linear', position: 'right', title: { display: true, text: '访客' }, grid: { display: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
 }
-// Delay chart init to let admin-shell finish DOM move (desktop) or just layout settle (mobile).
-// The body is visibility:hidden until admin-shell-enabled (added by admin-shell.js) or shell-ready
-// (added here) becomes visible — eliminating the sidebar flash.
-setTimeout(_bootCharts,100);
-// Re-render charts after SPA page navigation
-window.addEventListener('admin-shell:page-loaded',function(){
-    setTimeout(_bootCharts,150);
+
+function chartPie(key, canvasId, colors) {
+    var c = document.getElementById(canvasId);
+    if (!c) return;
+    if (charts[key]) charts[key].destroy();
+    var dataArr = key === 'payMethod' ? dashData.payment_methods : dashData.payment_status;
+    var labels = dataArr.map(function(p) { return p.name; });
+    var vals = dataArr.map(function(p) { return p.value; });
+    var total = vals.reduce(function(a, b) { return a + b; }, 0);
+    if (total === 0) return;
+    charts[key] = new Chart(c, {
+        type: 'doughnut',
+        data: { labels: labels, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 0, borderRadius: 3 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } }
+        }
+    });
+}
+
+function chartHourly(){
+    var c = document.getElementById('chartHourly');
+    if (!c) return;
+    if (charts.hourly) charts.hourly.destroy();
+    var labels = [];
+    for (var i = 0; i < 24; i++) labels.push(i + ':00');
+    charts.hourly = new Chart(c, {
+        type: 'bar',
+        data: { labels: labels, datasets: [{ label: '订单', data: dashData.hourly, backgroundColor: '#5356fb', borderRadius: 3 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }
+            }
+        }
+    });
+}
+
+function renderAllCharts() {
+    if (typeof Chart === 'undefined') return;
+    chartTrend();
+    chartPie('payMethod', 'chartPaymentMethod', ['#5356fb', '#f539f8']);
+    chartPie('payStatus', 'chartPayStatus', ['#10b981', '#f59e0b']);
+    chartHourly();
+    document.body.classList.add('shell-ready');
+}
+
+var _attempts = 0;
+function _tryRender() {
+    var c = document.getElementById('chartTrend');
+    if (c && c.offsetWidth > 0 && c.offsetHeight > 0) {
+        renderAllCharts();
+        return;
+    }
+    _attempts++;
+    if (_attempts < 20) {
+        setTimeout(_tryRender, 100);
+    } else {
+        renderAllCharts();
+    }
+}
+setTimeout(_tryRender, 150);
+
+window.addEventListener('admin-shell:page-loaded', function() {
+    destroyAll();
+    _attempts = 0;
+    setTimeout(_tryRender, 100);
 });
 })();
 
@@ -276,6 +355,6 @@ function startScroll(){
 }
 initDashboardPage();
 </script>
-<!-- <script src="../static/js/admin-shell.js"></script> -->
+<script src="../static/js/admin-shell.js"></script>
 </body>
 </html>
