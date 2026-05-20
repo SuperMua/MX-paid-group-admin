@@ -1,8 +1,8 @@
 <?php
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 //引入创建订单求文件
-require_once '../pay/lib/pay.php';
+require_once __DIR__ . '/../pay/lib/pay.php';
 
 // 创建数据库连接
 $conn = new mysqli($host, $username, $password, $dbname);

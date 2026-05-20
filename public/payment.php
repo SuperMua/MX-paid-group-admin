@@ -1,6 +1,6 @@
 <?php
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 获取用户当前IP地址
 $userIP = $_SERVER['REMOTE_ADDR'];

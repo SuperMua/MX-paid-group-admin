@@ -1,6 +1,6 @@
 <?php
 // 引入数据库配置文件
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // 启动会话管理
 if (session_status() === PHP_SESSION_NONE) {

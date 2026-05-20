@@ -4,7 +4,7 @@
 
 // 上传图片处理
 // 连接数据库
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 获取客户端 IP 地址
 function get_client_ip() {

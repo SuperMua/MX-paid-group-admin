@@ -1,7 +1,7 @@
 <?php
 //yz.php验证ip
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 获取URL参数中的订单ID和当前IP地址
 $orderId = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;

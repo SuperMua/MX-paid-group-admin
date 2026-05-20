@@ -310,15 +310,23 @@ a:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   width: min(var(--admin-max-width), calc(100% - 12px));
-  height: 54px;
+  height: 48px;
   display: flex;
   align-items: center;
+  padding: 0 6px;
   border: 1px solid rgba(83, 86, 251, 0.2);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 24px rgba(83, 86, 251, 0.14);
   z-index: 9999;
+}
+
+.navbar-time {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .back-button {
@@ -342,7 +350,8 @@ a:focus-visible {
 }
 
 .title {
-  margin: auto;
+  margin-left: 10px;
+  flex: 1;
   color: #2d2f66;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -362,11 +371,13 @@ a:focus-visible {
   width: min(var(--admin-max-width), calc(100% - 20px));
   margin-left: auto;
   margin-right: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .body-ui {
-  margin-top: 58px;
-  padding: 16px 14px;
+  margin-top: 54px;
+  padding: 18px 16px 24px;
   border-radius: var(--admin-radius-lg);
   background: linear-gradient(134.38deg, #f539f8 0%, #c342f9 43.55%, #5356fb 104.51%);
   box-shadow: var(--admin-shadow);
@@ -414,7 +425,7 @@ a:focus-visible {
 }
 
 .page-intro {
-  margin: 58px auto 10px;
+  margin: 54px auto 10px;
   padding: 10px 12px;
   border-radius: var(--admin-radius-sm);
   border: 1px solid var(--admin-border);
@@ -886,7 +897,7 @@ input[type="file"]::-webkit-file-upload-button {
 .container,
 .form-section,
 .group-list-section {
-  margin-top: 58px;
+  margin-top: 54px;
   padding: 16px;
 }
 
@@ -947,12 +958,108 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .imageInfo {
-  margin-top: 58px;
+  margin-top: 54px;
 }
 
 .qctx {
   color: var(--admin-danger);
   font-size: 13px;
+}
+
+/* Dashboard cards inside body-ui */
+.dash-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+.dash-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dash-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.dash-card-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.dash-card-icon.c1 { background: #eef2ff; }
+.dash-card-icon.c2 { background: #ecfdf5; }
+.dash-card-icon.c3 { background: #fff7ed; }
+.dash-card-icon.c4 { background: #f5f3ff; }
+.dash-card-icon.c5 { background: #fdf2f8; }
+.dash-card-icon.c6 { background: #f0fdfa; }
+.dash-card-icon.c7 { background: #fef2f2; }
+.dash-card-icon.c8 { background: #eef2ff; }
+.dash-card-val { font-size: 20px; font-weight: 700; color: #1e293b; line-height: 1.2; }
+.dash-card-lbl { font-size: 11px; color: #94a3b8; }
+
+.dash-chart-panel {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.dash-chart-panel h4 {
+  margin: 0 0 12px; font-size: 14px; font-weight: 700; color: #1e293b;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dash-chart-panel h4 .tag {
+  font-size: 10px; font-weight: 500; color: #5356fb; background: #eef2ff;
+  padding: 2px 8px; border-radius: 999px;
+}
+
+.dash-chart-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.dash-chart-row.equal { grid-template-columns: 1fr 1fr; }
+
+.dash-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dash-order-mini {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+.dash-order-mini:last-child { border-bottom: none; }
+.dash-order-mini .n { color: #334155; font-weight: 500; }
+.dash-order-mini .m { color: #94a3b8; font-size: 11px; }
+.dash-order-mini .a { font-weight: 600; }
+.dash-order-mini .a.paid { color: #10b981; }
+.dash-order-mini .a.unpaid { color: #f59e0b; }
+
+.dash-loc-row {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+}
+.dash-loc-name { font-size: 12px; color: #334155; min-width: 70px; }
+.dash-loc-bar-bg { flex:1; height:5px; background:#f1f5f9; border-radius:3px; overflow:hidden; }
+.dash-loc-bar-fg { height:100%; border-radius:3px; background: linear-gradient(90deg, #5356fb, #c342f9); }
+.dash-loc-val { font-size: 12px; font-weight: 600; color: #1e293b; min-width: 30px; text-align: right; }
+
+.dash-empty { text-align:center; padding:24px; color:#94a3b8; font-size:13px; }
+
+@media (max-width: 1100px) {
+  .dash-cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-chart-row { grid-template-columns: 1fr; }
+  .dash-bottom-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .dash-cards-grid { grid-template-columns: 1fr; }
 }
 
 .admin-shell-enabled {
@@ -1149,7 +1256,7 @@ input[type="file"]::-webkit-file-upload-button {
   .admin-shell-enabled .group-list-section,
   .admin-shell-enabled .imageInfo,
   .admin-shell-enabled .page-intro {
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
   .admin-shell-enabled .main {
@@ -1193,10 +1300,12 @@ input[type="file"]::-webkit-file-upload-button {
     left: 50%;
     transform: translateX(-50%);
     width: min(var(--admin-max-width), calc(100% - 40px));
-    height: 58px;
+    height: 50px;
+    padding: 0 10px;
     border-radius: 999px;
     box-shadow: 0 12px 24px rgba(83, 86, 251, 0.16);
   }
+  .navbar-time { font-size: 13px; }
 
   .back-button {
     margin-left: 14px;
@@ -1221,8 +1330,8 @@ input[type="file"]::-webkit-file-upload-button {
   }
 
   .body-ui {
-    margin-top: 78px;
-    padding: 22px 24px;
+    margin-top: 62px;
+    padding: 24px 28px 32px;
   }
 
   .user-avatar {
@@ -1366,12 +1475,12 @@ input[type="file"]::-webkit-file-upload-button {
   .form-section,
   .group-list-section,
   .imageInfo {
-    margin-top: 78px;
+    margin-top: 62px;
     padding: 22px 24px;
   }
 
   .page-intro {
-    margin-top: 78px;
+    margin-top: 62px;
     margin-bottom: 12px;
     padding: 12px 14px;
     border-radius: 12px;

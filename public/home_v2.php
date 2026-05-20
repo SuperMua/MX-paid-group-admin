@@ -1,7 +1,7 @@
 <?php
 require_once 'check.php';//验证支付状态
 require_once 'settings_data.php';
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 require_once 'image_upload.php';
 
 // 初始化数据容器

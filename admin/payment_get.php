@@ -1,6 +1,6 @@
 <?php
 require_once 'login_check.php';
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 function normalize_http_url($value, $forceTrailingSlash = false) {
     $value = trim((string)$value);

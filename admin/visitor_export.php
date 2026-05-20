@@ -1,6 +1,6 @@
 <?php
 require_once 'login_check.php';
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 require_once 'virtual_data_helper.php';
 
 $filename = 'visitors_' . date('Ymd_His') . '.csv';

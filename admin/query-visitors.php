@@ -2,7 +2,7 @@
 require_once 'login_check.php';
 require_once 'virtual_data_helper.php';
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 查询今日访客数量
 function getTodayVisitors($conn) {

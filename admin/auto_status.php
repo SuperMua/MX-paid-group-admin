@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // 数据库连接信息
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 处理 POST 请求（更新状态）
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

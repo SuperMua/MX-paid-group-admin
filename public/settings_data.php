@@ -1,6 +1,6 @@
 <?php
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 // 查询 task_set 表的 SQL 语句
 $sql = "SELECT * FROM task_set";
 $result = $conn->query($sql);

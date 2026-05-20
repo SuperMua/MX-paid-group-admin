@@ -1,6 +1,6 @@
 <?php
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 检查连接是否成功
 if ($conn->connect_error) {

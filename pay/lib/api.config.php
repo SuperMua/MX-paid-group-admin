@@ -1,6 +1,6 @@
 <?php
  // 引入数据库配置文件
-  require_once '../config/config.php';
+  require_once __DIR__ . '/../../config/config.php';
   
   // 创建数据库连接
   $conn = new mysqli($host, $username, $password, $dbname);

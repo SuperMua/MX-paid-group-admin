@@ -1,6 +1,6 @@
 <?php
 // 引入数据库配置文件
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 require_once 'login_check.php';  
 require_once 'virtual_data_helper.php';
 

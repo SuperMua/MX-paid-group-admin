@@ -1,7 +1,7 @@
 <?php
 //验证是否已支付
 // 引入数据库配置文件
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 
 // 创建数据库连接
 $conn = new mysqli($host, $username, $password, $dbname);

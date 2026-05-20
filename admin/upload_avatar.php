@@ -1,7 +1,7 @@
 <?php
 require_once 'login_check.php';
 // 引入数据库配置文件
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // 根据不同的操作类型进行处理
 if (isset($_GET['action']) && $_GET['action'] === 'get_user_info') {

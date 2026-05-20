@@ -9,7 +9,7 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
 require_once 'login_check.php'; 
-require_once '../config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // 处理图片上传
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image']) && isset($_POST['type'])) {

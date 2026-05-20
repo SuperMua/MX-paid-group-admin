@@ -1,7 +1,7 @@
 <?php
 require_once 'yz.php'; //验证ip
-require_once '../public/settings_data.php';
-require_once '../public/image_upload.php';
+require_once __DIR__ . '/../public/settings_data.php';
+require_once __DIR__ . '/../public/image_upload.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

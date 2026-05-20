@@ -1,7 +1,7 @@
 <?php
 require_once 'check.php';//验证支付状态
 require_once 'settings_data.php';
-require '../config/config.php';
+require __DIR__ . '/../config/config.php';
 // 查询temp表数据
 $sql2 = "SELECT amount, text_field FROM temp";
 if ($result = $conn->query($sql2)) {
